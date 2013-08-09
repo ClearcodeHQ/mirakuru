@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='summon_process',
-      version='0.1.0',
+      version='0.1.1',
       description='Process coordinator for tests',
       long_description=file('README.rst').read(),
       url='https://github.com/mlen/summon',
