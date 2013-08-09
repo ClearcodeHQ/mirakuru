@@ -1,13 +1,13 @@
 summon_process
 ==============
 
+**Current status:** work in progress. The code is lacking proper documentation
+and is broken on Python 3.3.
+
 .. image:: https://travis-ci.org/mlen/summon.png?branch=master
     :target: https://travis-ci.org/mlen/summon
 
 Python process orchestration library.
-
-**Current status:** work in progress. The code is lacking proper documentation
-and requires testing on different version of Python
 
 About
 -----
