@@ -4,8 +4,8 @@ summon_process
 **Current status:** work in progress. The code is lacking proper documentation
 and is broken on Python 3.3.
 
-.. image:: https://travis-ci.org/mlen/summon.png?branch=master
-    :target: https://travis-ci.org/mlen/summon
+.. image:: https://travis-ci.org/mlen/summon_process.png?branch=master
+    :target: https://travis-ci.org/mlen/summon_process
 
 Python process orchestration library.
 
@@ -57,6 +57,6 @@ License
 Contributing and reporting bugs
 -------------------------------
 
-Source code is available at: `mlen/summon <https://github.com/mlen/summon>`_.
-Issue tracker is located at `GitHub Issues <https://github.com/mlen/summon/issues>`_.
+Source code is available at: `mlen/summon_process <https://github.com/mlen/summon_process>`_.
+Issue tracker is located at `GitHub Issues <https://github.com/mlen/summon_process/issues>`_.
 Projects `PyPi page <https://pypi.python.org/pypi/summon_process>`_.
