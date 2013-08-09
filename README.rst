@@ -1,6 +1,9 @@
 summon_process
 ==============
 
+.. image:: https://travis-ci.org/mlen/summon.png?branch=master
+    :target: https://travis-ci.org/mlen/summon
+
 Python process orchestration library.
 
 **Current status:** work in progress. The code is lacking proper documentation
