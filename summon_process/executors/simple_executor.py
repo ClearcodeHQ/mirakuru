@@ -26,6 +26,13 @@ class SimpleExecutor:
             self._process.terminate()
             self._process = None
 
+    def kill(self):
+        """Kill the process with SIGKILL
+        """
+        if self.running():
+            self._process.kill()
+            self._process = None
+
     def output(self):
         if self._process is not None:
             return self._process.stdout
