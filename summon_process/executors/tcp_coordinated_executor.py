@@ -4,8 +4,8 @@ from . import SimpleExecutor
 
 
 class TCPCoordinatedExecutor(SimpleExecutor):
-    def __init__(self, command, host, port, shell=False):
-        SimpleExecutor.__init__(self, command, shell=shell)
+    def __init__(self, command, host, port, shell=False, timeout=None):
+        SimpleExecutor.__init__(self, command, shell=shell, timeout=timeout)
         self._host = host
         self._port = port
 
@@ -14,7 +14,7 @@ class TCPCoordinatedExecutor(SimpleExecutor):
         self._wait_for_connection()
 
     def _wait_for_connection(self):
-        while True:
+        while self.check_timeout():
             try:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.connect((self._host, self._port))

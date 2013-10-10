@@ -4,17 +4,17 @@ from . import TCPCoordinatedExecutor
 
 
 class HTTPCoordinatedExecutor(TCPCoordinatedExecutor):
-    def __init__(self, command, url, shell=False):
+    def __init__(self, command, url, shell=False, timeout=None):
         self._url = urlparse.urlparse(url)
         TCPCoordinatedExecutor.__init__(self, command, host=self._url.hostname,
-                                        port=self._url.port, shell=shell)
+                                        port=self._url.port, shell=shell, timeout=timeout)
 
     def start(self):
         TCPCoordinatedExecutor.start(self)
         self._wait_for_successful_head()
 
     def _wait_for_successful_head(self):
-        while True:
+        while self.check_timeout():
             try:
                 conn = httplib.HTTPConnection(self._url.hostname,
                                               self._url.port,
