@@ -15,13 +15,7 @@ class TestTCPCoordinatedExecutor(TestCase):
         command = 'bash -c "sleep 10 && nc -l 3000"'
         executor = TCPCoordinatedExecutor(command, host='localhost', port=3000, timeout=2)
 
-        error_raised = False
-        try:
-            executor.start()
-        except TimeoutExpired:
-            error_raised = True
-        assert error_raised
-
+        self.assertRaises(TimeoutExpired, executor.start)
         executor.stop()
 
     def test_it_starts_up_without_raising_timeout_error(self):
