@@ -44,11 +44,15 @@ class SimpleExecutor:
             self._process = None
             self._endtime = None
 
-    def kill(self):
+    def kill(self, wait_for_exit=False):
         """Kill the process with SIGKILL
+
+        :param wait_for_exit: set to `True` to wait for the process to end.
         """
         if self.running():
             self._process.kill()
+            if wait_for_exit:
+                self._process.wait()
             self._process = None
             self._endtime = None
 
