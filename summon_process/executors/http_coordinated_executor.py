@@ -1,3 +1,4 @@
+import socket
 import httplib
 import urlparse
 from . import TCPCoordinatedExecutor
@@ -17,8 +18,7 @@ class HTTPCoordinatedExecutor(TCPCoordinatedExecutor):
         while self.check_timeout():
             try:
                 conn = httplib.HTTPConnection(self._url.hostname,
-                                              self._url.port,
-                                              timeout=1)
+                                              self._url.port)
 
                 conn.request('HEAD', self._url.path)
                 response = conn.getresponse()
@@ -27,5 +27,5 @@ class HTTPCoordinatedExecutor(TCPCoordinatedExecutor):
                     conn.close()
                     break
 
-            except httplib.HTTPException:
+            except (httplib.HTTPException, socket.timeout):
                 continue
