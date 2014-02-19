@@ -5,6 +5,7 @@ from BaseHTTPServer import (
     BaseHTTPRequestHandler,
 )
 
+
 class SlowServerHandler(BaseHTTPRequestHandler):
 
     wait = 5
