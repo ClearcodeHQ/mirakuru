@@ -1,6 +1,13 @@
 import socket
-import httplib
-import urlparse
+import sys
+
+if sys.version_info[0] == 2:
+    import httplib
+    import urlparse
+else:
+    import http.client as httplib
+    import urllib.parse as urlparse
+
 from . import TCPCoordinatedExecutor
 
 
