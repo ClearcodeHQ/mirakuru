@@ -2,3 +2,6 @@ summon_process.egg-info
 dist
 build
 *.pyc
+
+.idea/
+atlassian-ide-plugin.xml
