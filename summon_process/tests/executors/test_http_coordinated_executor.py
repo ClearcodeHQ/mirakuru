@@ -1,7 +1,13 @@
 import os
 
 from unittest import TestCase
-from httplib import HTTPConnection, OK
+
+
+try:
+    from httplib import HTTPConnection, OK
+except ImportError:
+    # In python3 httplib is renamed to http.client
+    from http.client import HTTPConnection, OK
 
 from summon_process.executors import HTTPCoordinatedExecutor, TimeoutExpired
 

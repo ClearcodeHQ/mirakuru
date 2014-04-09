@@ -31,11 +31,20 @@ class SimpleExecutor(object):
             return self._process.poll() is None
 
     def start(self):
+        """
+        .. note::
+            We want to open ``stdin``, ``stdout`` and ``stderr`` as text
+            streams in universal newlinces mode, so we have to set
+            ``universal_newlines`` to ``True``.
+        """
         if self._process is None:
-            self._process = subprocess.Popen(self._args,
-                                             shell=self._shell,
-                                             stdin=subprocess.PIPE,
-                                             stdout=subprocess.PIPE)
+            self._process = subprocess.Popen(
+                self._args,
+                shell=self._shell,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                universal_newlines=True,
+            )
         if self._timeout:
             self._endtime = time.time() + self._timeout
 

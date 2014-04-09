@@ -1,8 +1,7 @@
 summon_process
 ==============
 
-**Current status:** work in progress. The code is lacking proper documentation
-and is broken on Python 3.3.
+**Current status:** work in progress. The code is lacking proper documentation.
 
 .. image:: https://travis-ci.org/mlen/summon_process.png?branch=master
     :target: https://travis-ci.org/mlen/summon_process
