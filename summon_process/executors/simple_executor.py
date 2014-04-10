@@ -34,7 +34,7 @@ class SimpleExecutor(object):
         """
         .. note::
             We want to open ``stdin``, ``stdout`` and ``stderr`` as text
-            streams in universal newlinces mode, so we have to set
+            streams in universal newlines mode, so we have to set
             ``universal_newlines`` to ``True``.
         """
         if self._process is None:
