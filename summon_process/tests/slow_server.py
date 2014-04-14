@@ -1,9 +1,16 @@
 import time
 
-from BaseHTTPServer import (
-    HTTPServer,
-    BaseHTTPRequestHandler,
-)
+try:
+    from BaseHTTPServer import (
+        HTTPServer,
+        BaseHTTPRequestHandler,
+    )
+except ImportError:
+    # In python3 httplib is renamed to http.client
+    from http.server import (
+        HTTPServer,
+        BaseHTTPRequestHandler,
+    )
 
 
 class SlowServerHandler(BaseHTTPRequestHandler):

@@ -5,9 +5,11 @@ from unittest import TestCase
 
 try:
     from httplib import HTTPConnection, OK
+    http_server = "SimpleHTTPServer"
 except ImportError:
     # In python3 httplib is renamed to http.client
     from http.client import HTTPConnection, OK
+    http_server = "http.server"
 
 from summon_process.executors import HTTPCoordinatedExecutor, TimeoutExpired
 
@@ -17,7 +19,9 @@ class TestHTTPCoordinatedExecutor(TestCase):
     port = "8000"
 
     def test_it_waits_for_process_to_complete_head_request(self):
-        command = 'bash -c "sleep 3 && exec python -m SimpleHTTPServer"'
+        command = 'bash -c "sleep 3 && exec python -m {http_server}"'.format(
+            http_server=http_server,
+        )
         executor = HTTPCoordinatedExecutor(
             command, 'http://{0}:{1}/'.format(self.host, self.port)
         )
