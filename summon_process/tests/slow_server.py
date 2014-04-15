@@ -6,7 +6,7 @@ try:
         BaseHTTPRequestHandler,
     )
 except ImportError:
-    # In python3 httplib is renamed to http.client
+    # python3
     from http.server import (
         HTTPServer,
         BaseHTTPRequestHandler,
