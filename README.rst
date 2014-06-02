@@ -1,10 +1,10 @@
-summon_process
+mirakuru
 ==============
 
 **Current status:** work in progress. The code is lacking proper documentation.
 
-.. image:: https://travis-ci.org/mlen/summon_process.png?branch=master
-    :target: https://travis-ci.org/mlen/summon_process
+.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.png?branch=master
+    :target: https://travis-ci.org/ClearcodeHQ/mirakuru
 
 Python process orchestration library.
 
@@ -18,15 +18,15 @@ The simple (and wrong) solution is to add ``time.sleep`` and pretend that it
 works. Unfortunately there is no way the estimate the amount of time to sleep
 and not loose too much time.
 
-``summon_process`` is an attempt to solve this problem. What you can see below
+``mirakuru`` is an attempt to solve this problem. What you can see below
 is an example test that waits for a HTTP server to boot, and then it checks
 whether the returned status is OK.
 
-.. sourcecode:: python
+.. code-block:: python
 
     from unittest import TestCase
-    from summon_process.executors import HTTPCoordinatedExecutor
-    from summon_process.utils import orchestrated
+    from mirakuru.executors import HTTPCoordinatedExecutor
+    from mirakuru.utils import orchestrated
     from httplib import HTTPConnection, OK
 
 
@@ -46,16 +46,17 @@ time and then launches the builtin SimpleHTTPServer on port 8000.
 Author
 ------
 
-The project was developed by `Mateusz Lenik <http://mlen.pl>`_.
+The project was first developed by `Mateusz Lenik <http://mlen.pl>`_.
+Later forked by The A Room @ Clearcode.
 
 License
 -------
 
-``summon_process`` is licensed under LGPL license, version 3.
+``mirakuru`` is licensed under LGPL license, version 3.
 
 Contributing and reporting bugs
 -------------------------------
 
-Source code is available at: `mlen/summon_process <https://github.com/mlen/summon_process>`_.
-Issue tracker is located at `GitHub Issues <https://github.com/mlen/summon_process/issues>`_.
-Projects `PyPi page <https://pypi.python.org/pypi/summon_process>`_.
+Source code is available at: `ClearcodeHQ/mirakuru <https://github.com/ClearcodeHQ/mirakuru>`_.
+Issue tracker is located at `GitHub Issues <https://github.com/ClearcodeHQ/mirakuru/issues>`_.
+Projects `PyPi page <https://pypi.python.org/pypi/mirakuru>`_.

@@ -1,8 +1,9 @@
 from unittest import TestCase
-from summon_process.executors import SimpleExecutor
+from mirakuru.executors import SimpleExecutor
 
 
 class TestSimpleExecutor(TestCase):
+
     def test_it_starts_up_and_shuts_down_the_process(self):
         executor = SimpleExecutor('sleep 300')
         executor.start()

@@ -1,17 +1,18 @@
 import socket
 import sys
 
-if sys.version_info[0] == 2:
+if sys.version_info.major == 2:
     import httplib
     import urlparse
 else:
     import http.client as httplib
     import urllib.parse as urlparse
 
-from . import TCPCoordinatedExecutor
+from mirakuru.executors import TCPCoordinatedExecutor
 
 
 class HTTPCoordinatedExecutor(TCPCoordinatedExecutor):
+
     def __init__(self, command, url, shell=False, timeout=None):
         self._url = urlparse.urlparse(url)
         TCPCoordinatedExecutor.__init__(self, command, host=self._url.hostname,

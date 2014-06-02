@@ -1,9 +1,10 @@
 import socket
 import time
-from . import SimpleExecutor
+from mirakuru.executors import SimpleExecutor
 
 
 class TCPCoordinatedExecutor(SimpleExecutor):
+
     def __init__(self, command, host, port, shell=False, timeout=None):
         SimpleExecutor.__init__(self, command, shell=shell, timeout=timeout)
         self._host = host
