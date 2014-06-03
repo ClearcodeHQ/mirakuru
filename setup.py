@@ -26,6 +26,12 @@ with open(os.path.join(here, 'mirakuru', '__init__.py')) as v_file:
     package_version = re.compile(
         r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
+tests_require = ['py.test', 'mock']
+extras_require = {
+    'docs': ['sphinx'],
+    'tests': tests_require
+}
+
 
 def read(fname):
     return open(os.path.join(here, fname)).read()
@@ -58,8 +64,9 @@ setup(
     ],
     packages=find_packages(),
     install_requires=[],
-    tests_require=['nose', 'mock'],
+    tests_require=tests_require,
     test_suite='tests',
     include_package_data=True,
     zip_safe=False,
+    extras_require=extras_require,
 )
