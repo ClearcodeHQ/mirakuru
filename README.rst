@@ -40,7 +40,6 @@ whether the returned status is OK.
 
     from unittest import TestCase
     from mirakuru.executors import HTTPCoordinatedExecutor
-    from mirakuru.utils import orchestrated
     from httplib import HTTPConnection, OK
 
 
@@ -49,10 +48,11 @@ whether the returned status is OK.
             executor = HTTPCoordinatedExecutor("./server",
                                                url="http://localhost:8000/")
 
-            with orchestrated(executor):
-                conn = HTTPConnection("localhost", 8000)
-                conn.request('GET', '/')
-                assert conn.getresponse().status is OK
+            executor.start()
+            conn = HTTPConnection("localhost", 8000)
+            conn.request('GET', '/')
+            assert conn.getresponse().status is OK
+            executor.stop()
 
 The ``server`` command in this case is just a bash script that sleeps for some
 time and then launches the builtin SimpleHTTPServer on port 8000.
