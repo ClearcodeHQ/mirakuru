@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
-0.1.0
+current
 -------
-- some changes [by someone]
+- applied license headers
+- stripped orchestrators
+- forked off from summon_process
