@@ -1,12 +1,26 @@
 mirakuru
-==============
+========
 
-**Current status:** work in progress. The code is lacking proper documentation.
+Maybe you want to be able to start database only when you start your program,
+or maybe you need just to set up additional processes for your tests,
+this is where you should consider using **mirakuru**, to add superpowers to your program,
+or tests.
+
+Package status
+--------------
 
 .. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.png?branch=master
     :target: https://travis-ci.org/ClearcodeHQ/mirakuru
+    :alt: Tests
 
-Python process orchestration library.
+.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=master
+    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=master
+    :alt: Coverage Status
+
+.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.png?branch=master
+   :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?branch=master
+   :alt: Requirements Status
+
 
 About
 -----

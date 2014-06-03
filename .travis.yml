@@ -5,6 +5,8 @@ python:
   - "3.4"
 install:
     - "python setup.py develop"
-    - "pip install mirakuru[tests]"
+    - "pip install mirakuru[tests] coveralls"
 script:
-    - "py.test -v"
+    - "py.test -v  --cov mirakuru"
+after_success:
+    - coveralls
