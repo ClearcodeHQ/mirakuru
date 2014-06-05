@@ -5,8 +5,9 @@ python:
   - "3.4"
 install:
     - "python setup.py develop"
-    - "pip install mirakuru[tests] coveralls"
+    - "pip install mirakuru[tests] coveralls pylama"
 script:
     - "py.test -v  --cov mirakuru"
+    - pylama
 after_success:
     - coveralls

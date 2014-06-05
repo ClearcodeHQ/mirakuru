@@ -32,7 +32,9 @@ class TimeoutExpired(Exception):
         self.timeout = timeout
 
     def __str__(self):
-        return ("Executor %s timed out after %s seconds" % (self.executor, self.timeout))
+        return 'Executor {0} timed out after {1} seconds'.format(
+            self.executor, self.timeout
+        )
 
 
 class SimpleExecutor(object):
@@ -118,12 +120,14 @@ class SimpleExecutor(object):
     def check_timeout(self):
         """Check if timeout has expired.
 
-        Returns True if there is no timeout set or the timeout has not yet expired.
+        Returns True if there is no timeout set or the timeout has not expired.
         Kills the process and raises TimeoutExpired exception otherwise.
 
         This method should be used in while loops waiting for some data.
         """
         if self._endtime is not None and time.time() > self._endtime:
             self.kill()
-            raise TimeoutExpired(self.__class__.__name__, timeout=self._timeout)
+            raise TimeoutExpired(
+                self.__class__.__name__, timeout=self._timeout
+            )
         return True
