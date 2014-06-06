@@ -16,7 +16,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 
-from mirakuru.executors.simple_executor import SimpleExecutor, TimeoutExpired
-from mirakuru.executors.output_coordinated_executor import OutputCoordinatedExecutor
-from mirakuru.executors.tcp_coordinated_executor import TCPCoordinatedExecutor
-from mirakuru.executors.http_coordinated_executor import HTTPCoordinatedExecutor
+from mirakuru.executors.simple import SimpleExecutor, TimeoutExpired
+from mirakuru.executors.output import OutputCoordinatedExecutor
+from mirakuru.executors.tcp import TCPCoordinatedExecutor
+from mirakuru.executors.http import HTTPCoordinatedExecutor
+
+__all__ = [
+    SimpleExecutor, TimeoutExpired, OutputCoordinatedExecutor,
+    TCPCoordinatedExecutor, HTTPCoordinatedExecutor
+]
