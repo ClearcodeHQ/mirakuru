@@ -39,20 +39,19 @@ class HTTPCoordinatedExecutor(TCPCoordinatedExecutor):
 
     def start(self):
         TCPCoordinatedExecutor.start(self)
-        self._wait_for_successful_head()
+        self.wait_for(self._wait_for_successful_head)
 
     def _wait_for_successful_head(self):
-        while self.check_timeout():
-            try:
-                conn = httplib.HTTPConnection(self._url.hostname,
-                                              self._url.port)
+        try:
+            conn = httplib.HTTPConnection(self._url.hostname,
+                                          self._url.port)
 
-                conn.request('HEAD', self._url.path)
-                response = conn.getresponse()
+            conn.request('HEAD', self._url.path)
+            response = conn.getresponse()
 
-                if response.status is httplib.OK:
-                    conn.close()
-                    break
+            if response.status is httplib.OK:
+                conn.close()
+                return True
 
-            except (httplib.HTTPException, socket.timeout):
-                continue
+        except (httplib.HTTPException, socket.timeout):
+            return False

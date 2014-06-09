@@ -28,9 +28,9 @@ class OutputCoordinatedExecutor(SimpleExecutor):
 
     def start(self):
         SimpleExecutor.start(self)
-        self._wait_for_output()
+        self.wait_for(self._wait_for_output)
 
     def _wait_for_output(self):
-        while self.check_timeout():
-            if self._banner.match(self.output().readline()):
-                break
+        if self._banner.match(self.output().readline()):
+            return True
+        return False
