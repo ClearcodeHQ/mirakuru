@@ -38,21 +38,19 @@ whether the returned status is OK.
 
 .. code-block:: python
 
-    from unittest import TestCase
     from mirakuru.executors import HTTPCoordinatedExecutor
     from httplib import HTTPConnection, OK
 
 
-    class TestServer(TestCase):
-        def test_it_works(self):
-            executor = HTTPCoordinatedExecutor("./server",
-                                               url="http://localhost:8000/")
+    def test_it_works(self):
+        executor = HTTPCoordinatedExecutor("./server",
+                                            url="http://localhost:8000/")
 
-            executor.start()
-            conn = HTTPConnection("localhost", 8000)
-            conn.request('GET', '/')
-            assert conn.getresponse().status is OK
-            executor.stop()
+        executor.start()
+        conn = HTTPConnection("localhost", 8000)
+        conn.request('GET', '/')
+        assert conn.getresponse().status is OK
+        executor.stop()
 
 The ``server`` command in this case is just a bash script that sleeps for some
 time and then launches the builtin SimpleHTTPServer on port 8000.
