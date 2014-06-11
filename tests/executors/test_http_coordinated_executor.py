@@ -11,7 +11,8 @@ except ImportError:
     from http.client import HTTPConnection, OK
     http_server = "http.server"
 
-from mirakuru.executors import HTTPCoordinatedExecutor, TimeoutExpired
+from mirakuru.executors import HTTPCoordinatedExecutor
+from mirakuru.exceptions import TimeoutExpired
 
 
 class TestHTTPCoordinatedExecutor(TestCase):

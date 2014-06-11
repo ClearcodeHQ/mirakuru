@@ -1,5 +1,6 @@
 from unittest import TestCase
-from mirakuru.executors import TCPCoordinatedExecutor, TimeoutExpired
+from mirakuru.executors import TCPCoordinatedExecutor
+from mirakuru.exceptions import TimeoutExpired
 
 
 class TestTCPCoordinatedExecutor(TestCase):
