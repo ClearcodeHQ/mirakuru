@@ -2,6 +2,7 @@
 dist
 build
 *.pyc
+.coverage
 
 .idea/
 atlassian-ide-plugin.xml
