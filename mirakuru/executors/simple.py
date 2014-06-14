@@ -15,6 +15,7 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
+"""Base executor with the most basic functionality."""
 
 import subprocess
 import shlex
@@ -25,6 +26,8 @@ from mirakuru.exceptions import TimeoutExpired
 
 class SimpleExecutor(object):
 
+    """Basic executor with the most basic functionality."""
+
     def __init__(self, command, shell=False, timeout=None, sleep=0.1):
         """
         Initialize executor.
@@ -34,6 +37,14 @@ class SimpleExecutor(object):
         :param int timeout: time to wait for process to start or stop.
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
+
+        .. note::
+
+            **timeout** set for executor is valid for all the level of waits
+            on the way up. That means that if some more advanced executor sets
+            timout to 10 seconds, and it'll take 5 seconds for first check,
+            second check will only have 5 seconds left.
+
         """
         self._args = shlex.split(command)
         self._shell = shell
@@ -44,6 +55,7 @@ class SimpleExecutor(object):
         self._process = None
 
     def running(self):
+        """Check if executor is running."""
         if self._process is None:
             return False
         else:
@@ -51,7 +63,9 @@ class SimpleExecutor(object):
 
     def start(self):
         """
-        Start required process
+        Start defined process.
+
+        After process gets started, timeout countdown begins as well.
 
         .. note::
             We want to open ``stdin``, ``stdout`` and ``stderr`` as text
@@ -73,16 +87,16 @@ class SimpleExecutor(object):
         """
         Set timout for possible wait.
 
-        :param int timeout: specific timeout to set
+        :param int timeout: [optional] specific timeout to set.
+            If not set, SimpleExecutor._timeout will be used instead.
         """
-
         timeout = timeout or self._timeout
 
         if timeout:
             self._endtime = time.time() + timeout
 
     def stop(self):
-        '''
+        """
         Stop process running.
 
         Wait 10 seconds for the process to end, then just kill it.
@@ -91,8 +105,7 @@ class SimpleExecutor(object):
 
             When gathering coverage for the subprocess in tests,
             you have to allow subprocesses to end gracefully.
-
-        '''
+        """
         if self._process is not None:
             self._process.terminate()
 
@@ -111,9 +124,11 @@ class SimpleExecutor(object):
             self._endtime = None
 
     def kill(self, wait=True):
-        """Kill the process with SIGKILL
+        """
+        Kill the process if running.
 
-        :param bool wait: set to `True` to wait for the process to end.
+        :param bool wait: set to `True` to wait for the process to end,
+            or False, to simply proceed after sending signal.
         """
         if self.running():
             self._process.kill()
@@ -123,6 +138,7 @@ class SimpleExecutor(object):
             self._endtime = None
 
     def output(self):
+        """Return process output."""
         if self._process is not None:
             return self._process.stdout
 
@@ -136,7 +152,6 @@ class SimpleExecutor(object):
         :param callback wait_for: callback to call
         :raises: mirakuru.exceptions.TimeoutExpired
         """
-
         while self.check_timeout():
             if wait_for():
                 return

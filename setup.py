@@ -15,6 +15,7 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
+"""Mirakuru's installation module."""
 
 import re
 import os
@@ -34,6 +35,11 @@ extras_require = {
 
 
 def read(fname):
+    """
+    Read filename.
+
+    :param str fname: name of a file to read
+    """
     return open(os.path.join(here, fname)).read()
 
 setup(

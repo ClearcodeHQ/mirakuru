@@ -15,6 +15,7 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
+"""TCP executor definition."""
 
 import socket
 import time
@@ -23,20 +24,49 @@ from mirakuru.executors import SimpleExecutor
 
 class TCPCoordinatedExecutor(SimpleExecutor):
 
-    def __init__(self, command, host, port, shell=False, timeout=None):
-        SimpleExecutor.__init__(self, command, shell=shell, timeout=timeout)
+    """
+    TCP-able process executor.
+
+    Used to start (and wait to actually be running) processes that can accept
+    TCP connections.
+    """
+
+    def __init__(self, command, host, port,
+                 shell=False, timeout=None, sleep=0.1):
+        """
+        Initialize TCPCoordinatedExecutor executor.
+
+        :param str command: command to run to start service
+        :param str host: host under which process is accessible
+        :param int port: port under which process is accessible
+        :param bool shell: see `subprocess.Popen`
+        :param int timeout: time to wait for process to start or stop.
+            if None, wait indefinitely.
+        :param float sleep: how often to check for start/stop condition
+        """
+        SimpleExecutor.__init__(self, command, shell=shell, timeout=timeout,
+                                sleep=sleep)
         self._host = host
         self._port = port
 
     def start(self):
+        """
+        Start TCP able process.
+
+        .. note::
+
+            Process will be considered started, when it'll be able to accept
+            TCP connections as defined in initializer.
+        """
         SimpleExecutor.start(self)
         self.wait_for(self._wait_for_connection)
 
     def _wait_for_connection(self):
-            try:
-                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                sock.connect((self._host, self._port))
-                return True
-            except (socket.error, socket.timeout):
-                time.sleep(1)
-                return False
+        """Check if process accepts connections."""
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((self._host, self._port))
+            return True
+        except (socket.error, socket.timeout):
+            time.sleep(1)
+            return False

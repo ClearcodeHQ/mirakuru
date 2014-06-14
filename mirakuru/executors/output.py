@@ -15,6 +15,7 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
+"""This executor awaits for appearance of a predefined banner in output."""
 
 import re
 from mirakuru.executors import SimpleExecutor
@@ -22,15 +23,37 @@ from mirakuru.executors import SimpleExecutor
 
 class OutputCoordinatedExecutor(SimpleExecutor):
 
-    def __init__(self, command, banner, shell=False, timeout=None):
-        SimpleExecutor.__init__(self, command, shell, timeout)
+    """Executor that awaits for string output being present in output."""
+
+    def __init__(self, command, banner, shell=False, timeout=None, sleep=0.1):
+        """
+        Initialize OutputCoordinatedExecutor executor.
+
+        :param str command: command to run to start service
+        :param str banner: string that has to appear in process output -
+            should compile to regular expression.
+        :param bool shell: see `subprocess.Popen`
+        :param int timeout: time to wait for process to start or stop.
+            if None, wait indefinitely.
+        :param float sleep: how often to check for start/stop condition
+        """
+        SimpleExecutor.__init__(self, command, shell, timeout, sleep)
         self._banner = re.compile(banner)
 
     def start(self):
+        """
+        Start process.
+
+        .. note::
+
+            Process will be considered started, when defined banner will appear
+            in process output.
+        """
         SimpleExecutor.start(self)
         self.wait_for(self._wait_for_output)
 
     def _wait_for_output(self):
+        """Check if output matches banner."""
         if self._banner.match(self.output().readline()):
             return True
         return False

@@ -15,13 +15,14 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
+"""Executors"""
 
 from mirakuru.executors.simple import SimpleExecutor
 from mirakuru.executors.output import OutputCoordinatedExecutor
 from mirakuru.executors.tcp import TCPCoordinatedExecutor
 from mirakuru.executors.http import HTTPCoordinatedExecutor
 
-__all__ = [
+__all__ = (
     SimpleExecutor, OutputCoordinatedExecutor,
     TCPCoordinatedExecutor, HTTPCoordinatedExecutor
-]
+)

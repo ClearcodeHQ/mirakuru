@@ -1,3 +1,4 @@
+"""HTTP Executor tests."""
 import os
 import pytest
 
@@ -19,6 +20,13 @@ from mirakuru.exceptions import TimeoutExpired
 
 
 def prepare_slow_server_executor(timeout=None):
+    """
+    Construct slow server executor.
+
+    :param int timeout: executor timeout.
+    :returns: executor instance
+    :rtype: mirakuru.executor.HTTPCoordinatedExecutor
+    """
     slow_server = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
         "../slow_server.py"
@@ -33,7 +41,8 @@ def prepare_slow_server_executor(timeout=None):
     )
 
 
-def test_it_waits_for_process_to_complete_head_request():
+def test_executor_starts_and_waits():
+    """Test if process awaits for HEAD request to be completed."""
     command = 'bash -c "sleep 3 && exec python -m {http_server}"'.format(
         http_server=http_server,
     )
@@ -41,7 +50,7 @@ def test_it_waits_for_process_to_complete_head_request():
         command, 'http://{0}:{1}/'.format(HOST, PORT)
     )
     executor.start()
-    assert executor.running()
+    assert executor.running() is True
 
     conn = HTTPConnection(HOST, PORT)
     conn.request('GET', '/')
@@ -53,12 +62,14 @@ def test_it_waits_for_process_to_complete_head_request():
 
 def test_slow_server_response():
     """
+    Test whether or not executor awaits for slow responses.
+
     Simple example. You run gunicorn, gunicorn is working
     but you have to wait for worker procesess.
     """
     executor = prepare_slow_server_executor()
     executor.start()
-    assert executor.running()
+    assert executor.running() is True
 
     conn = HTTPConnection(HOST, PORT)
     conn.request('GET', '/')
@@ -69,10 +80,11 @@ def test_slow_server_response():
     executor.stop()
 
 
-def test_slow_server_response_with_timeout():
+def test_slow_server_timeouted():
+    """Check if timeout properly expires."""
     executor = prepare_slow_server_executor(timeout=1)
 
     with pytest.raises(TimeoutExpired):
         executor.start()
 
-    executor.stop()
+    assert executor.running() is False
