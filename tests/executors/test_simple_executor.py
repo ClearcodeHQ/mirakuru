@@ -1,24 +1,20 @@
+"""Test basic executor functionality."""
 from mirakuru.executors import SimpleExecutor
 
 
-def test_it_starts_up_and_shuts_down_the_process():
+def test_running_process():
+    """Start process and shuts it down."""
     executor = SimpleExecutor('sleep 300')
     executor.start()
-    assert executor.running()
+    assert executor.running() is True
     executor.stop()
-    assert not executor.running()
+    assert executor.running() is False
 
 
-def test_it_provides_stdout_of_the_process():
+def test_process_output():
+    """Start process, check output and shut it down."""
     executor = SimpleExecutor('echo -n "foobar"')
     executor.start()
 
     assert executor.output().read() == 'foobar'
-    executor.stop()
-
-
-def test_it_can_check_if_process_is_running():
-    executor = SimpleExecutor('sleep 300')
-    executor.start()
-    assert executor.running()
     executor.stop()

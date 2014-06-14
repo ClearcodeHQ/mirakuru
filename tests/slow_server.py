@@ -1,3 +1,4 @@
+"""Slow http server used for tests."""
 import time
 
 try:
@@ -15,9 +16,12 @@ except ImportError:
 
 class SlowServerHandler(BaseHTTPRequestHandler):
 
+    """Slow server handler."""
+
     wait = 5
 
     def do_GET(self):
+        """Serve GET request."""
         time.sleep(self.wait)
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -26,6 +30,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         return
 
     def do_HEAD(self):
+        """Serve HEAD request."""
         time.sleep(self.wait)
         self.send_response(200)
         self.end_headers()
