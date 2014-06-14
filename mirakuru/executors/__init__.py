@@ -22,7 +22,7 @@ from mirakuru.executors.output import OutputCoordinatedExecutor
 from mirakuru.executors.tcp import TCPCoordinatedExecutor
 from mirakuru.executors.http import HTTPCoordinatedExecutor
 
-__all__ = [
+__all__ = (
     SimpleExecutor, OutputCoordinatedExecutor,
     TCPCoordinatedExecutor, HTTPCoordinatedExecutor
-]
+)

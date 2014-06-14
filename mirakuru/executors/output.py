@@ -37,7 +37,7 @@ class OutputCoordinatedExecutor(SimpleExecutor):
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
         """
-        SimpleExecutor.__init__(self, command, shell, timeout)
+        SimpleExecutor.__init__(self, command, shell, timeout, sleep)
         self._banner = re.compile(banner)
 
     def start(self):
