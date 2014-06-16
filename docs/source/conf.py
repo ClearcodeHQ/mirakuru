@@ -260,7 +260,7 @@ texinfo_documents = [
 epub_title = project
 epub_author = author
 epub_publisher = author
-epub_copyright = u'2012, ' + author
+epub_copyright = u'2014, ' + author
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

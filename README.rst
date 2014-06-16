@@ -25,16 +25,22 @@ Package status
 About
 -----
 
-As developers we have to work on project that rely on multiple processes to run
-their tests suites. Sometimes these processes need some time to boot.
+As developers, we have to work on project that rely on multiple processes to run.
+We guard ourselves with tests. But sometimes it's not enough what one process
+sends, and the other receives. Sometimes there's need to actually exchange data
+between processes. Or write selenium tests. Or maybe write a program that takes
+care of starting databases or other required services itself.
 
-The simple (and wrong) solution is to add ``time.sleep`` and pretend that it
-works. Unfortunately there is no way the estimate the amount of time to sleep
-and not loose too much time.
+If so, then **mirakuru** is what you need.
 
-``mirakuru`` is an attempt to solve this problem. What you can see below
-is an example test that waits for a HTTP server to boot, and then it checks
-whether the returned status is OK.
+``Mirakuru`` starts your required process, and wait for clear indication,
+that it's running. There are three basic executors with predefined conditions:
+
+
+* SimpleExecutor - simply starts
+* OutputCoordinatedExecutor - awaits for specified output to be given by process
+* TCPCoordinatedExecutor - waits for ability to connect through tcp with process
+* HTTPCoordinatedExecutor - waits for successful HEAD request (and tcp before).
 
 .. code-block:: python
 
@@ -46,7 +52,9 @@ whether the returned status is OK.
         executor = HTTPCoordinatedExecutor("./server",
                                             url="http://localhost:8000/")
 
+        # start and wait for it to run
         executor.start()
+        # should be running!
         conn = HTTPConnection("localhost", 8000)
         conn.request('GET', '/')
         assert conn.getresponse().status is OK
@@ -58,8 +66,9 @@ time and then launches the builtin SimpleHTTPServer on port 8000.
 Author
 ------
 
-The project was first developed by `Mateusz Lenik <http://mlen.pl>`_.
-Later forked by The A Room @ Clearcode.
+The project was first developed by `Mateusz Lenik <http://mlen.pl>`_
+as `summon_process <https://github.com/mlen/summon_process>`_.
+Later forked, renamed to **mirakuru** and tended to by The A Room @ `Clearcode <http://clearcode.cc>`_.
 
 License
 -------
@@ -72,3 +81,5 @@ Contributing and reporting bugs
 Source code is available at: `ClearcodeHQ/mirakuru <https://github.com/ClearcodeHQ/mirakuru>`_.
 Issue tracker is located at `GitHub Issues <https://github.com/ClearcodeHQ/mirakuru/issues>`_.
 Projects `PyPi page <https://pypi.python.org/pypi/mirakuru>`_.
+
+When contributing, don't forget to add your name to AUTHORS.rst file.

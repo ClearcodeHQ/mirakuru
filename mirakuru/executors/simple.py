@@ -55,7 +55,12 @@ class SimpleExecutor(object):
         self._process = None
 
     def running(self):
-        """Check if executor is running."""
+        """
+        Check if executor is running.
+
+        :returns: True if process is running, False otherwise
+        :rtype: bool
+        """
         if self._process is None:
             return False
         else:
@@ -170,6 +175,9 @@ class SimpleExecutor(object):
         Kills the process and raises TimeoutExpired exception otherwise.
 
         This method should be used in while loops waiting for some data.
+
+        :returns: True if timeout expired, False if not
+        :rtype: bool
         """
         if self._endtime is not None and time.time() > self._endtime:
             return False

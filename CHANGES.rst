@@ -3,6 +3,7 @@ CHANGELOG
 
 current
 -------
+- added docblocks for every function
 - simplified executors operating api
 - applied license headers
 - stripped orchestrators
