@@ -9,8 +9,8 @@ class TimeoutExpired(Exception):
         """
         Exception initialization.
 
-        :param mirakuru.executors.SimpleExecutor executor: executor for which
-        exception occured
+        :param mirakuru.executors.simple.SimpleExecutor executor: executor for
+            which exception occured
         :param int timeout: timeout for which exception occurred.
         """
         self.executor = executor
