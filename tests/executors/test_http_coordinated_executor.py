@@ -15,7 +15,7 @@ except ImportError:
     from http.client import HTTPConnection, OK
     http_server = "http.server"
 
-from mirakuru.executors import HTTPCoordinatedExecutor
+from mirakuru.executors import HTTPExecutor
 from mirakuru.exceptions import TimeoutExpired
 
 
@@ -25,7 +25,7 @@ def prepare_slow_server_executor(timeout=None):
 
     :param int timeout: executor timeout.
     :returns: executor instance
-    :rtype: mirakuru.executor.HTTPCoordinatedExecutor
+    :rtype: mirakuru.executor.HTTPExecutor
     """
     slow_server = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
@@ -34,7 +34,7 @@ def prepare_slow_server_executor(timeout=None):
 
     command = 'python {0}'.format(slow_server)
 
-    return HTTPCoordinatedExecutor(
+    return HTTPExecutor(
         command,
         'http://{0}:{1}/'.format(HOST, PORT),
         timeout=timeout,
@@ -46,7 +46,7 @@ def test_executor_starts_and_waits():
     command = 'bash -c "sleep 3 && exec python -m {http_server}"'.format(
         http_server=http_server,
     )
-    executor = HTTPCoordinatedExecutor(
+    executor = HTTPExecutor(
         command, 'http://{0}:{1}/'.format(HOST, PORT)
     )
     executor.start()

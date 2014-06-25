@@ -1,14 +1,14 @@
 """Output executor test."""
 import pytest
 
-from mirakuru.executors import OutputCoordinatedExecutor
+from mirakuru.executors import OutputExecutor
 from mirakuru.exceptions import TimeoutExpired
 
 
 def test_executor_waits_for_process_output():
     """Check if executor waits for specified output."""
     command = 'bash -c "sleep 2 && echo foo && echo bar && sleep 100"'
-    executor = OutputCoordinatedExecutor(command, 'foo')
+    executor = OutputExecutor(command, 'foo')
     executor.start()
 
     assert executor.running() is True
@@ -21,7 +21,7 @@ def test_executor_waits_for_process_output():
 def test_executor_dont_start():
     """Executor should not start."""
     command = 'bash -c "sleep 2 && echo foo && echo bar && sleep 100"'
-    executor = OutputCoordinatedExecutor(command, 'foobar', timeout=3)
+    executor = OutputExecutor(command, 'foobar', timeout=3)
     with pytest.raises(TimeoutExpired):
         executor.start()
 

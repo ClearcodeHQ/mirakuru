@@ -24,7 +24,7 @@ import time
 from mirakuru.exceptions import TimeoutExpired
 
 
-class SimpleExecutor(object):
+class Executor(object):
 
     """Basic executor with the most basic functionality."""
 
@@ -93,7 +93,7 @@ class SimpleExecutor(object):
         Set timout for possible wait.
 
         :param int timeout: [optional] specific timeout to set.
-            If not set, SimpleExecutor._timeout will be used instead.
+            If not set, Executor._timeout will be used instead.
         """
         timeout = timeout or self._timeout
 

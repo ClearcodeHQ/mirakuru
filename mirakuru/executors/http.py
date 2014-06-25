@@ -27,16 +27,16 @@ else:
     import http.client as httplib
     import urllib.parse as urlparse
 
-from mirakuru.executors import TCPCoordinatedExecutor
+from mirakuru.executors.tcp import TCPExecutor
 
 
-class HTTPCoordinatedExecutor(TCPCoordinatedExecutor):
+class HTTPExecutor(TCPExecutor):
 
     """Http enabled process executor."""
 
     def __init__(self, command, url, shell=False, timeout=None, sleep=0.1):
         """
-        Initialize HTTPCoordinatedExecutor executor.
+        Initialize HTTPExecutor executor.
 
         :param str command: command to run to start service
         :param str url: url where executor can check
@@ -47,13 +47,13 @@ class HTTPCoordinatedExecutor(TCPCoordinatedExecutor):
         :param float sleep: how often to check for start/stop condition
         """
         self._url = urlparse.urlparse(url)
-        TCPCoordinatedExecutor.__init__(
+        TCPExecutor.__init__(
             self, command, host=self._url.hostname,
             port=self._url.port, shell=shell, timeout=timeout, sleep=sleep)
 
     def start(self):
         """Start process and wait for sucessful head on defined url."""
-        TCPCoordinatedExecutor.start(self)
+        TCPExecutor.start(self)
         self.wait_for(self._wait_for_successful_head)
 
     def _wait_for_successful_head(self):

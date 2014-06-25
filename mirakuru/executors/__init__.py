@@ -17,12 +17,12 @@
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """Executors"""
 
-from mirakuru.executors.simple import SimpleExecutor
-from mirakuru.executors.output import OutputCoordinatedExecutor
-from mirakuru.executors.tcp import TCPCoordinatedExecutor
-from mirakuru.executors.http import HTTPCoordinatedExecutor
+from mirakuru.executors.base import Executor
+from mirakuru.executors.output import OutputExecutor
+from mirakuru.executors.tcp import TCPExecutor
+from mirakuru.executors.http import HTTPExecutor
 
 __all__ = (
-    SimpleExecutor, OutputCoordinatedExecutor,
-    TCPCoordinatedExecutor, HTTPCoordinatedExecutor
+    Executor, OutputExecutor,
+    TCPExecutor, HTTPExecutor
 )

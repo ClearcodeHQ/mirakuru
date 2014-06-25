@@ -19,10 +19,10 @@
 
 import socket
 import time
-from mirakuru.executors import SimpleExecutor
+from mirakuru.executors.base import Executor
 
 
-class TCPCoordinatedExecutor(SimpleExecutor):
+class TCPExecutor(Executor):
 
     """
     TCP-able process executor.
@@ -34,7 +34,7 @@ class TCPCoordinatedExecutor(SimpleExecutor):
     def __init__(self, command, host, port,
                  shell=False, timeout=None, sleep=0.1):
         """
-        Initialize TCPCoordinatedExecutor executor.
+        Initialize TCPExecutor executor.
 
         :param str command: command to run to start service
         :param str host: host under which process is accessible
@@ -44,8 +44,8 @@ class TCPCoordinatedExecutor(SimpleExecutor):
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
         """
-        SimpleExecutor.__init__(self, command, shell=shell, timeout=timeout,
-                                sleep=sleep)
+        Executor.__init__(self, command, shell=shell, timeout=timeout,
+                          sleep=sleep)
         self._host = host
         self._port = port
 
@@ -58,7 +58,7 @@ class TCPCoordinatedExecutor(SimpleExecutor):
             Process will be considered started, when it'll be able to accept
             TCP connections as defined in initializer.
         """
-        SimpleExecutor.start(self)
+        Executor.start(self)
         self.wait_for(self._wait_for_connection)
 
     def _wait_for_connection(self):

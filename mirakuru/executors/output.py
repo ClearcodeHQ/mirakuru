@@ -18,16 +18,16 @@
 """This executor awaits for appearance of a predefined banner in output."""
 
 import re
-from mirakuru.executors import SimpleExecutor
+from mirakuru.executors.base import Executor
 
 
-class OutputCoordinatedExecutor(SimpleExecutor):
+class OutputExecutor(Executor):
 
     """Executor that awaits for string output being present in output."""
 
     def __init__(self, command, banner, shell=False, timeout=None, sleep=0.1):
         """
-        Initialize OutputCoordinatedExecutor executor.
+        Initialize OutputExecutor executor.
 
         :param str command: command to run to start service
         :param str banner: string that has to appear in process output -
@@ -37,7 +37,7 @@ class OutputCoordinatedExecutor(SimpleExecutor):
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
         """
-        SimpleExecutor.__init__(self, command, shell, timeout, sleep)
+        Executor.__init__(self, command, shell, timeout, sleep)
         self._banner = re.compile(banner)
 
     def start(self):
@@ -49,7 +49,7 @@ class OutputCoordinatedExecutor(SimpleExecutor):
             Process will be considered started, when defined banner will appear
             in process output.
         """
-        SimpleExecutor.start(self)
+        Executor.start(self)
         self.wait_for(self._wait_for_output)
 
     def _wait_for_output(self):
