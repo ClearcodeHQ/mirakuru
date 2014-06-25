@@ -1,18 +1,18 @@
 Basic executors
 ===============
 
-.. automodule:: mirakuru.executors.simple
+.. automodule:: mirakuru.simple
     :members:
     :private-members:
 
-.. automodule:: mirakuru.executors.output
+.. automodule:: mirakuru.output
     :members:
     :private-members:
 
-.. automodule:: mirakuru.executors.tcp
+.. automodule:: mirakuru.tcp
     :members:
     :private-members:
 
-.. automodule:: mirakuru.executors.http
+.. automodule:: mirakuru.http
     :members:
     :private-members:

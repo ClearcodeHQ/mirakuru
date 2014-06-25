@@ -18,3 +18,16 @@
 """Mirakuru's main module."""
 
 __version__ = '0.0.0'
+
+from mirakuru.base import Executor
+from mirakuru.output import OutputExecutor
+from mirakuru.tcp import TCPExecutor
+from mirakuru.http import HTTPExecutor
+
+from mirakuru.exceptions import TimeoutExpired
+
+__all__ = (
+    Executor, OutputExecutor,
+    TCPExecutor, HTTPExecutor,
+    TimeoutExpired
+)

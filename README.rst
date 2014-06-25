@@ -37,19 +37,19 @@ If so, then **mirakuru** is what you need.
 that it's running. There are three basic executors with predefined conditions:
 
 
-* SimpleExecutor - simply starts
-* OutputCoordinatedExecutor - awaits for specified output to be given by process
-* TCPCoordinatedExecutor - waits for ability to connect through tcp with process
-* HTTPCoordinatedExecutor - waits for successful HEAD request (and tcp before).
+* Executor - simply starts
+* OutputExecutor - awaits for specified output to be given by process
+* TCPExecutor - waits for ability to connect through tcp with process
+* HTTPExecutor - waits for successful HEAD request (and tcp before).
 
 .. code-block:: python
 
-    from mirakuru.executors import HTTPCoordinatedExecutor
+    from mirakuru import HTTPExecutor
     from httplib import HTTPConnection, OK
 
 
     def test_it_works(self):
-        executor = HTTPCoordinatedExecutor("./server",
+        executor = HTTPExecutor("./server",
                                             url="http://localhost:8000/")
 
         # start and wait for it to run
