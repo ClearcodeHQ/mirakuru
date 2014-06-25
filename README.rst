@@ -44,7 +44,7 @@ that it's running. There are three basic executors with predefined conditions:
 
 .. code-block:: python
 
-    from mirakuru.executors import HTTPExecutor
+    from mirakuru import HTTPExecutor
     from httplib import HTTPConnection, OK
 
 

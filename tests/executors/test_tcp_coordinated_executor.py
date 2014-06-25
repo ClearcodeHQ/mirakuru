@@ -2,7 +2,7 @@
 
 import pytest
 
-from mirakuru.executors import TCPExecutor
+from mirakuru import TCPExecutor
 from mirakuru.exceptions import TimeoutExpired
 
 

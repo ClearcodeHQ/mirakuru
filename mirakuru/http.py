@@ -27,7 +27,7 @@ else:
     import http.client as httplib
     import urllib.parse as urlparse
 
-from mirakuru.executors.tcp import TCPExecutor
+from mirakuru.tcp import TCPExecutor
 
 
 class HTTPExecutor(TCPExecutor):

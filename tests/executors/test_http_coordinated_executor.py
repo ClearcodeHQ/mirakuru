@@ -15,8 +15,8 @@ except ImportError:
     from http.client import HTTPConnection, OK
     http_server = "http.server"
 
-from mirakuru.executors import HTTPExecutor
-from mirakuru.exceptions import TimeoutExpired
+from mirakuru import HTTPExecutor
+from mirakuru import TimeoutExpired
 
 
 def prepare_slow_server_executor(timeout=None):

@@ -1,5 +1,5 @@
 """Test basic executor functionality."""
-from mirakuru.executors import Executor
+from mirakuru import Executor
 
 
 def test_running_process():

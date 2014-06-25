@@ -19,7 +19,7 @@
 
 import socket
 import time
-from mirakuru.executors.base import Executor
+from mirakuru.base import Executor
 
 
 class TCPExecutor(Executor):

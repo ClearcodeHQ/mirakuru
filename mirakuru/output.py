@@ -18,7 +18,7 @@
 """This executor awaits for appearance of a predefined banner in output."""
 
 import re
-from mirakuru.executors.base import Executor
+from mirakuru.base import Executor
 
 
 class OutputExecutor(Executor):

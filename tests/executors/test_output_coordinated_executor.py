@@ -1,7 +1,7 @@
 """Output executor test."""
 import pytest
 
-from mirakuru.executors import OutputExecutor
+from mirakuru import OutputExecutor
 from mirakuru.exceptions import TimeoutExpired
 
 
