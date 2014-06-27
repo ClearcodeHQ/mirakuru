@@ -1,7 +1,7 @@
 Basic executors
 ===============
 
-.. automodule:: mirakuru.simple
+.. automodule:: mirakuru.base
     :members:
     :private-members:
 
