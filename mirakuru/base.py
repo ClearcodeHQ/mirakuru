@@ -52,7 +52,8 @@ class Executor(object):
         self._sleep = sleep
 
         self._endtime = None
-        self._process = None
+        self.process = None
+        """A :class:`subprocess.Popen` instance once process is started."""
 
     def running(self):
         """
@@ -61,10 +62,10 @@ class Executor(object):
         :returns: True if process is running, False otherwise
         :rtype: bool
         """
-        if self._process is None:
+        if self.process is None:
             return False
         else:
-            return self._process.poll() is None
+            return self.process.poll() is None
 
     def start(self):
         """
@@ -77,8 +78,8 @@ class Executor(object):
             streams in universal newlines mode, so we have to set
             ``universal_newlines`` to ``True``.
         """
-        if self._process is None:
-            self._process = subprocess.Popen(
+        if self.process is None:
+            self.process = subprocess.Popen(
                 self._args,
                 shell=self._shell,
                 stdin=subprocess.PIPE,
@@ -111,8 +112,8 @@ class Executor(object):
             When gathering coverage for the subprocess in tests,
             you have to allow subprocesses to end gracefully.
         """
-        if self._process is not None:
-            self._process.terminate()
+        if self.process is not None:
+            self.process.terminate()
 
             def process_stopped():
                 return self.running() is False
@@ -125,7 +126,7 @@ class Executor(object):
                 # at this moment, process got killed,
                 pass
 
-            self._process = None
+            self.process = None
             self._endtime = None
 
     def kill(self, wait=True):
@@ -136,16 +137,16 @@ class Executor(object):
             or False, to simply proceed after sending signal.
         """
         if self.running():
-            self._process.kill()
+            self.process.kill()
             if wait:
-                self._process.wait()
-            self._process = None
+                self.process.wait()
+            self.process = None
             self._endtime = None
 
     def output(self):
         """Return process output."""
-        if self._process is not None:
-            return self._process.stdout
+        if self.process is not None:
+            return self.process.stdout
 
     def wait_for(self, wait_for):
         """

@@ -21,11 +21,11 @@ import socket
 import sys
 
 if sys.version_info.major == 2:
-    import httplib
-    import urlparse
+    from httplib import HTTPConnection, HTTPException, OK
+    from urlparse import urlparse
 else:
-    import http.client as httplib
-    import urllib.parse as urlparse
+    from http.client import HTTPConnection, HTTPException, OK
+    from urllib.parse import urlparse
 
 from mirakuru.tcp import TCPExecutor
 
@@ -46,10 +46,14 @@ class HTTPExecutor(TCPExecutor):
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
         """
-        self._url = urlparse.urlparse(url)
+        self.url = urlparse(url)
+        """
+        An :func:`urlparse.urlparse` representation of an url.
+
+        It'll be used to check process status on."""
         TCPExecutor.__init__(
-            self, command, host=self._url.hostname,
-            port=self._url.port, shell=shell, timeout=timeout, sleep=sleep)
+            self, command, host=self.url.hostname,
+            port=self.url.port, shell=shell, timeout=timeout, sleep=sleep)
 
     def start(self):
         """Start process and wait for sucessful head on defined url."""
@@ -59,15 +63,15 @@ class HTTPExecutor(TCPExecutor):
     def _wait_for_successful_head(self):
         """Check if defined url returns successful head."""
         try:
-            conn = httplib.HTTPConnection(self._url.hostname,
-                                          self._url.port)
+            conn = HTTPConnection(self.url.hostname,
+                                  self.url.port)
 
-            conn.request('HEAD', self._url.path)
+            conn.request('HEAD', self.url.path)
             response = conn.getresponse()
 
-            if response.status is httplib.OK:
+            if response.status is OK:
                 conn.close()
                 return True
 
-        except (httplib.HTTPException, socket.timeout):
+        except (HTTPException, socket.timeout):
             return False

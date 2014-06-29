@@ -46,8 +46,10 @@ class TCPExecutor(Executor):
         """
         Executor.__init__(self, command, shell=shell, timeout=timeout,
                           sleep=sleep)
-        self._host = host
-        self._port = port
+        self.host = host
+        """Host name, process is listening on."""
+        self.port = port
+        """Port number, process is listening on."""
 
     def start(self):
         """
@@ -65,7 +67,7 @@ class TCPExecutor(Executor):
         """Check if process accepts connections."""
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((self._host, self._port))
+            sock.connect((self.host, self.port))
             return True
         except (socket.error, socket.timeout):
             time.sleep(1)
