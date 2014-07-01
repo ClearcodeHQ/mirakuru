@@ -17,7 +17,6 @@ def test_executor_waits_for_process_output():
     executor.stop()
 
 
-@pytest.mark.skipif(True, reason='Executor hangs when there\'s no output')
 def test_executor_dont_start():
     """Executor should not start."""
     command = 'bash -c "sleep 2 && echo foo && echo bar && sleep 100"'
