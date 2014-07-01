@@ -11,3 +11,13 @@ script:
     - pylama
 after_success:
     - coveralls
+
+deploy:
+    provider: pypi
+    user: fizyk
+    password:
+        secure: IBVXG0zLKsBkzdeoC33Lxir01jbvDHdjQ81CPC8PbDPCmUozXgf9eqRFV5VOIYQOboTBzQYRq7RB8efeNKSH3nKf73iahwIYf4ezIxRzUaMzoY4GkyrC/0fQhMk1lAjexrRM1f2o7TIAALPUDyB/EaRcPCBEghxscQEeTlAw08c=
+    on:
+        tags: true
+        repo: ClearcodeHQ/mirakuru
+    distributions: "sdist bdist_egg bdist_wheel"
