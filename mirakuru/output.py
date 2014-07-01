@@ -58,7 +58,8 @@ class OutputExecutor(Executor):
         """
         Check if output matches banner.
 
-        Waiting for I/O completion. It does not work on Windows. Sorry.
+        :: warning::
+            Waiting for I/O completion. It does not work on Windows. Sorry.
         """
         # get a polling object
         poll_obj = select.poll()
@@ -70,8 +71,8 @@ class OutputExecutor(Executor):
         # Here we should get an empty list or list with a tuple [(fd, event)]
         # When we get list with a tuple we can use readline method on
         # the file descriptor.
-        # 0 because we are waiting in other place.
-        poll_result = poll_obj.poll(0)
+        timeout = self._timeout or 0
+        poll_result = poll_obj.poll(timeout * 1000)
 
         if poll_result:
             line = self.output().readline()
