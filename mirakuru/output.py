@@ -67,9 +67,10 @@ class OutputExecutor(Executor):
         # POLLIN because we will wait for data to read
         poll_obj.register(self.output(), select.POLLIN)
 
-        # 0 because we are waiting in other place
-        # here we should get an empty list or list with a tuple [(fd, event)]
-        # when we get list with a tuple we can use readline method on the file descriptor
+        # Here we should get an empty list or list with a tuple [(fd, event)]
+        # When we get list with a tuple we can use readline method on
+        # the file descriptor.
+        # 0 because we are waiting in other place.
         poll_result = poll_obj.poll(0)
 
         if poll_result:
