@@ -1,8 +1,9 @@
 CHANGELOG
 =========
 
-current
+unreleased
 -------
+
 - exposed process attribute on Executor
 - exposed port and host on TCPExecutor
 - exposed url on HTTPExecutor
