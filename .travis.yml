@@ -6,6 +6,8 @@ python:
 install:
     - "python setup.py develop"
     - "pip install mirakuru[tests] coveralls pylama"
+    # manually install wheel for deployment
+    - "pip install wheel"
 script:
     - "py.test -v --cov mirakuru"
     - pylama
