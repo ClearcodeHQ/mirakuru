@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+0.1.0
 -------
 
 - exposed process attribute on Executor
