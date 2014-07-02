@@ -22,4 +22,4 @@ deploy:
     on:
         tags: true
         repo: ClearcodeHQ/mirakuru
-    distributions: "sdist bdist_egg bdist_wheel"
+    distributions: "sdist bdist_wheel"
