@@ -52,31 +52,32 @@ class OutputExecutor(Executor):
             in process output.
         """
         Executor.start(self)
+
+        # get a polling object
+        self.poll_obj = select.poll()
+
+        # register a file descriptor
+        # POLLIN because we will wait for data to read
+        self.poll_obj.register(self.output(), select.POLLIN)
+
         self.wait_for(self._wait_for_output)
 
     def _wait_for_output(self):
         """
         Check if output matches banner.
 
-        :: warning::
+        .. warning::
             Waiting for I/O completion. It does not work on Windows. Sorry.
         """
-        # get a polling object
-        poll_obj = select.poll()
-
-        # register a file descriptor
-        # POLLIN because we will wait for data to read
-        poll_obj.register(self.output(), select.POLLIN)
-
         # Here we should get an empty list or list with a tuple [(fd, event)]
         # When we get list with a tuple we can use readline method on
         # the file descriptor.
-        timeout = self._timeout or 0
-        poll_result = poll_obj.poll(timeout * 1000)
+        poll_result = self.poll_obj.poll(0)
 
         if poll_result:
             line = self.output().readline()
             if self._banner.match(line):
+                self.poll_obj.unregister(self.output())
                 return True
 
         return False
