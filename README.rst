@@ -6,6 +6,27 @@ or maybe you need just to set up additional processes for your tests,
 this is where you should consider using **mirakuru**, to add superpowers to your program,
 or tests.
 
+
+.. image:: https://pypip.in/v/mirakuru/badge.png
+    :target: https://pypi.python.org/pypi/mirakuru/
+    :alt: Latest PyPI version
+
+.. image:: https://pypip.in/d/mirakuru/badge.png
+    :target: https://pypi.python.org/pypi/mirakuru/
+    :alt: Number of PyPI downloads
+
+.. image:: https://pypip.in/wheel/mirakuru/badge.png
+    :target: https://pypi.python.org/pypi/mirakuru/
+    :alt: Wheel Status
+
+.. image:: https://pypip.in/egg/mirakuru/badge.png
+    :target: https://pypi.python.org/pypi/mirakuru/
+    :alt: Egg Status
+
+.. image:: https://pypip.in/license/mirakuru/badge.png
+    :target: https://pypi.python.org/pypi/mirakuru/
+    :alt: License
+
 Package status
 --------------
 
