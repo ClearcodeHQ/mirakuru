@@ -69,20 +69,19 @@ that it's running. There are three basic executors with predefined conditions:
     from httplib import HTTPConnection, OK
 
 
-    def test_it_works(self):
-        executor = HTTPExecutor("./server",
-                                            url="http://localhost:8000/")
+    def test_it_works():
+        executor = HTTPExecutor("./server", url="http://localhost:6543/")
 
         # start and wait for it to run
         executor.start()
         # should be running!
-        conn = HTTPConnection("localhost", 8000)
+        conn = HTTPConnection("localhost", 6543)
         conn.request('GET', '/')
         assert conn.getresponse().status is OK
         executor.stop()
 
 The ``server`` command in this case is just a bash script that sleeps for some
-time and then launches the builtin SimpleHTTPServer on port 8000.
+time and then launches the builtin SimpleHTTPServer on port 6543.
 
 Author
 ------
