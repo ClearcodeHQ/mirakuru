@@ -3,6 +3,11 @@ CHANGELOG
 
 0.1.1
 -------
+
+- fixed MANIFEST.in
+- updated packaging options
+
+0.1.0
 -------
 
 - exposed process attribute on Executor
