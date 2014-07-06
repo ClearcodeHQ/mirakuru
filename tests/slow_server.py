@@ -18,12 +18,11 @@ class SlowServerHandler(BaseHTTPRequestHandler):
 
     """Slow server handler."""
 
-    wait = 5
+    timeout = 2
     endtime = None
 
     def do_GET(self):
         """Serve GET request."""
-        time.sleep(self.wait)
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
@@ -38,19 +37,18 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         due to the fact, that HTTPServer will hang waiting for response
         to return otherwise if none response will be returned.
         """
-        if self.count_to_wait():
+        if self.count_timeout():
             self.send_response(200)
-            self.endtime = None
         else:
             self.send_response(500)
         self.end_headers()
         return
 
-    def count_to_wait(self):
-        """Count down the wait time."""
-        if self.endtime is None:
-            self.endtime = time.time() + self.wait
-        if time.time() < self.endtime:
+    def count_timeout(self):
+        """Count down the timeout time."""
+        if SlowServerHandler.endtime is None:
+            SlowServerHandler.endtime = time.time() + SlowServerHandler.timeout
+        if time.time() < SlowServerHandler.endtime:
             return False
         else:
             return True

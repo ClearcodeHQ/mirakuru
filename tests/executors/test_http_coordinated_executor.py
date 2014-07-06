@@ -60,9 +60,9 @@ def test_executor_starts_and_waits():
     executor.stop()
 
 
-def test_slow_server_response():
+def test_slow_server_starting():
     """
-    Test whether or not executor awaits for slow responses.
+    Test whether or not executor awaits for slow starting servers.
 
     Simple example. You run gunicorn, gunicorn is working
     but you have to wait for worker procesess.
