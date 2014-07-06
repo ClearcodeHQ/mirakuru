@@ -18,7 +18,6 @@
 """TCP executor definition."""
 
 import socket
-import time
 from mirakuru.base import Executor
 
 
@@ -70,5 +69,4 @@ class TCPExecutor(Executor):
             sock.connect((self.host, self.port))
             return True
         except (socket.error, socket.timeout):
-            time.sleep(1)
             return False

@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- [fix] removed leftover sleep from TCPExecutor._wait_for_connection
+
 0.1.1
 -------
 
