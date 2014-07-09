@@ -62,6 +62,10 @@ class OutputExecutor(Executor):
 
         self.wait_for(self._wait_for_output)
 
+        # unregister the file descriptor and delete the polling object
+        self.poll_obj.unregister(self.output())
+        del self.poll_obj
+
     def _wait_for_output(self):
         """
         Check if output matches banner.
@@ -77,7 +81,6 @@ class OutputExecutor(Executor):
         if poll_result:
             line = self.output().readline()
             if self._banner.match(line):
-                self.poll_obj.unregister(self.output())
                 return True
 
         return False
