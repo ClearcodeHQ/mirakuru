@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- fix issue where OutputExecutor would hang, if started process stopped producing output
+
 0.1.2
 -------
 
