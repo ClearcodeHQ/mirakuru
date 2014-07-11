@@ -60,11 +60,13 @@ class OutputExecutor(Executor):
         # POLLIN because we will wait for data to read
         self.poll_obj.register(self.output(), select.POLLIN)
 
-        self.wait_for(self._wait_for_output)
+        try:
+            self.wait_for(self._wait_for_output)
 
-        # unregister the file descriptor and delete the polling object
-        self.poll_obj.unregister(self.output())
-        del self.poll_obj
+            # unregister the file descriptor and delete the polling object
+            self.poll_obj.unregister(self.output())
+        finally:
+            del self.poll_obj
 
     def _wait_for_output(self):
         """
