@@ -18,6 +18,8 @@
 """This executor awaits for appearance of a predefined banner in output."""
 
 import re
+import select
+
 from mirakuru.base import Executor
 
 
@@ -50,10 +52,37 @@ class OutputExecutor(Executor):
             in process output.
         """
         Executor.start(self)
-        self.wait_for(self._wait_for_output)
+
+        # get a polling object
+        self.poll_obj = select.poll()
+
+        # register a file descriptor
+        # POLLIN because we will wait for data to read
+        self.poll_obj.register(self.output(), select.POLLIN)
+
+        try:
+            self.wait_for(self._wait_for_output)
+
+            # unregister the file descriptor and delete the polling object
+            self.poll_obj.unregister(self.output())
+        finally:
+            del self.poll_obj
 
     def _wait_for_output(self):
-        """Check if output matches banner."""
-        if self._banner.match(self.output().readline()):
-            return True
+        """
+        Check if output matches banner.
+
+        .. warning::
+            Waiting for I/O completion. It does not work on Windows. Sorry.
+        """
+        # Here we should get an empty list or list with a tuple [(fd, event)]
+        # When we get list with a tuple we can use readline method on
+        # the file descriptor.
+        poll_result = self.poll_obj.poll(0)
+
+        if poll_result:
+            line = self.output().readline()
+            if self._banner.match(line):
+                return True
+
         return False
