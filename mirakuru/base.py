@@ -56,6 +56,14 @@ class Executor(object):
         self.process = None
         """A :class:`subprocess.Popen` instance once process is started."""
 
+    def __enter__(self):
+        """Enter context manager."""
+        self.start()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Exit context manager."""
+        self.stop()
+
     def running(self):
         """
         Check if executor is running.

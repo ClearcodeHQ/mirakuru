@@ -11,6 +11,15 @@ def test_running_process():
     assert executor.running() is False
 
 
+def test_running_context():
+    """Start process and shuts it down."""
+    executor = Executor('sleep 300')
+    with executor:
+        assert executor.running() is True
+
+    assert executor.running() is False
+
+
 def test_process_output():
     """Start process, check output and shut it down."""
     executor = Executor('echo -n "foobar"')
