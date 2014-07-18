@@ -18,3 +18,12 @@ def test_process_output():
 
     assert executor.output().read() == 'foobar'
     executor.stop()
+
+
+def test_process_output_shell():
+    """Start process, check output and shut it down."""
+    executor = Executor('echo -n "foobar"', shell=True)
+    executor.start()
+
+    assert executor.output().read() == 'foobar'
+    executor.stop()
