@@ -21,7 +21,7 @@ def test_process_output():
 
 
 def test_process_output_shell():
-    """Start process, check output and shut it down."""
+    """Start process, check output and shut it down with shell set to True."""
     executor = Executor('echo -n "foobar"', shell=True)
     executor.start()
 

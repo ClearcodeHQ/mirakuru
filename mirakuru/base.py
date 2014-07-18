@@ -46,6 +46,7 @@ class Executor(object):
             second check will only have 5 seconds left.
 
         """
+        self._command = command
         self._args = shlex.split(command)
         self._shell = shell
         self._timeout = timeout
@@ -79,8 +80,11 @@ class Executor(object):
             ``universal_newlines`` to ``True``.
         """
         if self.process is None:
+            command = self._args
+            if self._shell:
+                command = self._command
             self.process = subprocess.Popen(
-                self._args,
+                command,
                 shell=self._shell,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
