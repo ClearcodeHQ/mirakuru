@@ -17,7 +17,7 @@
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """Mirakuru's main module."""
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 from mirakuru.base import Executor
 from mirakuru.output import OutputExecutor

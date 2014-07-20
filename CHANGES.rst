@@ -2,7 +2,7 @@ CHANGELOG
 =========
 
 
-unreleased
+0.1.4
 -------
 
 - fix issue where setting shell to True would execute only part of the command.
