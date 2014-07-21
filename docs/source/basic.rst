@@ -92,3 +92,21 @@ executor will be considered started, and code will return to normal execution.
 This executor however, apart from HEAD request, also inherits TCPExecutor,
 so it'll try to connect to process over TCP first, to determine,
 if it can try to make a HEAD request already.
+
+Running as a context manager
+----------------------------
+
+Mirakuru's executors can also work as a context managers.
+
+.. code-block:: python
+
+    from mirakuru import HTTPExecutor
+
+    process = HTTPExecutor('my_special_process', url='http://localhost:6543/status')
+    with process:
+
+        # Do your stuff
+
+    assert process.running() is False
+
+Defined process starts upon entering context, and exit upon exiting it.
