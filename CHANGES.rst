@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- executors are now context managers
+
 
 0.1.4
 -------
