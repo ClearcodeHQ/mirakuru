@@ -1,5 +1,6 @@
 """HTTP Executor tests."""
 import os
+import sys
 import pytest
 
 
@@ -7,12 +8,12 @@ HOST = "127.0.0.1"
 PORT = "8000"
 
 
-try:
-    from httplib import HTTPConnection, OK
+from mirakuru.compat import HTTPConnection, OK
+
+
+if sys.version_info.major == 2:
     http_server = "SimpleHTTPServer"
-except ImportError:
-    # In python3 httplib is renamed to http.client
-    from http.client import HTTPConnection, OK
+else:
     http_server = "http.server"
 
 from mirakuru import HTTPExecutor
@@ -47,7 +48,8 @@ def test_executor_starts_and_waits():
         http_server=http_server,
     )
     executor = HTTPExecutor(
-        command, 'http://{0}:{1}/'.format(HOST, PORT)
+        command, 'http://{0}:{1}/'.format(HOST, PORT),
+        timeout=20
     )
     executor.start()
     assert executor.running() is True

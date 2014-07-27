@@ -18,14 +18,9 @@
 """HTTP enabled process executor."""
 
 import socket
-import sys
 
-if sys.version_info.major == 2:
-    from httplib import HTTPConnection, HTTPException, OK
-    from urlparse import urlparse
-else:
-    from http.client import HTTPConnection, HTTPException, OK
-    from urllib.parse import urlparse
+from mirakuru.compat import HTTPConnection, HTTPException, OK
+from mirakuru.compat import urlparse
 
 from mirakuru.tcp import TCPExecutor
 

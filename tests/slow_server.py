@@ -1,17 +1,7 @@
 """Slow http server used for tests."""
 import time
 
-try:
-    from BaseHTTPServer import (
-        HTTPServer,
-        BaseHTTPRequestHandler,
-    )
-except ImportError:
-    # python3
-    from http.server import (
-        HTTPServer,
-        BaseHTTPRequestHandler,
-    )
+from mirakuru.compat import HTTPServer, BaseHTTPRequestHandler
 
 
 class SlowServerHandler(BaseHTTPRequestHandler):
