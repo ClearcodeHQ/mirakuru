@@ -5,6 +5,7 @@ unreleased
 -------
 
 - executors are now context managers
+- moved python version conditional imports into compat.py module
 
 
 0.1.4
