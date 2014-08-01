@@ -195,3 +195,11 @@ class Executor(object):
         if self._endtime is not None and time.time() > self._endtime:
             return False
         return True
+
+    def __repr__(self):
+        """Readable executor representation."""
+        return '<{module}.{executor}: "{command}">'.format(
+            module=self.__class__.__module__,
+            executor=self.__class__.__name__,
+            command=self.command[:30]
+        )
