@@ -46,8 +46,7 @@ class Executor(object):
             second check will only have 5 seconds left.
 
         """
-        self._command = command
-        self._args = shlex.split(command)
+        self.command = command
         self._shell = shell
         self._timeout = timeout
         self._sleep = sleep
@@ -88,9 +87,10 @@ class Executor(object):
             ``universal_newlines`` to ``True``.
         """
         if self.process is None:
-            command = self._args
-            if self._shell:
-                command = self._command
+            command = self.command
+            if not self._shell:
+                command = shlex.split(self.command)
+
             self.process = subprocess.Popen(
                 command,
                 shell=self._shell,
@@ -195,3 +195,11 @@ class Executor(object):
         if self._endtime is not None and time.time() > self._endtime:
             return False
         return True
+
+    def __repr__(self):
+        """Readable executor representation."""
+        return '<{module}.{executor}: "{command}">'.format(
+            module=self.__class__.__module__,
+            executor=self.__class__.__name__,
+            command=self.command[:30]
+        )
