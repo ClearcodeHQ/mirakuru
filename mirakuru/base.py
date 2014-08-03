@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """Base executor with the most basic functionality."""
-
+from contextlib import contextmanager
 import subprocess
 import shlex
 import time
@@ -140,6 +140,19 @@ class Executor(object):
 
             self.process = None
             self._endtime = None
+
+    @contextmanager
+    def stopped(self):
+        """
+        Stopping process for given context and starts it afterwards.
+
+        Allows for easier writing resistance integration tests whenever one of
+        the service fails.
+        """
+        if self.running():
+            self.stop()
+            yield
+            self.start()
 
     def kill(self, wait=True):
         """
