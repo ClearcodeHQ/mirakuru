@@ -20,6 +20,18 @@ def test_running_context():
     assert executor.running() is False
 
 
+def test_context_stopped():
+    """Start for context, and shuts it for nested context."""
+    executor = Executor('sleep 300')
+    with executor:
+        assert executor.running() is True
+        with executor.stopped():
+            assert executor.running() is False
+        assert executor.running() is True
+
+    assert executor.running() is False
+
+
 def test_process_output():
     """Start process, check output and shut it down."""
     executor = Executor('echo -n "foobar"')
