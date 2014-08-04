@@ -4,7 +4,8 @@ CHANGELOG
 unreleased
 -------
 
-- executors are now context managers
+- executors are now context managers - to start executors for given context
+- Executor.stopped - context manager for stopping executors for given context.
 - moved python version conditional imports into compat.py module
 
 
