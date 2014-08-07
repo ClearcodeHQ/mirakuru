@@ -93,8 +93,11 @@ This executor however, apart from HEAD request, also inherits TCPExecutor,
 so it'll try to connect to process over TCP first, to determine,
 if it can try to make a HEAD request already.
 
-Running as a context manager
-----------------------------
+As a Context manager
+--------------------
+
+Starting
+++++++++
 
 Mirakuru's executors can also work as a context managers.
 
@@ -106,7 +109,34 @@ Mirakuru's executors can also work as a context managers.
     with process:
 
         # Do your stuff
+        assert process.running() is True
 
     assert process.running() is False
 
 Defined process starts upon entering context, and exit upon exiting it.
+
+Stopping
+++++++++
+
+Mirakuru also allows to stop process for given context.
+To do this, simply use built-in stopped context manager.
+
+
+
+.. code-block:: python
+
+    from mirakuru import HTTPExecutor
+
+    process = HTTPExecutor('my_special_process', url='http://localhost:6543/status')
+    process.start()
+
+    # do some stuff
+
+    with process.stopped():
+
+        # Do something hidden
+
+        assert process.running() is False
+    assert process.running() is True
+
+Defined process stops upon entering context, and starts upon exiting it.
