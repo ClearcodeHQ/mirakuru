@@ -45,7 +45,7 @@ def prepare_slow_server_executor(timeout=None):
 
 
 def connect_to_server():
-    """Commong test to check if can connect to server."""
+    """Common test to check if can connect to server."""
     conn = HTTPConnection(HOST, PORT)
     conn.request('GET', '/')
     assert conn.getresponse().status is OK
@@ -69,7 +69,6 @@ def test_executor_starts_and_waits():
     executor.stop()
 
 
-@pytest.mark.skipif(True, reason='Github/mirakuru issue #27')
 def test_shell_started_server_stops():
     """Test if executor terminates properly executor with shell=True."""
     command = 'python -m {http_server}'.format(

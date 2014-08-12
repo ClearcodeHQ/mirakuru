@@ -16,10 +16,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """Base executor with the most basic functionality."""
-from contextlib import contextmanager
-import subprocess
-import shlex
+
+import os
 import time
+import shlex
+import signal
+import subprocess
+from contextlib import contextmanager
 
 from mirakuru.exceptions import TimeoutExpired
 
@@ -97,6 +100,7 @@ class Executor(object):
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
+                preexec_fn=os.setsid
             )
 
         self._set_timeout()
@@ -125,7 +129,7 @@ class Executor(object):
             you have to allow subprocesses to end gracefully.
         """
         if self.process is not None:
-            self.process.terminate()
+            os.killpg(self.process.pid, signal.SIGTERM)
 
             def process_stopped():
                 return self.running() is False
@@ -162,7 +166,7 @@ class Executor(object):
             or False, to simply proceed after sending signal.
         """
         if self.running():
-            self.process.kill()
+            os.killpg(self.process.pid, signal.SIGKILL)
             if wait:
                 self.process.wait()
             self.process = None
