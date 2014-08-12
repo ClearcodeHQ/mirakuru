@@ -7,6 +7,7 @@ unreleased
 - executors are now context managers - to start executors for given context
 - Executor.stopped - context manager for stopping executors for given context.
 - moved python version conditional imports into compat.py module
+- [fix] - kill all children processes of Exeutor started with shell=True
 
 
 0.1.4
