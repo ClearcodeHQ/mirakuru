@@ -24,7 +24,7 @@ import signal
 import subprocess
 from contextlib import contextmanager
 
-from mirakuru.exceptions import TimeoutExpired
+from mirakuru.exceptions import TimeoutExpired, AlreadyRunning
 
 
 class Executor(object):
@@ -220,3 +220,42 @@ class Executor(object):
             executor=self.__class__.__name__,
             command=self.command[:30]
         )
+
+
+class StartCheckExecutor(Executor):
+
+    """ Base class for executors with a pre- and after-start checks. """
+
+    def pre_start_check(self):
+        """
+        Method fired before the start of executor.
+
+        Should be overridden in order to return boolean value if some
+        process is already started.
+        :rtype: bool
+        """
+        raise NotImplementedError
+
+    def start(self):
+        """
+        Start executor with additional checks.
+
+        Checks if previous executor isn't running then start process
+        (executor) and wait until it's started.
+        """
+        if self.pre_start_check():
+            # Executor or other process is running with same config.
+            raise AlreadyRunning(self)
+
+        Executor.start(self)
+        self.wait_for(self.after_start_check)
+
+    def after_start_check(self):
+        """
+        Method fired after the start of executor.
+
+        Should be overridden in order to return boolean value if executor
+        can be treated as started.
+        :rtype: bool
+        """
+        raise NotImplementedError

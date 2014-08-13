@@ -20,10 +20,13 @@
 import sys
 
 
+python = sys.executable
+
 if sys.version_info.major == 2:
     from httplib import HTTPConnection, HTTPException, OK
     from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
     from urlparse import urlparse
+    http_server_cmd = "{python} -m SimpleHTTPServer".format(python=python)
 else:
     # In python3 httplib is renamed to http.client
     from http.client import HTTPConnection, HTTPException, OK
@@ -31,9 +34,15 @@ else:
     from http.server import HTTPServer, BaseHTTPRequestHandler
     # In python3 urlparse is renamed to urllib.parse
     from urllib.parse import urlparse
+    http_server_cmd = "{python} -m http.server".format(python=python)
 
 
 __all__ = (
-    HTTPConnection, HTTPException, OK, HTTPServer, BaseHTTPRequestHandler,
-    urlparse
+    HTTPConnection,
+    HTTPException,
+    OK,
+    HTTPServer,
+    BaseHTTPRequestHandler,
+    urlparse,
+    http_server_cmd,
 )

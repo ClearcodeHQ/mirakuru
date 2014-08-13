@@ -8,5 +8,6 @@ mirakuru along its history.
 * Tomasz Święcicki
 * Tomasz Krzyszczyk
 * Grzegorz Śliwiński
+* Paweł Wilczyński
 
 Great thanks to `Mateusz Lenik <http://mlen.pl>`_ for original package!

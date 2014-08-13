@@ -1,4 +1,13 @@
-"""Slow http server used for tests."""
+"""
+HTTP server that respondes with delays used for tests.
+
+Example usage:
+
+    python tests/slow_server.py [host:port]
+
+"""
+
+import sys
 import time
 
 from mirakuru.compat import HTTPServer, BaseHTTPRequestHandler
@@ -43,8 +52,13 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         else:
             return True
 
-server = HTTPServer(
-    ('127.0.0.1', 8000),
-    SlowServerHandler
-)
-server.serve_forever()
+
+if __name__ == "__main__":
+
+    host, port = "127.0.0.1", 8000
+    if len(sys.argv) == 2:
+        host, port = sys.argv[1].split(":")
+
+    server = HTTPServer((host, int(port)), SlowServerHandler)
+    print("Starting slow server on {}:{}...".format(host, port))
+    server.serve_forever()
