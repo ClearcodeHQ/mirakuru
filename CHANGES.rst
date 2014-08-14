@@ -4,7 +4,7 @@ CHANGELOG
 0.2.0
 -------
 
-- [fix] - kill all children processes of Exeutor started with shell=True
+- [fix] - kill all children processes of Executor started with shell=True
 - [feature] executors are now context managers - to start executors for given context
 - [feature] Executor.stopped - context manager for stopping executors for given context
 - [feature] HTTPExecutor and TCPExecutor before .start() check whether port
