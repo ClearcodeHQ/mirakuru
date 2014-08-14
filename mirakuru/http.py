@@ -46,20 +46,15 @@ class HTTPExecutor(TCPExecutor):
         An :func:`urlparse.urlparse` representation of an url.
 
         It'll be used to check process status on."""
+
         TCPExecutor.__init__(
             self, command, host=self.url.hostname,
             port=self.url.port, shell=shell, timeout=timeout, sleep=sleep)
 
-    def start(self):
-        """Start process and wait for sucessful head on defined url."""
-        TCPExecutor.start(self)
-        self.wait_for(self._wait_for_successful_head)
-
-    def _wait_for_successful_head(self):
+    def after_start_check(self):
         """Check if defined url returns successful head."""
         try:
-            conn = HTTPConnection(self.url.hostname,
-                                  self.url.port)
+            conn = HTTPConnection(self.url.hostname, self.url.port)
 
             conn.request('HEAD', self.url.path)
             response = conn.getresponse()
@@ -68,5 +63,5 @@ class HTTPExecutor(TCPExecutor):
                 conn.close()
                 return True
 
-        except (HTTPException, socket.timeout):
+        except (HTTPException, socket.timeout, socket.error):
             return False

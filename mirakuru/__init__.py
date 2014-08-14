@@ -24,10 +24,16 @@ from mirakuru.output import OutputExecutor
 from mirakuru.tcp import TCPExecutor
 from mirakuru.http import HTTPExecutor
 
-from mirakuru.exceptions import TimeoutExpired
+from mirakuru.exceptions import (
+    TimeoutExpired,
+    AlreadyRunning,
+)
 
 __all__ = (
-    Executor, OutputExecutor,
-    TCPExecutor, HTTPExecutor,
-    TimeoutExpired
+    Executor,
+    OutputExecutor,
+    TCPExecutor,
+    HTTPExecutor,
+    TimeoutExpired,
+    AlreadyRunning,
 )

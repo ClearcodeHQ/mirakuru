@@ -5,21 +5,15 @@ import socket
 
 import pytest
 
+from mirakuru import HTTPExecutor
+from mirakuru import TimeoutExpired, AlreadyRunning
+from mirakuru.compat import HTTPConnection, OK, http_server_cmd
+
 
 HOST = "127.0.0.1"
-PORT = "8000"
+PORT = 7987
 
-
-from mirakuru.compat import HTTPConnection, OK
-
-
-if sys.version_info.major == 2:
-    http_server = "SimpleHTTPServer"
-else:
-    http_server = "http.server"
-
-from mirakuru import HTTPExecutor
-from mirakuru import TimeoutExpired
+http_server_cmd = '{0} {1}'.format(http_server_cmd, PORT)
 
 
 def prepare_slow_server_executor(timeout=None):
@@ -35,7 +29,8 @@ def prepare_slow_server_executor(timeout=None):
         "../slow_server.py"
     )
 
-    command = 'python {0}'.format(slow_server)
+    command = '{python} {srv} {host}:{port}' \
+        .format(python=sys.executable, srv=slow_server, host=HOST, port=PORT)
 
     return HTTPExecutor(
         command,
@@ -54,9 +49,8 @@ def connect_to_server():
 
 def test_executor_starts_and_waits():
     """Test if process awaits for HEAD request to be completed."""
-    command = 'bash -c "sleep 3 && exec python -m {http_server}"'.format(
-        http_server=http_server,
-    )
+    command = 'bash -c "sleep 3 && {0}"'.format(http_server_cmd)
+
     executor = HTTPExecutor(
         command, 'http://{0}:{1}/'.format(HOST, PORT),
         timeout=20
@@ -71,11 +65,9 @@ def test_executor_starts_and_waits():
 
 def test_shell_started_server_stops():
     """Test if executor terminates properly executor with shell=True."""
-    command = 'python -m {http_server}'.format(
-        http_server=http_server,
-    )
     executor = HTTPExecutor(
-        command, 'http://{0}:{1}/'.format(HOST, PORT),
+        http_server_cmd,
+        'http://{0}:{1}/'.format(HOST, PORT),
         timeout=20,
         shell=True
     )
@@ -116,3 +108,24 @@ def test_slow_server_timeouted():
         executor.start()
 
     assert executor.running() is False
+
+
+def test_fail_if_other_executor_running():
+    """Test raising AlreadyRunning exception when port is blocked."""
+    executor = HTTPExecutor(
+        http_server_cmd, 'http://{0}:{1}/'.format(HOST, PORT),
+    )
+    executor2 = HTTPExecutor(
+        http_server_cmd, 'http://{0}:{1}/'.format(HOST, PORT),
+    )
+
+    with executor:
+
+        assert executor.running() is True
+
+        with pytest.raises(AlreadyRunning):
+            executor2.start()
+
+        with pytest.raises(AlreadyRunning):
+            with executor2:
+                pass

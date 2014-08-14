@@ -18,13 +18,13 @@
 """TCP executor definition."""
 
 import socket
-from mirakuru.base import Executor
+from mirakuru.base import StartCheckExecutor
 
 
-class TCPExecutor(Executor):
+class TCPExecutor(StartCheckExecutor):
 
     """
-    TCP-able process executor.
+    TCP-listening process executor.
 
     Used to start (and wait to actually be running) processes that can accept
     TCP connections.
@@ -43,30 +43,36 @@ class TCPExecutor(Executor):
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
         """
-        Executor.__init__(self, command, shell=shell, timeout=timeout,
-                          sleep=sleep)
+        StartCheckExecutor.__init__(self, command, shell=shell,
+                                    timeout=timeout, sleep=sleep)
         self.host = host
         """Host name, process is listening on."""
         self.port = port
         """Port number, process is listening on."""
 
-    def start(self):
+    def pre_start_check(self):
         """
-        Start TCP able process.
+        Check if process accepts connections.
 
         .. note::
 
             Process will be considered started, when it'll be able to accept
             TCP connections as defined in initializer.
         """
-        Executor.start(self)
-        self.wait_for(self._wait_for_connection)
-
-    def _wait_for_connection(self):
-        """Check if process accepts connections."""
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((self.host, self.port))
             return True
         except (socket.error, socket.timeout):
             return False
+
+    def after_start_check(self):
+        """
+        Check if process accepts connections.
+
+        .. note::
+
+            Process will be considered started, when it'll be able to accept
+            TCP connections as defined in initializer.
+        """
+        return self.pre_start_check()  # we can reuse logic from `pre_start()`

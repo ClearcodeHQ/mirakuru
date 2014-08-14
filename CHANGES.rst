@@ -4,10 +4,12 @@ CHANGELOG
 unreleased
 -------
 
-- executors are now context managers - to start executors for given context
-- Executor.stopped - context manager for stopping executors for given context.
-- moved python version conditional imports into compat.py module
 - [fix] - kill all children processes of Exeutor started with shell=True
+- [feature] executors are now context managers - to start executors for given context
+- [feature] Executor.stopped - context manager for stopping executors for given context
+- [feature] HTTPExecutor and TCPExecutor before .start() check whether port
+  is already used by other processes and raise AlreadyRunning if detects it
+- moved python version conditional imports into compat.py module
 
 
 0.1.4
