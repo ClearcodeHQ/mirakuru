@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+0.2.0
 -------
 
 - [fix] - kill all children processes of Exeutor started with shell=True
