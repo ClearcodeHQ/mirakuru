@@ -1,5 +1,5 @@
 """
-HTTP server that respondes with delays used for tests.
+HTTP server that responses with delays used for tests.
 
 Example usage:
 
