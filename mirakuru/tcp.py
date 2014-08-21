@@ -60,11 +60,14 @@ class TCPExecutor(StartCheckExecutor):
             TCP connections as defined in initializer.
         """
         try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock = socket.socket()
             sock.connect((self.host, self.port))
             return True
         except (socket.error, socket.timeout):
             return False
+        finally:
+            # close socket manually for sake of pypy
+            sock.close()
 
     def after_start_check(self):
         """
