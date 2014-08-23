@@ -117,6 +117,16 @@ class Executor(object):
         if timeout:
             self._endtime = time.time() + timeout
 
+    def _clear_process(self):
+
+        # close stding/stdout to subprocesses, as per ResourceWarning in py3
+        if self.process.stdin:
+            self.process.stdin.close()
+        if self.process.stdout:
+            self.process.stdout.close()
+        self.process = None
+        self._endtime = None
+
     def stop(self):
         """
         Stop process running.
@@ -142,8 +152,7 @@ class Executor(object):
                 # at this moment, process got killed,
                 pass
 
-            self.process = None
-            self._endtime = None
+            self._clear_process()
 
     @contextmanager
     def stopped(self):
@@ -169,8 +178,8 @@ class Executor(object):
             os.killpg(self.process.pid, signal.SIGKILL)
             if wait:
                 self.process.wait()
-            self.process = None
-            self._endtime = None
+
+            self._clear_process()
 
     def output(self):
         """Return process output."""
