@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- pypy compatibility
+- [fix] closing all resources explicitly
+
 0.2.0
 -------
 
