@@ -34,8 +34,9 @@ class PidExecutor(StartCheckExecutor):
     def __init__(self, command, filename,
                  shell=False, timeout=None, sleep=0.1):
         """
-        Initialize the PidExecutor executor. If the filename is empty, a
-        ValueError is thrown.
+        Initialize the PidExecutor executor.
+
+        If the filename is empty, a ValueError is thrown.
 
         :param str command: the command to run which is to create a file
         :param str filename: the file which is to exist

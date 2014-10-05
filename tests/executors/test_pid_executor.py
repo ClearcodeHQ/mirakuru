@@ -13,7 +13,7 @@ process = 'bash -c "sleep 2 && touch {0}"'.format(filename)
 
 @pytest.yield_fixture(autouse=True)
 def run_around_tests():
-    """Make sure the tmp file is not present"""
+    """Make sure the tmp file is not present."""
     try:
         os.remove(filename)
     except OSError:
@@ -39,7 +39,7 @@ def test_start_and_wait(timeout):
 
 
 def test_empty_filename():
-    """Check whether an exception is raised if an empty filename is given"""
+    """Check whether an exception is raised if an empty filename is given."""
     with pytest.raises(ValueError):
         PidExecutor(process, None)
 
@@ -48,11 +48,12 @@ def test_empty_filename():
 
 
 def test_if_file_created():
-    """Check whether the process really created the given file"""
+    """Check whether the process really created the given file."""
     assert os.path.isfile(filename) is False
     executor = PidExecutor(process, filename)
     executor.start()
     assert os.path.isfile(filename) is True
+    executor.stop()
 
 
 def test_timeout_error():
