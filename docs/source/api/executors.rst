@@ -12,3 +12,6 @@ Basic executors
 
 .. automodule:: mirakuru.http
     :private-members:
+
+.. automodule:: mirakuru.pid
+    :private-members:

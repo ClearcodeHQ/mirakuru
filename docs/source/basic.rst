@@ -93,6 +93,29 @@ This executor however, apart from HEAD request, also inherits TCPExecutor,
 so it'll try to connect to process over TCP first, to determine,
 if it can try to make a HEAD request already.
 
+
+
+PidExecutor
+------------
+
+:class:`mirakuru.pid.PidExecutor` is an executor that starts the given
+process, then waits for a given file to be found before it gives back control.
+An example use for this class is writing integration tests for processes that
+notify their running by creating a .pid file.
+
+.. code-block:: python
+
+    from mirakuru import PidExecutor
+
+    process = PidExecutor('my_special_process', filename='/bla/ble/my_special_process.pid')
+    process.start()
+
+    # Do your stuff
+
+    process.stop()
+
+
+
 As a Context manager
 --------------------
 
