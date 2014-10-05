@@ -138,7 +138,7 @@ class Executor(object):
             When gathering coverage for the subprocess in tests,
             you have to allow subprocesses to end gracefully.
         """
-        if self.process is not None:
+        if self.process is not None and self.process.poll() is None:
             os.killpg(self.process.pid, signal.SIGTERM)
 
             def process_stopped():
