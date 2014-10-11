@@ -4,6 +4,7 @@ CHANGELOG
 unreleased
 -------
 
+- [feature] PidExecutor that waits for specified file to be created.
 - pypy compatibility
 - [fix] closing all resources explicitly
 
