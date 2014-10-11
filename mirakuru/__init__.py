@@ -23,6 +23,7 @@ from mirakuru.base import Executor
 from mirakuru.output import OutputExecutor
 from mirakuru.tcp import TCPExecutor
 from mirakuru.http import HTTPExecutor
+from mirakuru.pid import PidExecutor
 
 from mirakuru.exceptions import (
     TimeoutExpired,
@@ -34,6 +35,7 @@ __all__ = (
     OutputExecutor,
     TCPExecutor,
     HTTPExecutor,
+    PidExecutor,
     TimeoutExpired,
     AlreadyRunning,
 )

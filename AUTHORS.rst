@@ -9,5 +9,6 @@ mirakuru along its history.
 * Tomasz Krzyszczyk
 * Grzegorz Śliwiński
 * Paweł Wilczyński
+* Daniel O'Connell
 
 Great thanks to `Mateusz Lenik <http://mlen.pl>`_ for original package!

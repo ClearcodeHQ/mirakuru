@@ -61,7 +61,8 @@ that it's running. There are three basic executors with predefined conditions:
 * Executor - simply starts
 * OutputExecutor - awaits for specified output to be given by process
 * TCPExecutor - waits for ability to connect through tcp with process
-* HTTPExecutor - waits for successful HEAD request (and tcp before).
+* HTTPExecutor - waits for successful HEAD request (and tcp before)
+* PidExecutor - waits for a specified file to exist
 
 .. code-block:: python
 
