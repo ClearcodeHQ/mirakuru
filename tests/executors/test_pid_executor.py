@@ -13,7 +13,12 @@ process = 'bash -c "sleep 2 && touch {0}"'.format(filename)
 
 @pytest.yield_fixture(autouse=True)
 def run_around_tests():
-    """Make sure the tmp file is not present."""
+    """
+    Make sure the **filename** file is not present.
+
+    This executor actually removes filename as process used to test
+    PidExecutor only creates it.
+    """
     try:
         os.remove(filename)
     except OSError:
@@ -32,28 +37,23 @@ def test_start_and_wait(timeout):
     """Test if the executor will await for the process to create a file."""
     process = 'bash -c "sleep 2 && touch {0}  && sleep 10"'.format(filename)
     executor = PidExecutor(process, filename, timeout=timeout)
-    executor.start()
-
-    assert executor.running() is True
-    executor.stop()
+    with executor:
+        assert executor.running() is True
 
 
-def test_empty_filename():
+@pytest.mark.parametrize('pid_file', (None, ""))
+def test_empty_filename(pid_file):
     """Check whether an exception is raised if an empty filename is given."""
     with pytest.raises(ValueError):
-        PidExecutor(process, None)
-
-    with pytest.raises(ValueError):
-        PidExecutor(process, "")
+        PidExecutor(process, pid_file)
 
 
 def test_if_file_created():
     """Check whether the process really created the given file."""
     assert os.path.isfile(filename) is False
     executor = PidExecutor(process, filename)
-    executor.start()
-    assert os.path.isfile(filename) is True
-    executor.stop()
+    with executor:
+        assert os.path.isfile(filename) is True
 
 
 def test_timeout_error():
@@ -78,7 +78,3 @@ def test_fail_if_other_executor_running():
 
         with pytest.raises(AlreadyRunning):
             executor2.start()
-
-        with pytest.raises(AlreadyRunning):
-            with executor2:
-                pass
