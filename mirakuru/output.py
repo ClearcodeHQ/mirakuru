@@ -39,7 +39,7 @@ class OutputExecutor(Executor):
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
         """
-        Executor.__init__(self, command, shell, timeout, sleep)
+        super(OutputExecutor, self).__init__(command, shell, timeout, sleep)
         self._banner = re.compile(banner)
 
     def start(self):
@@ -51,7 +51,7 @@ class OutputExecutor(Executor):
             Process will be considered started, when defined banner will appear
             in process output.
         """
-        Executor.start(self)
+        super(OutputExecutor, self).start()
 
         # get a polling object
         self.poll_obj = select.poll()

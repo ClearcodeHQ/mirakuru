@@ -47,9 +47,10 @@ class HTTPExecutor(TCPExecutor):
 
         It'll be used to check process status on."""
 
-        TCPExecutor.__init__(
-            self, command, host=self.url.hostname,
-            port=self.url.port, shell=shell, timeout=timeout, sleep=sleep)
+        super(HTTPExecutor, self).__init__(
+            command, host=self.url.hostname,
+            port=self.url.port, shell=shell, timeout=timeout, sleep=sleep
+        )
 
     def after_start_check(self):
         """Check if defined url returns successful head."""
