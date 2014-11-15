@@ -43,8 +43,9 @@ class TCPExecutor(StartCheckExecutor):
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
         """
-        StartCheckExecutor.__init__(self, command, shell=shell,
-                                    timeout=timeout, sleep=sleep)
+        super(TCPExecutor, self).__init__(
+            command, shell=shell, timeout=timeout, sleep=sleep
+        )
         self.host = host
         """Host name, process is listening on."""
         self.port = port

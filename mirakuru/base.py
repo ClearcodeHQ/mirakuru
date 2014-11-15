@@ -256,7 +256,7 @@ class StartCheckExecutor(Executor):
             # Executor or other process is running with same config.
             raise AlreadyRunning(self)
 
-        Executor.start(self)
+        super(StartCheckExecutor, self).start()
         self.wait_for(self.after_start_check)
 
     def after_start_check(self):

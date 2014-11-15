@@ -48,8 +48,9 @@ class PidExecutor(StartCheckExecutor):
         """
         if not filename:
             raise ValueError("filename cannot be empty")
-        StartCheckExecutor.__init__(self, command, shell=shell,
-                                    timeout=timeout, sleep=sleep)
+        super(PidExecutor, self).__init__(
+            command, shell=shell, timeout=timeout, sleep=sleep
+        )
         self.filename = filename
         """the name of the file which the process is to create."""
 
