@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+0.3.0
 -------
 
 - [feature] PidExecutor that waits for specified file to be created.
