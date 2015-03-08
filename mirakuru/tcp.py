@@ -30,8 +30,7 @@ class TCPExecutor(StartCheckExecutor):
     TCP connections.
     """
 
-    def __init__(self, command, host, port,
-                 shell=False, timeout=None, sleep=0.1):
+    def __init__(self, command, host, port, **kwargs):
         """
         Initialize TCPExecutor executor.
 
@@ -43,9 +42,7 @@ class TCPExecutor(StartCheckExecutor):
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
         """
-        super(TCPExecutor, self).__init__(
-            command, shell=shell, timeout=timeout, sleep=sleep
-        )
+        super(TCPExecutor, self).__init__(command, **kwargs)
         self.host = host
         """Host name, process is listening on."""
         self.port = port

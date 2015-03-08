@@ -29,7 +29,7 @@ class HTTPExecutor(TCPExecutor):
 
     """Http enabled process executor."""
 
-    def __init__(self, command, url, shell=False, timeout=None, sleep=0.1):
+    def __init__(self, command, url, **kwargs):
         """
         Initialize HTTPExecutor executor.
 
@@ -48,8 +48,7 @@ class HTTPExecutor(TCPExecutor):
         It'll be used to check process status on."""
 
         super(HTTPExecutor, self).__init__(
-            command, host=self.url.hostname,
-            port=self.url.port, shell=shell, timeout=timeout, sleep=sleep
+            command, host=self.url.hostname, port=self.url.port, **kwargs
         )
 
     def after_start_check(self):
