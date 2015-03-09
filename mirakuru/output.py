@@ -27,7 +27,7 @@ class OutputExecutor(Executor):
 
     """Executor that awaits for string output being present in output."""
 
-    def __init__(self, command, banner, shell=False, timeout=None, sleep=0.1):
+    def __init__(self, command, banner, **kwargs):
         """
         Initialize OutputExecutor executor.
 
@@ -39,7 +39,7 @@ class OutputExecutor(Executor):
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
         """
-        super(OutputExecutor, self).__init__(command, shell, timeout, sleep)
+        super(OutputExecutor, self).__init__(command, **kwargs)
         self._banner = re.compile(banner)
 
     def start(self):
