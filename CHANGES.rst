@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- [feature] replaced explicit parameters with keywords for kwargs handled by basic Executor init method
+
 0.3.0
 -------
 
