@@ -31,7 +31,10 @@ class Executor(object):
 
     """Basic executor with the most basic functionality."""
 
-    def __init__(self, command, shell=False, timeout=None, sleep=0.1):
+    def __init__(
+            self, command, shell=False, timeout=None, sleep=0.1,
+            sig_stop=signal.SIGTERM, sig_kill=signal.SIGKILL
+    ):
         """
         Initialize executor.
 
@@ -40,6 +43,10 @@ class Executor(object):
         :param int timeout: time to wait for process to start or stop.
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
+        :param int sig_stop: signal used to stop process run by executor.
+            default is SIGTERM
+        :param int sig_kill: signal used to kill process run by  executor.
+            default is SIGKILL
 
         .. note::
 
@@ -53,6 +60,8 @@ class Executor(object):
         self._shell = shell
         self._timeout = timeout
         self._sleep = sleep
+        self._sig_stop = sig_stop
+        self._sig_kill = sig_kill
 
         self._endtime = None
         self.process = None
@@ -127,19 +136,24 @@ class Executor(object):
         self.process = None
         self._endtime = None
 
-    def stop(self):
+    def stop(self, sig=None):
         """
         Stop process running.
 
         Wait 10 seconds for the process to end, then just kill it.
+
+        :param int sig: signal used to stop process run by executor.
+            None for default.
 
         .. note::
 
             When gathering coverage for the subprocess in tests,
             you have to allow subprocesses to end gracefully.
         """
+        if sig is None:
+            sig = self._sig_stop
         if self.process is not None:
-            os.killpg(self.process.pid, signal.SIGTERM)
+            os.killpg(self.process.pid, sig)
 
             def process_stopped():
                 return self.running() is False
@@ -167,15 +181,19 @@ class Executor(object):
             yield
             self.start()
 
-    def kill(self, wait=True):
+    def kill(self, wait=True, sig=None):
         """
         Kill the process if running.
 
         :param bool wait: set to `True` to wait for the process to end,
             or False, to simply proceed after sending signal.
+        :param int sig: signal used to kill process run by  executor.
+            None for default.
         """
+        if sig is None:
+            sig = self._sig_kill
         if self.running():
-            os.killpg(self.process.pid, signal.SIGKILL)
+            os.killpg(self.process.pid, sig)
             if wait:
                 self.process.wait()
 

@@ -41,6 +41,10 @@ class TCPExecutor(StartCheckExecutor):
         :param int timeout: time to wait for process to start or stop.
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
+        :param int sig_stop: signal used to stop process run by executor.
+            default is SIGTERM
+        :param int sig_kill: signal used to kill process run by  executor.
+            default is SIGKILL
         """
         super(TCPExecutor, self).__init__(command, **kwargs)
         self.host = host

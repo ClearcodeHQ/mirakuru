@@ -43,6 +43,11 @@ class PidExecutor(StartCheckExecutor):
         :param int timeout: time to wait for the process to start or stop.
             if None, wait indefinitely.
         :param float sleep: how often to check for start/stop conditions
+        :param int sig_stop: signal used to stop process run by executor.
+            default is SIGTERM
+        :param int sig_kill: signal used to kill process run by  executor.
+            default is SIGKILL
+
         :raises: ValueError
         """
         if not filename:
