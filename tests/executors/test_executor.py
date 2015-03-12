@@ -1,7 +1,10 @@
 """Test basic executor functionality."""
 import signal
 
+import pytest
+
 from mirakuru import Executor
+from mirakuru.base import StartCheckExecutor
 
 
 def test_running_process():
@@ -11,6 +14,10 @@ def test_running_process():
     assert executor.running() is True
     executor.stop()
     assert executor.running() is False
+
+    # check proper __str__ and __repr__ rendering:
+    assert 'Executor' in repr(executor)
+    assert 'sleep 300' in str(executor)
 
 
 def test_custom_signal_stop():
@@ -86,3 +93,12 @@ def test_process_output_shell():
 
     assert executor.output().read() == 'foobar'
     executor.stop()
+
+
+def test_start_check_executor():
+    """Validate StartCheckExecutor base class having NotImplemented methods."""
+    executor = StartCheckExecutor('sleep 300')
+    with pytest.raises(NotImplementedError):
+        executor.pre_start_check()
+    with pytest.raises(NotImplementedError):
+        executor.after_start_check()

@@ -31,11 +31,11 @@ from mirakuru.exceptions import (
 )
 
 __all__ = (
-    Executor,
-    OutputExecutor,
-    TCPExecutor,
-    HTTPExecutor,
-    PidExecutor,
-    TimeoutExpired,
-    AlreadyRunning,
+    'Executor',
+    'OutputExecutor',
+    'TCPExecutor',
+    'HTTPExecutor',
+    'PidExecutor',
+    'TimeoutExpired',
+    'AlreadyRunning',
 )
