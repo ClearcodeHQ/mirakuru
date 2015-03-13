@@ -62,6 +62,10 @@ def test_executor_starts_and_waits():
 
     executor.stop()
 
+    # check proper __str__ and __repr__ rendering:
+    assert 'HTTPExecutor' in repr(executor)
+    assert command in str(executor)
+
 
 def test_shell_started_server_stops():
     """Test if executor terminates properly executor with shell=True."""
@@ -100,14 +104,15 @@ def test_slow_server_starting():
     executor.stop()
 
 
-def test_slow_server_timeouted():
+def test_slow_server_timed_out():
     """Check if timeout properly expires."""
     executor = prepare_slow_server_executor(timeout=1)
 
-    with pytest.raises(TimeoutExpired):
+    with pytest.raises(TimeoutExpired) as exc:
         executor.start()
 
     assert executor.running() is False
+    assert 'timed out after' in str(exc)
 
 
 def test_fail_if_other_executor_running():
@@ -126,6 +131,7 @@ def test_fail_if_other_executor_running():
         with pytest.raises(AlreadyRunning):
             executor2.start()
 
-        with pytest.raises(AlreadyRunning):
+        with pytest.raises(AlreadyRunning) as exc:
             with executor2:
                 pass
+        assert 'seems to be already running' in str(exc)

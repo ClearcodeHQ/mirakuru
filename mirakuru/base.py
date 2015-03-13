@@ -241,11 +241,23 @@ class Executor(object):
         return True
 
     def __repr__(self):
-        """Readable executor representation."""
+        """Return unambiguous executor representation."""
+        command = self.command
+        if len(command) > 10:
+            command = command[:10] + '...'
+        return '<{module}.{executor}: "{command}" {id}>'.format(
+            module=self.__class__.__module__,
+            executor=self.__class__.__name__,
+            command=command,
+            id=hex(id(self))
+        )
+
+    def __str__(self):
+        """Return readable executor representation."""
         return '<{module}.{executor}: "{command}">'.format(
             module=self.__class__.__module__,
             executor=self.__class__.__name__,
-            command=self.command[:30]
+            command=self.command
         )
 
 

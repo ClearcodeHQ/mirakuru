@@ -22,6 +22,10 @@ def test_start_and_wait(timeout):
     assert executor.running() is True
     executor.stop()
 
+    # check proper __str__ and __repr__ rendering:
+    assert 'TCPExecutor' in repr(executor)
+    assert command in str(executor)
+
 
 def test_it_raises_error_on_timeout():
     """Check if TimeoutExpired gets rised correctly."""

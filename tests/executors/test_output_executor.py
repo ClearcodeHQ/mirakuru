@@ -16,6 +16,10 @@ def test_executor_waits_for_process_output():
     assert executor.output().readline() == 'bar\n'
     executor.stop()
 
+    # check proper __str__ and __repr__ rendering:
+    assert 'OutputExecutor' in repr(executor)
+    assert 'foo' in str(executor)
+
 
 def test_executor_dont_start():
     """Executor should not start."""

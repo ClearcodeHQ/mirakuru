@@ -6,6 +6,8 @@ unreleased
 
 - [feature] ability to set up custom signal for stopping and killing proceses managed by executors
 - [feature] replaced explicit parameters with keywords for kwargs handled by basic Executor init method
+- [fix] even it's not recommended to import all but "from mirakuru import *" didn't worked. Now it's fixed.
+- [tests] increased tests coverage
 
 0.3.0
 -------
