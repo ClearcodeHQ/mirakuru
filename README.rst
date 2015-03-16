@@ -105,6 +105,6 @@ Contributing and reporting bugs
 
 Source code is available at: `ClearcodeHQ/mirakuru <https://github.com/ClearcodeHQ/mirakuru>`_.
 Issue tracker is located at `GitHub Issues <https://github.com/ClearcodeHQ/mirakuru/issues>`_.
-Projects `PyPi page <https://pypi.python.org/pypi/mirakuru>`_.
+Projects `PyPI page <https://pypi.python.org/pypi/mirakuru>`_.
 
 When contributing, don't forget to add your name to AUTHORS.rst file.
