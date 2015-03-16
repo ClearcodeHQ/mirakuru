@@ -6,8 +6,8 @@ Also includes fixture for raising an error whenever we leave any resource open.
 import sys
 from warnings import simplefilter
 
-
 import pytest
+
 
 if sys.version_info == '3':
     from exteptions import ResourceWarning

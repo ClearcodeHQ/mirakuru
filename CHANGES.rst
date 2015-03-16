@@ -7,7 +7,9 @@ unreleased
 - [feature] ability to set up custom signal for stopping and killing proceses managed by executors
 - [feature] replaced explicit parameters with keywords for kwargs handled by basic Executor init method
 - [fix] even it's not recommended to import all but "from mirakuru import *" didn't worked. Now it's fixed.
-- [tests] increased tests coverage
+- [tests] increased tests coverage.
+Even library covers 100% of code it doesn't cover 100% of use cases!
+- [code quality] increased pylint code evaluation.
 
 0.3.0
 -------

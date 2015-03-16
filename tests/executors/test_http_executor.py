@@ -1,42 +1,30 @@
 """HTTP Executor tests."""
-import os
 import sys
 import socket
+from functools import partial
 
 import pytest
 
 from mirakuru import HTTPExecutor
 from mirakuru import TimeoutExpired, AlreadyRunning
 from mirakuru.compat import HTTPConnection, OK, http_server_cmd
+from tests import test_server_path
 
 
 HOST = "127.0.0.1"
 PORT = 7987
 
-http_server_cmd = '{0} {1}'.format(http_server_cmd, PORT)
+
+http_server_cmd = '{} {}'.format(http_server_cmd, PORT)
+http_slow_cmd = '{python} {srv} {host}:{port}' \
+    .format(python=sys.executable, srv=test_server_path, host=HOST, port=PORT)
 
 
-def prepare_slow_server_executor(timeout=None):
-    """
-    Construct slow server executor.
-
-    :param int timeout: executor timeout.
-    :returns: executor instance
-    :rtype: mirakuru.executor.HTTPExecutor
-    """
-    slow_server = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)),
-        "../slow_server.py"
-    )
-
-    command = '{python} {srv} {host}:{port}' \
-        .format(python=sys.executable, srv=slow_server, host=HOST, port=PORT)
-
-    return HTTPExecutor(
-        command,
-        'http://{0}:{1}/'.format(HOST, PORT),
-        timeout=timeout,
-    )
+slow_server_executor = partial(
+    HTTPExecutor,
+    http_slow_cmd,
+    'http://{0}:{1}/'.format(HOST, PORT),
+)
 
 
 def connect_to_server():
@@ -52,7 +40,8 @@ def test_executor_starts_and_waits():
     command = 'bash -c "sleep 3 && {0}"'.format(http_server_cmd)
 
     executor = HTTPExecutor(
-        command, 'http://{0}:{1}/'.format(HOST, PORT),
+        command,
+        'http://{0}:{1}/'.format(HOST, PORT),
         timeout=20
     )
     executor.start()
@@ -96,7 +85,7 @@ def test_slow_server_starting():
     Simple example. You run gunicorn, gunicorn is working
     but you have to wait for worker procesess.
     """
-    executor = prepare_slow_server_executor()
+    executor = slow_server_executor()
     executor.start()
     assert executor.running() is True
 
@@ -106,7 +95,7 @@ def test_slow_server_starting():
 
 def test_slow_server_timed_out():
     """Check if timeout properly expires."""
-    executor = prepare_slow_server_executor(timeout=1)
+    executor = slow_server_executor(timeout=1)
 
     with pytest.raises(TimeoutExpired) as exc:
         executor.start()

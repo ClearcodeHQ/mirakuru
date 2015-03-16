@@ -84,8 +84,7 @@ class Executor(object):
         """
         if self.process is None:
             return False
-        else:
-            return self.process.poll() is None
+        return self.process.poll() is None
 
     def start(self):
         """
@@ -127,13 +126,19 @@ class Executor(object):
             self._endtime = time.time() + timeout
 
     def _clear_process(self):
+        """
+        Close stdin/stdout of subprocess.
 
-        # close stding/stdout to subprocesses, as per ResourceWarning in py3
-        if self.process.stdin:
-            self.process.stdin.close()
-        if self.process.stdout:
-            self.process.stdout.close()
-        self.process = None
+        It is required because of ResourceWarning in Python 3.
+        """
+        if self.process:
+            if self.process.stdin:
+                self.process.stdin.close()
+            if self.process.stdout:
+                self.process.stdout.close()
+
+            self.process = None
+
         self._endtime = None
 
     def stop(self, sig=None):
@@ -150,23 +155,27 @@ class Executor(object):
             When gathering coverage for the subprocess in tests,
             you have to allow subprocesses to end gracefully.
         """
+        if self.process is None:
+            return
+
         if sig is None:
             sig = self._sig_stop
-        if self.process is not None:
-            os.killpg(self.process.pid, sig)
 
-            def process_stopped():
-                return self.running() is False
+        os.killpg(self.process.pid, sig)
 
-            # set 10 seconds wait no matter what to kill the process
-            self._set_timeout(10)
-            try:
-                self.wait_for(process_stopped)
-            except TimeoutExpired:
-                # at this moment, process got killed,
-                pass
+        def process_stopped():
+            """Return True only only when self.process is not running."""
+            return self.running() is False
 
-            self._clear_process()
+        # set 10 seconds wait no matter what to kill the process
+        self._set_timeout(10)
+        try:
+            self.wait_for(process_stopped)
+        except TimeoutExpired:
+            # at this moment, process got killed,
+            pass
+
+        self._clear_process()
 
     @contextmanager
     def stopped(self):
@@ -236,9 +245,7 @@ class Executor(object):
         :returns: True if timeout expired, False if not
         :rtype: bool
         """
-        if self._endtime is not None and time.time() > self._endtime:
-            return False
-        return True
+        return self._endtime is None or time.time() <= self._endtime
 
     def __repr__(self):
         """Return unambiguous executor representation."""

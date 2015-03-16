@@ -45,6 +45,7 @@ class OutputExecutor(Executor):
         """
         super(OutputExecutor, self).__init__(command, **kwargs)
         self._banner = re.compile(banner)
+        self.poll_obj = None
 
     def start(self):
         """
