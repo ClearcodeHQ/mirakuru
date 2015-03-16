@@ -12,6 +12,7 @@ class TimeoutExpired(Exception):
         :param mirakuru.base.Executor executor: for which exception occured.
         :param int timeout: timeout for which exception occurred.
         """
+        super(self.__class__, self).__init__()
         self.executor = executor
         self.timeout = timeout
 
@@ -42,6 +43,7 @@ class AlreadyRunning(Exception):
 
         :param mirakuru.base.Executor executor: for which exception occured.
         """
+        super(self.__class__, self).__init__()
         self.executor = executor
 
     def __str__(self):
@@ -51,8 +53,8 @@ class AlreadyRunning(Exception):
         :returns: string representation
         :rtype: str
         """
-        return ("Executor {self.executor} seems to be already running. "
+        return ("Executor {exc.executor} seems to be already running. "
                 "It looks like the previous executor process hasn't been "
                 "terminated or killed. Also there might be some completely "
-                "different service listening on {self.executor.port} port."
-                .format(self=self))
+                "different service listening on {exc.executor.port} port."
+                .format(exc=self))

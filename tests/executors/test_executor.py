@@ -1,10 +1,13 @@
 """Test basic executor functionality."""
+import sys
+import time
 import signal
 
 import pytest
 
-from mirakuru import Executor
+from mirakuru import Executor, HTTPExecutor
 from mirakuru.base import StartCheckExecutor
+from tests import test_server_path
 
 
 def test_running_process():
@@ -102,3 +105,36 @@ def test_start_check_executor():
         executor.pre_start_check()
     with pytest.raises(NotImplementedError):
         executor.after_start_check()
+
+
+def test_stopping_not_yet_running_executor():
+    """
+    Test if Executor can be stopped even it was never running.
+
+    We must make sure that it's possible to call .stop() and Executor will not
+    raise any exception and .start() can be called afterwards.
+    """
+    executor = Executor('sleep 300')
+    executor.stop()
+    executor.start()
+    assert executor.running() is True
+    executor.stop()
+
+
+def test_stopping_brutally():
+    """
+    Test if Executor is stopping insubordinate process.
+
+    Check if the process that doesn't react to SIGTERM signal will be killed
+    by executor with SIGKILL automatically.
+    """
+    host_port = "127.0.0.1:8000"
+    cmd = '{} {} {} True'.format(sys.executable, test_server_path, host_port)
+    executor = HTTPExecutor(cmd, 'http://%s/' % host_port)
+    executor.start()
+    assert executor.running() is True
+
+    stop_at = time.time() + 10
+    executor.stop()
+    assert executor.running() is False
+    assert stop_at <= time.time(), "Subprocess killed earlier than in 10 secs"

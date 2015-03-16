@@ -38,11 +38,11 @@ else:
 
 
 __all__ = (
-    HTTPConnection,
-    HTTPException,
-    OK,
-    HTTPServer,
-    BaseHTTPRequestHandler,
-    urlparse,
-    http_server_cmd,
+    'HTTPConnection',
+    'HTTPException',
+    'OK',
+    'HTTPServer',
+    'BaseHTTPRequestHandler',
+    'urlparse',
+    'http_server_cmd',
 )
