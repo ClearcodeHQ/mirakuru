@@ -38,7 +38,7 @@ class Executor(object):
         """
         Initialize executor.
 
-        :param str command: command to run to start service
+        :param (str, list) command: command to run to start service
         :param bool shell: see `subprocess.Popen`
         :param int timeout: time to wait for process to start or stop.
             if None, wait indefinitely.
@@ -56,7 +56,14 @@ class Executor(object):
             second check will only have 5 seconds left.
 
         """
-        self.command = command
+        if isinstance(command, (list, tuple)):
+            self.command = ' '.join(command)
+            """Command that executor runs."""
+            self.command_parts = command
+        else:
+            self.command = command
+            self.command_parts = shlex.split(command)
+
         self._shell = shell
         self._timeout = timeout
         self._sleep = sleep
@@ -100,7 +107,7 @@ class Executor(object):
         if self.process is None:
             command = self.command
             if not self._shell:
-                command = shlex.split(self.command)
+                command = self.command_parts
 
             self.process = subprocess.Popen(
                 command,

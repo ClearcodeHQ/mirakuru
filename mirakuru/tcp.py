@@ -34,7 +34,7 @@ class TCPExecutor(StartCheckExecutor):
         """
         Initialize TCPExecutor executor.
 
-        :param str command: command to run to start service
+        :param (str, list) command: command to run to start service
         :param str host: host under which process is accessible
         :param int port: port under which process is accessible
         :param bool shell: see `subprocess.Popen`

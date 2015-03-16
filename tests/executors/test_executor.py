@@ -2,6 +2,7 @@
 import sys
 import time
 import signal
+import shlex
 
 import pytest
 
@@ -9,10 +10,13 @@ from mirakuru import Executor, HTTPExecutor
 from mirakuru.base import StartCheckExecutor
 from tests import test_server_path
 
+sleep_300 = 'sleep 300'
 
-def test_running_process():
+
+@pytest.mark.parametrize('command', (sleep_300, sleep_300.split()))
+def test_running_process(command):
     """Start process and shuts it down."""
-    executor = Executor('sleep 300')
+    executor = Executor(command)
     executor.start()
     assert executor.running() is True
     executor.stop()
@@ -25,7 +29,7 @@ def test_running_process():
 
 def test_custom_signal_stop():
     """Start process and shuts it down using signal SIGQUIT."""
-    executor = Executor('sleep 300', sig_stop=signal.SIGQUIT)
+    executor = Executor(sleep_300, sig_stop=signal.SIGQUIT)
     executor.start()
     assert executor.running() is True
     executor.stop()
@@ -34,7 +38,7 @@ def test_custom_signal_stop():
 
 def test_stop_custom_signal_stop():
     """Start process and shuts it down using signal SIGQUIT passed to stop."""
-    executor = Executor('sleep 300')
+    executor = Executor(sleep_300)
     executor.start()
     assert executor.running() is True
     executor.stop(sig=signal.SIGQUIT)
@@ -43,7 +47,7 @@ def test_stop_custom_signal_stop():
 
 def test_custom_signal_kill():
     """Start process and shuts it down using signal SIGQUIT."""
-    executor = Executor('sleep 300', sig_kill=signal.SIGQUIT)
+    executor = Executor(sleep_300, sig_kill=signal.SIGQUIT)
     executor.start()
     assert executor.running() is True
     executor.kill()
@@ -52,7 +56,7 @@ def test_custom_signal_kill():
 
 def test_kill_custom_signal_kill():
     """Start process and shuts it down using signal SIGQUIT passed to kill."""
-    executor = Executor('sleep 300')
+    executor = Executor(sleep_300)
     executor.start()
     assert executor.running() is True
     executor.kill(sig=signal.SIGQUIT)
@@ -61,7 +65,7 @@ def test_kill_custom_signal_kill():
 
 def test_running_context():
     """Start process and shuts it down."""
-    executor = Executor('sleep 300')
+    executor = Executor(sleep_300)
     with executor:
         assert executor.running() is True
 
@@ -70,7 +74,7 @@ def test_running_context():
 
 def test_context_stopped():
     """Start for context, and shuts it for nested context."""
-    executor = Executor('sleep 300')
+    executor = Executor(sleep_300)
     with executor:
         assert executor.running() is True
         with executor.stopped():
@@ -79,19 +83,23 @@ def test_context_stopped():
 
     assert executor.running() is False
 
+echo_foobar = 'echo -n "foobar"'
 
-def test_process_output():
+
+@pytest.mark.parametrize('command', (echo_foobar, shlex.split(echo_foobar)))
+def test_process_output(command):
     """Start process, check output and shut it down."""
-    executor = Executor('echo -n "foobar"')
+    executor = Executor(command)
     executor.start()
 
     assert executor.output().read() == 'foobar'
     executor.stop()
 
 
-def test_process_output_shell():
+@pytest.mark.parametrize('command', (echo_foobar, shlex.split(echo_foobar)))
+def test_process_output_shell(command):
     """Start process, check output and shut it down with shell set to True."""
-    executor = Executor('echo -n "foobar"', shell=True)
+    executor = Executor(command, shell=True)
     executor.start()
 
     assert executor.output().read() == 'foobar'
@@ -100,7 +108,7 @@ def test_process_output_shell():
 
 def test_start_check_executor():
     """Validate StartCheckExecutor base class having NotImplemented methods."""
-    executor = StartCheckExecutor('sleep 300')
+    executor = StartCheckExecutor(sleep_300)
     with pytest.raises(NotImplementedError):
         executor.pre_start_check()
     with pytest.raises(NotImplementedError):
@@ -114,7 +122,7 @@ def test_stopping_not_yet_running_executor():
     We must make sure that it's possible to call .stop() and Executor will not
     raise any exception and .start() can be called afterwards.
     """
-    executor = Executor('sleep 300')
+    executor = Executor(sleep_300)
     executor.stop()
     executor.start()
     assert executor.running() is True

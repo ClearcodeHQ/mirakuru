@@ -33,7 +33,7 @@ class HTTPExecutor(TCPExecutor):
         """
         Initialize HTTPExecutor executor.
 
-        :param str command: command to run to start service
+        :param (str, list) command: command to run to start service
         :param str url: url where executor can check
             if process has already started.
         :param bool shell: see `subprocess.Popen`
