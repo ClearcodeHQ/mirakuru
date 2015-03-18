@@ -31,7 +31,7 @@ class OutputExecutor(Executor):
         """
         Initialize OutputExecutor executor.
 
-        :param str command: command to run to start service
+        :param (str, list) command: command to run to start service
         :param str banner: string that has to appear in process output -
             should compile to regular expression.
         :param bool shell: see `subprocess.Popen`

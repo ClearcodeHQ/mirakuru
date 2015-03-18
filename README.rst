@@ -88,6 +88,18 @@ that it's running. There are three basic executors with predefined conditions:
 The ``server`` command in this case is just a bash script that sleeps for some
 time and then launches the builtin SimpleHTTPServer on port 6543.
 
+Command by which executor spawns a process, can be either string or list.
+
+.. code-block:: python
+
+    # command as string
+    TCPExecutor('python -m smtpd -n -c DebuggingServer localhost:1025', host='localhost', port=1025)
+    # command as list
+    TCPExecutor(
+        ['python, '-m', 'smtpd', '-n', '-c', 'DebuggingServer', 'localhost:1025'],
+        host='localhost', port=1025
+    )
+
 Author
 ------
 

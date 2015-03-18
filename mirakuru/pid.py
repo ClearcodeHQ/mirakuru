@@ -37,7 +37,7 @@ class PidExecutor(StartCheckExecutor):
 
         If the filename is empty, a ValueError is thrown.
 
-        :param str command: the command to run which is to create a file
+        :param (str, list) command: command to run to start service
         :param str filename: the file which is to exist
         :param bool shell: see `subprocess.Popen`
         :param int timeout: time to wait for the process to start or stop.
