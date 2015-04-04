@@ -2,7 +2,7 @@ CHANGELOG
 =========
 
 unreleased
--------
+----------
 
 - Corrected code to conform with W503, D210 and E402 linters errors as reported by pylama 6.3.1
 - [feature] introduces a hack that kills subprocess of executor process

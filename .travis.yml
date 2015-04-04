@@ -11,12 +11,19 @@ python:
   - "pypy3"
 install:
     - "python setup.py develop"
-    - "pip install mirakuru[tests] coveralls pylama"
+    - "pip install mirakuru[tests]"
+    - "pip install coveralls"
+    # rst files verifier, and pygments to parse code-blocks
+    - "pip install restructuredtext_lint pygments"
+    # code coverage tool
+    - "pip install coveralls"
     # manually install wheel for deployment
     - "pip install wheel"
 script:
     - "py.test --verbose --capture=no --showlocals --cov mirakuru"
-    - pylama
+    - "pylama"
+    # pygments library used by rst-lint doesn't work on python 3.2.
+    - "if [[ $TRAVIS_PYTHON_VERSION != '3.2' ]]; then for f in *.rst; do rst-lint $f; done; fi"
 after_success:
     - coveralls
 
