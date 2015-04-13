@@ -277,7 +277,7 @@ class Executor(object):
 
 class StartCheckExecutor(Executor):
 
-    """ Base class for executors with a pre- and after-start checks. """
+    """Base class for executors with a pre- and after-start checks."""
 
     def pre_start_check(self):
         """

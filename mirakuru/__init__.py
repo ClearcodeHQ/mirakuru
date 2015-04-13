@@ -17,8 +17,6 @@
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """Mirakuru's main module."""
 
-__version__ = '0.4.0'
-
 from mirakuru.base import Executor
 from mirakuru.output import OutputExecutor
 from mirakuru.tcp import TCPExecutor
@@ -29,6 +27,8 @@ from mirakuru.exceptions import (
     TimeoutExpired,
     AlreadyRunning,
 )
+
+__version__ = '0.4.0'
 
 __all__ = (
     'Executor',
