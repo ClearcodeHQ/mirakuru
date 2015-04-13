@@ -22,7 +22,7 @@ import sys
 
 python = sys.executable
 
-if sys.version_info.major == 2:
+if sys.version_info[0] < 3:
     from httplib import HTTPConnection, HTTPException, OK
     from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
     from urlparse import urlparse
