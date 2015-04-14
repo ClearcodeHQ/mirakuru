@@ -47,9 +47,7 @@ setup(
     version=package_version,
     description='Process executor for tests.',
     long_description=(
-        read('README.rst')
-        + '\n\n' +
-        read('CHANGES.rst')
+        read('README.rst') + '\n\n' + read('CHANGES.rst')
     ),
     keywords='process executor tests summon_process',
     url='https://github.com/ClearcodeHQ/mirakuru',
