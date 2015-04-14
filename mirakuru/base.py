@@ -18,18 +18,65 @@
 """Base executor with the most basic functionality."""
 
 import os
+import re
 import time
 import shlex
 import signal
 import subprocess
+import uuid
+import logging
 from contextlib import contextmanager
 
 from mirakuru.exceptions import TimeoutExpired, AlreadyRunning
 
 
+log = logging.getLogger(__name__)
+
+
+PS_XE_PID_MATCH = re.compile(r'^.*?(\d+).+$')
+"""_sre.SRE_Pattern matching PIDs in result from `$ ps xe -ww` command."""
+
+
+def processes_with_env(env_name, env_value):
+    """
+    Find PIDs of processes having env variable matching given one.
+
+    Function uses `$ ps e -ww` command so it works only on systems
+    having such command available (linux, macos). If not available function
+    will just log error.
+
+    :param str env_name: name of environment variable to be found
+    :param str env_value: environment variable value
+    :return: process ids (PIDs) of processes that have certain environment
+             variable with certain value
+    :rtype: set
+    """
+    pids = set()
+    command = ('ps', 'xe', '-ww')
+
+    try:
+        ps_xe = subprocess.check_output(command).splitlines()
+    except OSError as err:
+        if err.errno == 2:
+            log.error("`$ {0}` command was called but it is not available on "
+                      "this operating system. Mirakuru will not be able to "
+                      "list process tree and find if there are any leftovers "
+                      "of Executor".format(' '.join(command)))
+    else:
+        env = '{0}={1}'.format(env_name, env_value)
+
+        for line in ps_xe:
+            line = str(line)
+            if env in line:
+                pids.add(int(PS_XE_PID_MATCH.match(line).group(1)))
+    return pids
+
+
 class Executor(object):
 
     """Basic executor with the most basic functionality."""
+
+    ENV_UUID = 'mirakuru_uuid'
 
     def __init__(
             self, command, shell=False, timeout=None, sleep=0.1,
@@ -74,6 +121,8 @@ class Executor(object):
         self.process = None
         """A :class:`subprocess.Popen` instance once process is started."""
 
+        self._uuid = str(uuid.uuid1())
+
     def __enter__(self):
         """Enter context manager."""
         self.start()
@@ -109,13 +158,27 @@ class Executor(object):
             if not self._shell:
                 command = self.command_parts
 
+            env = os.environ.copy()
+            # Trick with marking subprocesses with an envirnoment variable.
+            #
+            # There is no easy way to recognize all subprocesses that were
+            # spawned during lifetime of a certain subprocess so mirakuru does
+            # this hack in order to mark who was the original parent. Even if
+            # some subprocess got daemonized or changed original process group
+            # mirakuru will be able to find it by this environment variable.
+            #
+            # There may be a situation when some subprocess will abandon
+            # orignal envs from parents and then it won't be later found.
+            env[self.__class__.ENV_UUID] = self._uuid
+
             self.process = subprocess.Popen(
                 command,
                 shell=self._shell,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
-                preexec_fn=os.setsid
+                preexec_fn=os.setsid,
+                env=env
             )
 
         self._set_timeout()
@@ -147,6 +210,26 @@ class Executor(object):
             self.process = None
 
         self._endtime = None
+
+    def _kill_all_kids(self, sig):
+        """
+        Kill all subprocesses (and its subprocesses) that executor started.
+
+        This function tries to kill all leftovers in process tree that current
+        executor may have left. It uses environment variable to recognise if
+        process have origin in this Exeuctor so it does not give 100 % and
+        some deamons fired by subprocess may still be running.
+
+        :param int sig: signal used to stop process run by executor.
+        :return: process ids (pids) of killed processes
+        :rtype list
+        """
+        pids = processes_with_env(self.ENV_UUID, self._uuid)
+        for pid in pids:
+            log.debug("Killing process %d ...", pid)
+            os.kill(pid, sig)
+            log.debug("Killed process %d.", pid)
+        return pids
 
     def stop(self, sig=None):
         """
@@ -182,6 +265,7 @@ class Executor(object):
             # at this moment, process got killed,
             pass
 
+        self._kill_all_kids(sig)
         self._clear_process()
 
     @contextmanager
@@ -213,7 +297,8 @@ class Executor(object):
             if wait:
                 self.process.wait()
 
-            self._clear_process()
+        self._kill_all_kids(sig)
+        self._clear_process()
 
     def output(self):
         """Return process output."""
@@ -249,10 +334,14 @@ class Executor(object):
 
         This method should be used in while loops waiting for some data.
 
-        :returns: True if timeout expired, False if not
+        :return: True if timeout expired, False if not
         :rtype: bool
         """
         return self._endtime is None or time.time() <= self._endtime
+
+    def __del__(self):
+        """Cleanup subprocesses created during Executor lifetime."""
+        self.kill()
 
     def __repr__(self):
         """Return unambiguous executor representation."""

@@ -9,8 +9,8 @@ from warnings import simplefilter
 import pytest
 
 
-if sys.version_info == '3':
-    from exteptions import ResourceWarning
+if sys.version_info[0] == '3':
+    from exceptions import ResourceWarning
     simplefilter('default', ResourceWarning)
 
 

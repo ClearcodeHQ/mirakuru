@@ -50,9 +50,9 @@ class PidExecutor(StartCheckExecutor):
 
         :raises: ValueError
         """
+        super(PidExecutor, self).__init__(command, **kwargs)
         if not filename:
             raise ValueError("filename cannot be empty")
-        super(PidExecutor, self).__init__(command, **kwargs)
         self.filename = filename
         """the name of the file which the process is to create."""
 

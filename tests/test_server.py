@@ -15,9 +15,9 @@ Example usage:
 
 import sys
 import time
-import signal
 
 from mirakuru.compat import HTTPServer, BaseHTTPRequestHandler
+from tests.signals import block_signals
 
 
 class SlowServerHandler(BaseHTTPRequestHandler):
@@ -55,25 +55,6 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         if SlowServerHandler.endtime is None:
             SlowServerHandler.endtime = time.time() + SlowServerHandler.timeout
         return time.time() >= SlowServerHandler.endtime
-
-
-def block_signals():
-    """
-    Catch all of the signals that it is possible.
-
-    Reject their default behaviour. The process is actually mortal but the
-    only way to kill is to send SIGKILL signal (kill -9).
-    """
-    def sighandler(signum, _):
-        """Signal handling function."""
-        print('Tried to kill with signal {}.'.format(signum))
-
-    for sgn in [x for x in dir(signal) if x.startswith("SIG")]:
-        try:
-            signum = getattr(signal, sgn)
-            signal.signal(signum, sighandler)
-        except (ValueError, RuntimeError, OSError):
-            pass
 
 
 if __name__ == "__main__":

@@ -1,16 +1,29 @@
 """Test basic executor functionality."""
+import gc
 import sys
 import time
 import signal
 import shlex
+import uuid
+from subprocess import check_output
 
 import pytest
+import mock
 
 from mirakuru import Executor, HTTPExecutor
 from mirakuru.base import StartCheckExecutor
-from tests import test_server_path
+from tests import test_server_path, sample_daemon_path
 
 sleep_300 = 'sleep 300'
+
+
+def ps_aux():
+    """
+    Return output of systems `ps aux -w` call.
+
+    :rtype str
+    """
+    return str(check_output(('ps', 'aux', '-w')))
 
 
 @pytest.mark.parametrize('command', (sleep_300, sleep_300.split()))
@@ -146,3 +159,60 @@ def test_stopping_brutally():
     executor.stop()
     assert executor.running() is False
     assert stop_at <= time.time(), "Subprocess killed earlier than in 10 secs"
+
+
+def test_forgotten_stop():
+    """
+    Test if Executor subprocess is killed after Executor instance is deleted.
+
+    Existence can end because of context scope end or by calling 'del'.
+    If someone forgot to stop() or kill() subprocess it should be killed
+    by default on instance cleanup.
+    """
+    u = str(uuid.uuid1())
+    executor = Executor('sleep 300 #%s' % u, shell=True)
+    executor.start()
+    assert executor.running() is True
+    assert u in ps_aux(), "Test process is not running"
+    del executor
+    gc.collect()  # to force 'del' immediate effect
+    assert u not in ps_aux(), "Test process is still running"
+
+
+def test_daemons_killing():
+    """
+    Test if all subprocesses of Executors can be killed.
+
+    The most problematic subprocesses are deamons or other services that
+    change the process group ID. This test verifies that deamon process
+    is killed after executor's kill().
+    """
+    executor = Executor(('python', sample_daemon_path), shell=True)
+    executor.start()
+    time.sleep(1)
+    assert executor.running() is not True, \
+        "Executor should not have subprocess running as it's started daemon."
+
+    assert sample_daemon_path in ps_aux()
+    executor.kill()
+    assert sample_daemon_path not in ps_aux()
+
+    # Second part of this test verifies exceptions being called if `ps auxe`
+    # was called on some OS that doesn't have it.
+    executor.start()
+    time.sleep(1)
+
+    def fake_output(args):
+        check_output('something_not_existing_called')
+
+    with mock.patch('subprocess.check_output', side_effect=fake_output) as co:
+        with mock.patch('mirakuru.base.log') as log:
+            executor.kill()
+
+    assert co.mock_calls == [mock.call(('ps', 'xe', '-ww'))]
+    assert 'error' == log.mock_calls[0][0]
+    assert '`$ ps xe -ww` command was called' in log.mock_calls[0][1][0]
+
+    assert sample_daemon_path in ps_aux()
+    executor.kill()
+    assert sample_daemon_path not in ps_aux()
