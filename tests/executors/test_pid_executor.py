@@ -8,7 +8,7 @@ from mirakuru import TimeoutExpired, AlreadyRunning
 
 
 filename = "pid-test-tmp{0}".format(os.getpid())
-process = 'bash -c "sleep 2 && touch {0}"'.format(filename)
+sleep = 'bash -c "sleep 2 && touch {0}"'.format(filename)
 
 
 @pytest.yield_fixture(autouse=True)
@@ -49,20 +49,20 @@ def test_start_and_wait(timeout):
 def test_empty_filename(pid_file):
     """Check whether an exception is raised if an empty filename is given."""
     with pytest.raises(ValueError):
-        PidExecutor(process, pid_file)
+        PidExecutor(sleep, pid_file)
 
 
 def test_if_file_created():
     """Check whether the process really created the given file."""
     assert os.path.isfile(filename) is False
-    executor = PidExecutor(process, filename)
+    executor = PidExecutor(sleep, filename)
     with executor:
         assert os.path.isfile(filename) is True
 
 
 def test_timeout_error():
     """Check if timeout properly expires."""
-    executor = PidExecutor(process, filename, timeout=1)
+    executor = PidExecutor(sleep, filename, timeout=1)
 
     with pytest.raises(TimeoutExpired):
         executor.start()
