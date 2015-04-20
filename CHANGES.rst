@@ -16,7 +16,7 @@ unreleased
 - [feature] Executor now accepts both list and string as a command
 - [fix] even it's not recommended to import all but `from mirakuru import *` didn't worked. Now it's fixed.
 - [tests] increased tests coverage.
-   Even library covers 100% of code it doesn't cover 100% of use cases!
+   Even test cover 100% of code it doesn't mean they cover 100% of use cases!
 - [code quality] increased pylint code evaluation.
 
 0.3.0
