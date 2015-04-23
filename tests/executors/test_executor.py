@@ -11,7 +11,7 @@ import pytest
 import mock
 
 from mirakuru import Executor, HTTPExecutor
-from mirakuru.base import StartCheckExecutor
+from mirakuru.base import SimpleExecutor
 from tests import test_server_path, sample_daemon_path
 
 sleep_300 = 'sleep 300'
@@ -29,20 +29,20 @@ def ps_aux():
 @pytest.mark.parametrize('command', (sleep_300, sleep_300.split()))
 def test_running_process(command):
     """Start process and shuts it down."""
-    executor = Executor(command)
+    executor = SimpleExecutor(command)
     executor.start()
     assert executor.running() is True
     executor.stop()
     assert executor.running() is False
 
     # check proper __str__ and __repr__ rendering:
-    assert 'Executor' in repr(executor)
+    assert 'SimpleExecutor' in repr(executor)
     assert 'sleep 300' in str(executor)
 
 
 def test_custom_signal_stop():
     """Start process and shuts it down using signal SIGQUIT."""
-    executor = Executor(sleep_300, sig_stop=signal.SIGQUIT)
+    executor = SimpleExecutor(sleep_300, sig_stop=signal.SIGQUIT)
     executor.start()
     assert executor.running() is True
     executor.stop()
@@ -51,7 +51,7 @@ def test_custom_signal_stop():
 
 def test_stop_custom_signal_stop():
     """Start process and shuts it down using signal SIGQUIT passed to stop."""
-    executor = Executor(sleep_300)
+    executor = SimpleExecutor(sleep_300)
     executor.start()
     assert executor.running() is True
     executor.stop(sig=signal.SIGQUIT)
@@ -60,7 +60,7 @@ def test_stop_custom_signal_stop():
 
 def test_custom_signal_kill():
     """Start process and shuts it down using signal SIGQUIT."""
-    executor = Executor(sleep_300, sig_kill=signal.SIGQUIT)
+    executor = SimpleExecutor(sleep_300, sig_kill=signal.SIGQUIT)
     executor.start()
     assert executor.running() is True
     executor.kill()
@@ -69,7 +69,7 @@ def test_custom_signal_kill():
 
 def test_kill_custom_signal_kill():
     """Start process and shuts it down using signal SIGQUIT passed to kill."""
-    executor = Executor(sleep_300)
+    executor = SimpleExecutor(sleep_300)
     executor.start()
     assert executor.running() is True
     executor.kill(sig=signal.SIGQUIT)
@@ -78,7 +78,7 @@ def test_kill_custom_signal_kill():
 
 def test_running_context():
     """Start process and shuts it down."""
-    executor = Executor(sleep_300)
+    executor = SimpleExecutor(sleep_300)
     with executor:
         assert executor.running() is True
 
@@ -87,7 +87,7 @@ def test_running_context():
 
 def test_context_stopped():
     """Start for context, and shuts it for nested context."""
-    executor = Executor(sleep_300)
+    executor = SimpleExecutor(sleep_300)
     with executor:
         assert executor.running() is True
         with executor.stopped():
@@ -102,7 +102,7 @@ echo_foobar = 'echo -n "foobar"'
 @pytest.mark.parametrize('command', (echo_foobar, shlex.split(echo_foobar)))
 def test_process_output(command):
     """Start process, check output and shut it down."""
-    executor = Executor(command)
+    executor = SimpleExecutor(command)
     executor.start()
 
     assert executor.output().read() == 'foobar'
@@ -112,7 +112,7 @@ def test_process_output(command):
 @pytest.mark.parametrize('command', (echo_foobar, shlex.split(echo_foobar)))
 def test_process_output_shell(command):
     """Start process, check output and shut it down with shell set to True."""
-    executor = Executor(command, shell=True)
+    executor = SimpleExecutor(command, shell=True)
     executor.start()
 
     assert executor.output().read() == 'foobar'
@@ -120,8 +120,8 @@ def test_process_output_shell(command):
 
 
 def test_start_check_executor():
-    """Validate StartCheckExecutor base class having NotImplemented methods."""
-    executor = StartCheckExecutor(sleep_300)
+    """Validate Executor base class having NotImplemented methods."""
+    executor = Executor(sleep_300)
     with pytest.raises(NotImplementedError):
         executor.pre_start_check()
     with pytest.raises(NotImplementedError):
@@ -130,12 +130,12 @@ def test_start_check_executor():
 
 def test_stopping_not_yet_running_executor():
     """
-    Test if Executor can be stopped even it was never running.
+    Test if SimpleExecutor can be stopped even it was never running.
 
-    We must make sure that it's possible to call .stop() and Executor will not
-    raise any exception and .start() can be called afterwards.
+    We must make sure that it's possible to call .stop() and SimpleExecutor
+    will not raise any exception and .start() can be called afterwards.
     """
-    executor = Executor(sleep_300)
+    executor = SimpleExecutor(sleep_300)
     executor.stop()
     executor.start()
     assert executor.running() is True
@@ -144,7 +144,7 @@ def test_stopping_not_yet_running_executor():
 
 def test_stopping_brutally():
     """
-    Test if Executor is stopping insubordinate process.
+    Test if SimpleExecutor is stopping insubordinate process.
 
     Check if the process that doesn't react to SIGTERM signal will be killed
     by executor with SIGKILL automatically.
@@ -163,14 +163,14 @@ def test_stopping_brutally():
 
 def test_forgotten_stop():
     """
-    Test if Executor subprocess is killed after Executor instance is deleted.
+    Test if SimpleExecutor subprocess is killed after an instance is deleted.
 
     Existence can end because of context scope end or by calling 'del'.
     If someone forgot to stop() or kill() subprocess it should be killed
     by default on instance cleanup.
     """
     u = str(uuid.uuid1())
-    executor = Executor('sleep 300 #%s' % u, shell=True)
+    executor = SimpleExecutor('sleep 300 #%s' % u, shell=True)
     executor.start()
     assert executor.running() is True
     assert u in ps_aux(), "Test process is not running"
@@ -181,13 +181,13 @@ def test_forgotten_stop():
 
 def test_daemons_killing():
     """
-    Test if all subprocesses of Executors can be killed.
+    Test if all subprocesses of SimpleExecutors can be killed.
 
     The most problematic subprocesses are deamons or other services that
     change the process group ID. This test verifies that deamon process
     is killed after executor's kill().
     """
-    executor = Executor(('python', sample_daemon_path), shell=True)
+    executor = SimpleExecutor(('python', sample_daemon_path), shell=True)
     executor.start()
     time.sleep(1)
     assert executor.running() is not True, \

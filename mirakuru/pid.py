@@ -18,10 +18,10 @@
 """Pid executor definition."""
 
 import os.path
-from mirakuru.base import StartCheckExecutor
+from mirakuru.base import Executor
 
 
-class PidExecutor(StartCheckExecutor):
+class PidExecutor(Executor):
 
     """
     File existence checking process executor.

@@ -7,6 +7,8 @@ unreleased
 - Corrected code to conform with W503, D210 and E402 linters errors as reported by pylama 6.3.1
 - [feature] introduces a hack that kills all subprocesses of executor process.
   It requires 'ps xe -ww' command being available in OS otherwise logs error.
+- [refactoring] Classes name convetion change.
+  Executor class got renamed into SimpleExecutor and StartCheckExecutor class got renamed into Executor.
 
 0.4.0
 -------

@@ -72,9 +72,9 @@ def processes_with_env(env_name, env_value):
     return pids
 
 
-class Executor(object):
+class SimpleExecutor(object):
 
-    """Basic executor with the most basic functionality."""
+    """Simple subprocess executor with start/stop/kill functionality."""
 
     ENV_UUID = 'mirakuru_uuid'
 
@@ -364,7 +364,7 @@ class Executor(object):
         )
 
 
-class StartCheckExecutor(Executor):
+class Executor(SimpleExecutor):
 
     """Base class for executors with a pre- and after-start checks."""
 
@@ -389,7 +389,7 @@ class StartCheckExecutor(Executor):
             # Executor or other process is running with same config.
             raise AlreadyRunning(self)
 
-        super(StartCheckExecutor, self).start()
+        super(Executor, self).start()
         self.wait_for(self.after_start_check)
 
     def after_start_check(self):
