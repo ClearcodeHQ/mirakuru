@@ -27,7 +27,13 @@ with open(os.path.join(here, 'mirakuru', '__init__.py')) as v_file:
     package_version = re.compile(
         r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
-tests_require = ('pytest', 'pytest-cov', 'mock', 'python-daemon')
+tests_require = (
+    'pytest',  # tests framework used
+    'pytest-cov',  # coverage reports to verify tests quality
+    'mock',  # tests mocking tool
+    'python-daemon',  # used in test for easy creation of daemons
+    'pylama',  # code linter
+)
 extras_require = {
     'docs': ['sphinx'],
     'tests': tests_require
