@@ -11,8 +11,8 @@ or tests.
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Latest PyPI version
 
-.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v0.4.0
-    :target: https://readthedocs.org/projects/mirakuru/?badge=v0.4.0
+.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v0.5.0
+    :target: https://readthedocs.org/projects/mirakuru/?badge=v0.5.0
     :alt: Documentation Status
 
 .. image:: https://pypip.in/d/mirakuru/badge.png
@@ -34,16 +34,16 @@ or tests.
 Package status
 --------------
 
-.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.svg?branch=v0.4.0
+.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.svg?branch=v0.5.0
     :target: https://travis-ci.org/ClearcodeHQ/mirakuru
     :alt: Tests
 
-.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=v0.4.0
-    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v0.4.0
+.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=v0.5.0
+    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v0.5.0
     :alt: Coverage Status
 
-.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.svg?tag=v0.4.0
-     :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?tag=v0.4.0
+.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.svg?tag=v0.5.0
+     :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?tag=v0.5.0
      :alt: Requirements Status
 
 
