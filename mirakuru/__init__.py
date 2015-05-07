@@ -20,7 +20,7 @@
 
 import logging
 
-from mirakuru.base import Executor
+from mirakuru.base import Executor, SimpleExecutor
 from mirakuru.output import OutputExecutor
 from mirakuru.tcp import TCPExecutor
 from mirakuru.http import HTTPExecutor
@@ -35,6 +35,7 @@ __version__ = '0.4.0'
 
 __all__ = (
     'Executor',
+    'SimpleExecutor',
     'OutputExecutor',
     'TCPExecutor',
     'HTTPExecutor',

@@ -18,10 +18,10 @@
 """TCP executor definition."""
 
 import socket
-from mirakuru.base import StartCheckExecutor
+from mirakuru.base import Executor
 
 
-class TCPExecutor(StartCheckExecutor):
+class TCPExecutor(Executor):
 
     """
     TCP-listening process executor.

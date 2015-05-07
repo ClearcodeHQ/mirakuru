@@ -20,10 +20,10 @@
 import re
 import select
 
-from mirakuru.base import Executor
+from mirakuru.base import SimpleExecutor
 
 
-class OutputExecutor(Executor):
+class OutputExecutor(SimpleExecutor):
 
     """Executor that awaits for string output being present in output."""
 
