@@ -62,7 +62,7 @@ If so, then **mirakuru** is what you need.
 that it's running. There are three basic executors with predefined conditions:
 
 
-* Executor - simply starts
+* SimpleExecutor - starts and doesn't wait for anyting. It's usefull to stop/kill its subprocesses.
 * OutputExecutor - awaits for specified output to be given by process
 * TCPExecutor - waits for ability to connect through tcp with process
 * HTTPExecutor - waits for successful HEAD request (and tcp before)
