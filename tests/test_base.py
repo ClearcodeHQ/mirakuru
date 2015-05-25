@@ -10,5 +10,7 @@ def test_importing_mirakuru():
     assert TCPExecutor
     assert HTTPExecutor
     assert PidExecutor
+    assert ExecutorError
     assert TimeoutExpired
     assert AlreadyRunning
+    assert ProcessExitedWithError

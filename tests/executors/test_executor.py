@@ -12,6 +12,8 @@ import mock
 
 from mirakuru import Executor, HTTPExecutor
 from mirakuru.base import SimpleExecutor
+from mirakuru.exceptions import ProcessExitedWithError, TimeoutExpired
+
 from tests import test_server_path, sample_daemon_path
 
 sleep_300 = 'sleep 300'
@@ -216,3 +218,49 @@ def test_daemons_killing():
     assert sample_daemon_path in ps_aux()
     executor.kill()
     assert sample_daemon_path not in ps_aux()
+
+
+def test_executor_raises_if_process_exits_with_error():
+    """
+    Test process exit detection.
+
+    If the process exits with an error while checks are being polled, executor
+    should raise an exception.
+    """
+    error_code = 12
+    failing_executor = Executor(['bash', '-c', 'exit %s' % error_code])
+    failing_executor.pre_start_check = mock.Mock(return_value=False)
+    # After-start check will keep returning False to let the process terminate.
+    failing_executor.after_start_check = mock.Mock(return_value=False)
+
+    with pytest.raises(ProcessExitedWithError) as exc:
+        failing_executor.start()
+
+    assert exc.value.exit_code == 12
+    assert 'exited with a non-zero code: %s' % error_code in str(exc.value)
+
+    # Pre-start check should have been called - after-start check might or
+    # might not have been called - depending on the timing.
+    assert failing_executor.pre_start_check.called is True
+
+
+def test_executor_ignores_processes_exiting_with_0():
+    """
+    Test process exit detection.
+
+    Subprocess exiting with zero should be tolerated in order to support
+    double-forking applications.
+    """
+    # We execute a process that will return zero. In order to give the process
+    # enough time to return we keep the polling loop spinning for a second.
+    executor = Executor(['bash', '-c', 'exit 0'], timeout=1.0)
+    executor.pre_start_check = mock.Mock(return_value=False)
+    executor.after_start_check = mock.Mock(return_value=False)
+
+    with pytest.raises(TimeoutExpired):
+        # We keep the post-checks spinning forever so it eventually times out.
+        executor.start()
+
+    # Both checks should have been called.
+    assert executor.pre_start_check.called is True
+    assert executor.after_start_check.called is True

@@ -27,8 +27,10 @@ from mirakuru.http import HTTPExecutor
 from mirakuru.pid import PidExecutor
 
 from mirakuru.exceptions import (
+    ExecutorError,
     TimeoutExpired,
     AlreadyRunning,
+    ProcessExitedWithError,
 )
 
 __version__ = '0.5.0'
@@ -40,8 +42,10 @@ __all__ = (
     'TCPExecutor',
     'HTTPExecutor',
     'PidExecutor',
+    'ExecutorError',
     'TimeoutExpired',
     'AlreadyRunning',
+    'ProcessExitedWithError',
 )
 
 
