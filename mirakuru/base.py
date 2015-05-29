@@ -27,7 +27,9 @@ import uuid
 import logging
 from contextlib import contextmanager
 
-from mirakuru.exceptions import TimeoutExpired, AlreadyRunning
+from mirakuru.exceptions import (
+        TimeoutExpired, AlreadyRunning, ProcessExitedWithError,
+)
 
 
 log = logging.getLogger(__name__)
@@ -390,7 +392,27 @@ class Executor(SimpleExecutor):
             raise AlreadyRunning(self)
 
         super(Executor, self).start()
-        self.wait_for(self.after_start_check)
+
+        self.wait_for(self.check_subprocess)
+
+    def check_subprocess(self):
+        """
+        Make sure the process didn't exit with an error and run the checks.
+
+        :rtype: bool
+        :return: the actual check status
+        :raise ProcessExitedWithError: when the main process exits with
+            an error
+        """
+        exit_code = self.process.poll()
+        if exit_code is not None and exit_code != 0:
+            # The main process exited with an error. Clean up the children
+            # if any.
+            self._kill_all_kids(self._sig_kill)
+            self._clear_process()
+            raise ProcessExitedWithError(self, exit_code)
+
+        return self.after_start_check()
 
     def after_start_check(self):
         """
