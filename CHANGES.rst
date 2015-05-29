@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [feature] Detect subprocesses exiting erroneously while polling the checks and error early.
+
 0.5.0
 ----------
 
