@@ -18,19 +18,19 @@ unreleased
 0.4.0
 -------
 
-- [feature] ability to set up custom signal for stopping and killing proceses managed by executors
+- [feature] ability to set up custom signal for stopping and killing processes managed by executors
 - [feature] replaced explicit parameters with keywords for kwargs handled by basic Executor init method
 - [feature] Executor now accepts both list and string as a command
 - [fix] even it's not recommended to import all but `from mirakuru import *` didn't worked. Now it's fixed.
 - [tests] increased tests coverage.
    Even test cover 100% of code it doesn't mean they cover 100% of use cases!
-- [code quality] increased pylint code evaluation.
+- [code quality] increased Pylint code evaluation.
 
 0.3.0
 -------
 
 - [feature] PidExecutor that waits for specified file to be created.
-- pypy compatibility
+- PyPy compatibility
 - [fix] closing all resources explicitly
 
 0.2.0
@@ -72,7 +72,7 @@ unreleased
 - exposed port and host on TCPExecutor
 - exposed url on HTTPExecutor
 - simplified package structure
-- simplified executors operating api
+- simplified executors operating API
 - updated documentation
 - added docblocks for every function
 - applied license headers

@@ -1,7 +1,7 @@
 """
 Daemon sample application for tests purposes.
 
-Stopping this procces is possible only by SIGKILL.
+Stopping this process is possible only by the SIGKILL signal.
 
 Usage:
 

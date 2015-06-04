@@ -31,17 +31,18 @@ class OutputExecutor(SimpleExecutor):
         """
         Initialize OutputExecutor executor.
 
-        :param (str, list) command: command to run to start service
+        :param (str, list) command: command to be run by the subprocess
         :param str banner: string that has to appear in process output -
             should compile to regular expression.
-        :param bool shell: see `subprocess.Popen`
-        :param int timeout: time to wait for process to start or stop.
-            if None, wait indefinitely.
+        :param bool shell: same as the `subprocess.Popen` shell definition
+        :param int timeout: number of seconds to wait for the process to start
+            or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
-        :param int sig_stop: signal used to stop process run by executor.
-            default is SIGTERM
-        :param int sig_kill: signal used to kill process run by  executor.
-            default is SIGKILL
+        :param int sig_stop: signal used to stop process run by the executor.
+            default is `signal.SIGTERM`
+        :param int sig_kill: signal used to kill process run by the executor.
+            default is `signal.SIGKILL`
+
         """
         super(OutputExecutor, self).__init__(command, **kwargs)
         self._banner = re.compile(banner)

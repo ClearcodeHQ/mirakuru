@@ -183,10 +183,10 @@ def test_forgotten_stop():
 
 def test_daemons_killing():
     """
-    Test if all subprocesses of SimpleExecutors can be killed.
+    Test if all subprocesses of SimpleExecutor can be killed.
 
-    The most problematic subprocesses are deamons or other services that
-    change the process group ID. This test verifies that deamon process
+    The most problematic subprocesses are daemons or other services that
+    change the process group ID. This test verifies that daemon process
     is killed after executor's kill().
     """
     executor = SimpleExecutor(('python', sample_daemon_path), shell=True)
@@ -199,7 +199,7 @@ def test_daemons_killing():
     executor.kill()
     assert sample_daemon_path not in ps_aux()
 
-    # Second part of this test verifies exceptions being called if `ps auxe`
+    # Second part of this test verifies exceptions being called if `ps xe -ww`
     # was called on some OS that doesn't have it.
     executor.start()
     time.sleep(1)

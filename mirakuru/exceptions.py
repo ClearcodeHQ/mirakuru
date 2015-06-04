@@ -1,4 +1,4 @@
-"""Mirakuru's exceptions."""
+"""Mirakuru exceptions."""
 
 
 class ExecutorError(Exception):
@@ -9,7 +9,7 @@ class ExecutorError(Exception):
         """
         Exception initialization.
 
-        :param mirakuru.base.Executor executor: for which exception occured
+        :param mirakuru.base.Executor executor: for which exception occurred
         """
         super(ExecutorError, self).__init__(self)
         self.executor = executor
@@ -23,7 +23,7 @@ class TimeoutExpired(ExecutorError):
         """
         Exception initialization with an extra ``timeout`` argument.
 
-        :param mirakuru.base.Executor executor: for which exception occured
+        :param mirakuru.base.Executor executor: for which exception occurred
         :param int timeout: timeout for which exception occurred
         """
         super(TimeoutExpired, self).__init__(executor)
@@ -71,14 +71,14 @@ class ProcessExitedWithError(ExecutorError):
 
     We allow the process to exit with zero because we support daemonizing
     subprocesses. We assume that when double-forking, the parent process will
-    exit with 0 in case of successfull daemonization.
+    exit with 0 in case of successful daemonization.
     """
 
     def __init__(self, executor, exit_code):
         """
         Exception initialization with an extra ``exit_code`` argument.
 
-        :param mirakuru.base.Executor executor: for which exception occured
+        :param mirakuru.base.Executor executor: for which exception occurred
         :param int exit_code: code the subprocess exited with
         """
         super(ProcessExitedWithError, self).__init__(executor)

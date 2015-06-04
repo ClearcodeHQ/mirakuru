@@ -9,7 +9,7 @@ Example usage:
 
     python tests/slow_server.py [host:port] True
 
-        - run immortal server (stopping procces only by SIGKILL)
+        - run immortal server (stopping process only by SIGKILL)
 
 """
 
@@ -40,7 +40,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         Serve HEAD request.
 
         but count to wait and return 500 response if wait time not exceeded
-        due to the fact, that HTTPServer will hang waiting for response
+        due to the fact that HTTPServer will hang waiting for response
         to return otherwise if none response will be returned.
         """
         if self.count_timeout():

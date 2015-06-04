@@ -34,17 +34,18 @@ class TCPExecutor(Executor):
         """
         Initialize TCPExecutor executor.
 
-        :param (str, list) command: command to run to start service
+        :param (str, list) command: command to be run by the subprocess
         :param str host: host under which process is accessible
         :param int port: port under which process is accessible
-        :param bool shell: see `subprocess.Popen`
-        :param int timeout: time to wait for process to start or stop.
-            if None, wait indefinitely.
+        :param bool shell: same as the `subprocess.Popen` shell definition
+        :param int timeout: number of seconds to wait for the process to start
+            or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
-        :param int sig_stop: signal used to stop process run by executor.
-            default is SIGTERM
-        :param int sig_kill: signal used to kill process run by  executor.
-            default is SIGKILL
+        :param int sig_stop: signal used to stop process run by the executor.
+            default is `signal.SIGTERM`
+        :param int sig_kill: signal used to kill process run by the executor.
+            default is `signal.SIGKILL`
+
         """
         super(TCPExecutor, self).__init__(command, **kwargs)
         self.host = host
@@ -68,7 +69,7 @@ class TCPExecutor(Executor):
         except (socket.error, socket.timeout):
             return False
         finally:
-            # close socket manually for sake of pypy
+            # close socket manually for sake of PyPy
             sock.close()
 
     def after_start_check(self):
