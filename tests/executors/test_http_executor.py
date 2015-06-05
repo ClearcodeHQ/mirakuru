@@ -82,8 +82,8 @@ def test_slow_server_starting():
     """
     Test whether or not executor awaits for slow starting servers.
 
-    Simple example. You run gunicorn, gunicorn is working
-    but you have to wait for worker procesess.
+    Simple example. You run Gunicorn and it is working but you have to
+    wait for worker processes.
     """
     executor = slow_server_executor()
     executor.start()

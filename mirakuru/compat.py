@@ -15,7 +15,7 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
-"""mirakuru's python2 and python3 compatibility module."""
+"""mirakuru Python 2 and 3 compatibility module."""
 
 import sys
 
@@ -28,11 +28,11 @@ if sys.version_info.major == 2:
     from urlparse import urlparse
     http_server_cmd = "{python} -m SimpleHTTPServer".format(python=python)
 else:
-    # In python3 httplib is renamed to http.client
+    # In Python 3 httplib is renamed to http.client
     from http.client import HTTPConnection, HTTPException, OK
-    # In python3 BaseHTTPServer is renamed to http.server
+    # In Python 3 BaseHTTPServer is renamed to http.server
     from http.server import HTTPServer, BaseHTTPRequestHandler
-    # In python3 urlparse is renamed to urllib.parse
+    # In Python 3 urlparse is renamed to urllib.parse
     from urllib.parse import urlparse
     http_server_cmd = "{python} -m http.server".format(python=python)
 

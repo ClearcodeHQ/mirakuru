@@ -1,4 +1,4 @@
-"""Pid Executor tests."""
+"""PidExecutor tests."""
 import os
 
 import pytest

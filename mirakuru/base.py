@@ -28,7 +28,9 @@ import logging
 from contextlib import contextmanager
 
 from mirakuru.exceptions import (
-        TimeoutExpired, AlreadyRunning, ProcessExitedWithError,
+    TimeoutExpired,
+    AlreadyRunning,
+    ProcessExitedWithError,
 )
 
 
@@ -41,10 +43,10 @@ PS_XE_PID_MATCH = re.compile(r'^.*?(\d+).+$')
 
 def processes_with_env(env_name, env_value):
     """
-    Find PIDs of processes having env variable matching given one.
+    Find PIDs of processes having environment variable matching given one.
 
     Function uses `$ ps e -ww` command so it works only on systems
-    having such command available (linux, macos). If not available function
+    having such command available (Linux, MacOS). If not available function
     will just log error.
 
     :param str env_name: name of environment variable to be found
@@ -54,16 +56,15 @@ def processes_with_env(env_name, env_value):
     :rtype: set
     """
     pids = set()
-    command = ('ps', 'xe', '-ww')
 
     try:
-        ps_xe = subprocess.check_output(command).splitlines()
+        ps_xe = subprocess.check_output(('ps', 'xe', '-ww')).splitlines()
     except OSError as err:
         if err.errno == 2:
-            log.error("`$ {0}` command was called but it is not available on "
-                      "this operating system. Mirakuru will not be able to "
-                      "list process tree and find if there are any leftovers "
-                      "of Executor".format(' '.join(command)))
+            log.error("`$ ps xe -ww` command was called but it is not "
+                      "available on this operating system. Mirakuru will not "
+                      "be able to list the process tree and find if there are "
+                      "any leftovers of the Executor.")
     else:
         env = '{0}={1}'.format(env_name, env_value)
 
@@ -87,27 +88,27 @@ class SimpleExecutor(object):
         """
         Initialize executor.
 
-        :param (str, list) command: command to run to start service
-        :param bool shell: see `subprocess.Popen`
-        :param int timeout: time to wait for process to start or stop.
-            if None, wait indefinitely.
+        :param (str, list) command: command to be run by the subprocess
+        :param bool shell: same as the `subprocess.Popen` shell definition
+        :param int timeout: number of seconds to wait for the process to start
+            or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
-        :param int sig_stop: signal used to stop process run by executor.
-            default is SIGTERM
-        :param int sig_kill: signal used to kill process run by  executor.
-            default is SIGKILL
+        :param int sig_stop: signal used to stop process run by the executor.
+            default is `signal.SIGTERM`
+        :param int sig_kill: signal used to kill process run by the executor.
+            default is `signal.SIGKILL`
 
         .. note::
 
             **timeout** set for executor is valid for all the level of waits
             on the way up. That means that if some more advanced executor sets
-            timout to 10 seconds, and it'll take 5 seconds for first check,
+            timeout to 10 seconds and it will take 5 seconds for first check,
             second check will only have 5 seconds left.
 
         """
         if isinstance(command, (list, tuple)):
             self.command = ' '.join(command)
-            """Command that executor runs."""
+            """Command that the executor runs."""
             self.command_parts = command
         else:
             self.command = command
@@ -161,7 +162,7 @@ class SimpleExecutor(object):
                 command = self.command_parts
 
             env = os.environ.copy()
-            # Trick with marking subprocesses with an envirnoment variable.
+            # Trick with marking subprocesses with an environment variable.
             #
             # There is no easy way to recognize all subprocesses that were
             # spawned during lifetime of a certain subprocess so mirakuru does
@@ -170,7 +171,7 @@ class SimpleExecutor(object):
             # mirakuru will be able to find it by this environment variable.
             #
             # There may be a situation when some subprocess will abandon
-            # orignal envs from parents and then it won't be later found.
+            # original envs from parents and then it won't be later found.
             env[self.__class__.ENV_UUID] = self._uuid
 
             self.process = subprocess.Popen(
@@ -187,7 +188,7 @@ class SimpleExecutor(object):
 
     def _set_timeout(self, timeout=None):
         """
-        Set timout for possible wait.
+        Set timeout for possible wait.
 
         :param int timeout: [optional] specific timeout to set.
             If not set, Executor._timeout will be used instead.
@@ -219,8 +220,8 @@ class SimpleExecutor(object):
 
         This function tries to kill all leftovers in process tree that current
         executor may have left. It uses environment variable to recognise if
-        process have origin in this Exeuctor so it does not give 100 % and
-        some deamons fired by subprocess may still be running.
+        process have origin in this Executor so it does not give 100 % and
+        some daemons fired by subprocess may still be running.
 
         :param int sig: signal used to stop process run by executor.
         :return: process ids (pids) of killed processes
@@ -289,8 +290,8 @@ class SimpleExecutor(object):
 
         :param bool wait: set to `True` to wait for the process to end,
             or False, to simply proceed after sending signal.
-        :param int sig: signal used to kill process run by  executor.
-            None for default.
+        :param int sig: signal used to kill process run by the executor.
+            None by default.
         """
         if sig is None:
             sig = self._sig_kill
@@ -303,7 +304,7 @@ class SimpleExecutor(object):
         self._clear_process()
 
     def output(self):
-        """Return process output."""
+        """Return subprocess output."""
         if self.process is not None:
             return self.process.stdout
 
@@ -323,9 +324,7 @@ class SimpleExecutor(object):
             time.sleep(self._sleep)
 
         self.kill()
-        raise TimeoutExpired(
-            self, timeout=self._timeout
-        )
+        raise TimeoutExpired(self, timeout=self._timeout)
 
     def check_timeout(self):
         """
@@ -374,8 +373,8 @@ class Executor(SimpleExecutor):
         """
         Method fired before the start of executor.
 
-        Should be overridden in order to return boolean value if some
-        process is already started.
+        Should be overridden in order to return True when some other
+        executor (or process) has already started with the same configuration.
         :rtype: bool
         """
         raise NotImplementedError
@@ -388,7 +387,7 @@ class Executor(SimpleExecutor):
         (executor) and wait until it's started.
         """
         if self.pre_start_check():
-            # Executor or other process is running with same config.
+            # Some other executor (or process) is running with same config:
             raise AlreadyRunning(self)
 
         super(Executor, self).start()

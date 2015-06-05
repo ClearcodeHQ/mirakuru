@@ -1,8 +1,10 @@
 """
-Conftest responsible for filtering ResourceWarning for python 3.
+Tests pre-configuration.
 
-Also includes fixture for raising an error whenever we leave any resource open.
+* Filtering ResourceWarning for the Python 3.
+* Fixture for raising an error whenever we leave any resource open.
 """
+
 import sys
 from warnings import simplefilter
 
