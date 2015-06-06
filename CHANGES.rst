@@ -5,6 +5,13 @@ unreleased
 ----------
 
 - [feature] Detect subprocesses exiting erroneously while polling the checks and error early.
+- [change] Set the default 'timeout' value for the SimpleExecutor.
+  The SimpleExecutor has now default timeout equal 30 seconds (previously None).
+  In the most of cases 30 seconds seems to be reasonable for a process to start or stop.
+- [change] Reduced the default 'sleep' value of SimpleExecutor from 0.1 to 0.01 seconds.
+  In case of huge number of tests having many mirakuru executors library users can benefit from
+  the the faster response on start() or stop().
+
 
 0.5.0
 ----------

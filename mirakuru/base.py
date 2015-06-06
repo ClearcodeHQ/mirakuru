@@ -82,7 +82,7 @@ class SimpleExecutor(object):
     ENV_UUID = 'mirakuru_uuid'
 
     def __init__(
-            self, command, shell=False, timeout=None, sleep=0.1,
+            self, command, shell=False, timeout=30, sleep=0.01,
             sig_stop=signal.SIGTERM, sig_kill=signal.SIGKILL
     ):
         """
