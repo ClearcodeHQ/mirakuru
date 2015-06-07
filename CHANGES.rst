@@ -5,6 +5,7 @@ unreleased
 ----------
 
 - [feature] Detect subprocesses exiting erroneously while polling the checks and error early.
+- [fix] make test_forgotten_stop pass by preventing the shell from optimizing forking out
 
 0.5.0
 ----------

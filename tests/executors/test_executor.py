@@ -171,14 +171,23 @@ def test_forgotten_stop():
     If someone forgot to stop() or kill() subprocess it should be killed
     by default on instance cleanup.
     """
-    u = str(uuid.uuid1())
-    executor = SimpleExecutor('sleep 300 #%s' % u, shell=True)
+    mark = str(uuid.uuid1())
+    # We cannot simply do `sleep 300 #<our-uuid>` in a shell because in that
+    # case bash (default shell on some systems) does `execve` without cloning
+    # itself - that means there will be no process with commandline like:
+    # '/bin/sh -c sleep 300 && true #<our-uuid>' - instead that process would
+    # get substituted with 'sleep 300' and the marked commandline would be
+    # overwritten.
+    # Injecting some flow control (`&&`) forces bash to fork properly.
+    marked_command = 'sleep 300 && true #%s' % mark
+    executor = SimpleExecutor(marked_command, shell=True)
     executor.start()
     assert executor.running() is True
-    assert u in ps_aux(), "Test process is not running"
+    assert mark in ps_aux(), "The test process should be running."
     del executor
     gc.collect()  # to force 'del' immediate effect
-    assert u not in ps_aux(), "Test process is still running"
+    assert (mark not in ps_aux(),
+            "The test process should not be running at this point.")
 
 
 def test_daemons_killing():
