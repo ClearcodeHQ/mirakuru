@@ -31,6 +31,8 @@ class PidExecutor(Executor):
     created.
     """
 
+    CLI_NAME = 'pid'
+
     def __init__(self, command, filename, **kwargs):
         """
         Initialize the PidExecutor executor.

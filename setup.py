@@ -85,4 +85,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     extras_require=extras_require,
+    entry_points={
+        'console_scripts': 'mirakuru=mirakuru.cli:cli_entry'
+    },
 )

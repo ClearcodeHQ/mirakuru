@@ -30,6 +30,28 @@ class TCPExecutor(Executor):
     TCP connections.
     """
 
+    CLI_NAME = 'tcp'
+
+    @classmethod
+    def populate_command(cls, command):
+        """
+        Populate the executor subcommand with the arguments.
+
+        Including TCPExecutor-specific args.
+        """
+        super(TCPExecutor, cls).populate_command(command)
+        command.add_argument('host', type=str, help='process host')
+        command.add_argument('port', type=int, help='process port')
+
+    @classmethod
+    def commandline_args_to_init_keyword_args(cls, args):
+        """Form kwargs dict for cls.__init__ with TCPExecutor-specific args."""
+        init_args = super(TCPExecutor, cls).\
+            commandline_args_to_init_keyword_args(args)
+        init_args['port'] = args.port
+        init_args['host'] = args.host
+        return init_args
+
     def __init__(self, command, host, port, **kwargs):
         """
         Initialize TCPExecutor executor.

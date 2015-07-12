@@ -29,6 +29,8 @@ class HTTPExecutor(TCPExecutor):
 
     """Http enabled process executor."""
 
+    CLI_NAME = 'http'
+
     def __init__(self, command, url, **kwargs):
         """
         Initialize HTTPExecutor executor.
