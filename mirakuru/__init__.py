@@ -35,17 +35,20 @@ from mirakuru.exceptions import (
 
 __version__ = '0.5.0'
 
-__all__ = (
-    'Executor',
-    'SimpleExecutor',
-    'OutputExecutor',
-    'TCPExecutor',
-    'HTTPExecutor',
-    'PidExecutor',
-    'ExecutorError',
-    'TimeoutExpired',
-    'AlreadyRunning',
-    'ProcessExitedWithError',
+all_executors = (
+    Executor,
+    SimpleExecutor,
+    OutputExecutor,
+    TCPExecutor,
+    HTTPExecutor,
+    PidExecutor,
+)
+
+all_exceptions = (
+    ExecutorError,
+    TimeoutExpired,
+    AlreadyRunning,
+    ProcessExitedWithError,
 )
 
 

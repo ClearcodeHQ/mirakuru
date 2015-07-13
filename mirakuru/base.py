@@ -18,6 +18,7 @@
 """Base executor with the most basic functionality."""
 
 import os
+import sys
 import re
 import time
 import shlex
@@ -27,6 +28,7 @@ import uuid
 import logging
 from contextlib import contextmanager
 
+from mirakuru.signals import signal_name_to_code, known_signals_codes
 from mirakuru.exceptions import (
     TimeoutExpired,
     AlreadyRunning,
@@ -81,22 +83,126 @@ class SimpleExecutor(object):
 
     ENV_UUID = 'mirakuru_uuid'
 
+    DEFAULT_GENTLE_TERMINATION_SIGNAL = signal.SIGTERM
+    DEFAULT_FORCEFULL_TERMINATION_SIGNAL = signal.SIGKILL
+    DEFAULT_SLEEP_TIME = 0.1
+
+    # TODO: to be replaced with None, currently good for debugging
+    CLI_NAME = 'base'
+    """
+    Name of the `mirakuru` subcommand the executor should be available under.
+
+    None if it should not be available in CLI.
+    """
+
+    @classmethod
+    def populate_command(cls, command):
+        """Populate the executor subcommand with the arguments."""
+        command.add_argument(
+            '--shell', action='store_true',
+            help='invoke popen in current shell (dangerous)')
+        command.add_argument(
+            '--timeout', type=float,
+            help='seconds to wait for the process to start. Forever if not '
+                 'given.')
+        command.add_argument(
+            '--sleep', type=float,
+            default=cls.DEFAULT_SLEEP_TIME,
+            help='how often to check for start/stop condition')
+        command.add_argument(
+            '-t', '--terminate-with', type=str,
+            default=cls.DEFAULT_GENTLE_TERMINATION_SIGNAL,
+            help='signal to send to the invoked processes to terminate them. '
+                 'Either the signal name (\'SIGINT\') or number (\'2\').')
+        command.add_argument(
+            '-T', '--forcefully-terminate-with', type=str,
+            default=cls.DEFAULT_FORCEFULL_TERMINATION_SIGNAL,
+            help='singal to send to the processes that just won\'t terminate '
+                 'within the timeout. Either the signal name (\'SIGINT\') or'
+                 'number (\'2\').')
+
+    @classmethod
+    def as_command(cls, args):
+        """
+        Parse stdin and run the command.
+
+        :param argparse.Namespace args: arguments returned by argparse's
+            ArgumentParser populated with arguments by `cls.populate_command`.
+        """
+        init_args = cls.commandline_args_to_init_keyword_args(args)
+        executor = cls(**init_args)
+        executor.start()
+        return executor
+
+    @classmethod
+    def commandline_args_to_init_keyword_args(cls, args):
+        """
+        Form kwargs dict for cls.__init__.
+
+        Interpret the argparse Namespace instance into the dict of kwargs to
+        pass to the class constructos.
+
+        :param argparse.Namespace args: arguments returned by argparse's
+            ArgumentParser populated with arguments by `cls.populate_command`.
+        """
+        init_args = {'command': args.process_args, 'shell': args.shell}
+
+        if args.timeout is not None:
+            init_args['timeout'] = args.timeout
+
+        if args.sleep is not None:
+            init_args['sleep'] = args.sleep
+
+        for init_param_name, signal_arg in [
+            ('sig_stop', args.terminate_with),
+            ('sig_kill', args.forcefully_terminate_with),
+        ]:
+            try:
+                signal_no = int(signal_arg)
+            except TypeError:
+                try:
+                    signal_no = signal_name_to_code[signal_arg.upper()]
+                except KeyError:
+                    print >> sys.stderr, 'Unknown signal name %s.' % signal_arg
+                    exit(1)
+
+            if signal_no not in known_signals_codes:
+                # TODO: this requires better handling (like some -f option)
+                # without -f we would exit, with - we'd continue.
+                # with -q we'd stfu
+
+                # For anyone willing to say "we're not merging a code with
+                # TODOs":
+                #    I know. It's a TODO because I have to fix it before the
+                #    final review of the pull request.
+                print >> sys.stderr, (
+                    'The signal code %s is not known. Anything may happen.' %
+                    signal_no)
+
+            init_args[init_param_name] = signal_arg
+
+        return init_args
+
     def __init__(
-            self, command, shell=False, timeout=None, sleep=0.1,
-            sig_stop=signal.SIGTERM, sig_kill=signal.SIGKILL
+        self, command, shell=False, timeout=None, sleep=DEFAULT_SLEEP_TIME,
+        sig_stop=DEFAULT_GENTLE_TERMINATION_SIGNAL,
+        sig_kill=DEFAULT_FORCEFULL_TERMINATION_SIGNAL
     ):
         """
-        Initialize executor.
+        Initialize the executor.
 
         :param (str, list) command: command to be run by the subprocess
         :param bool shell: same as the `subprocess.Popen` shell definition
-        :param int timeout: number of seconds to wait for the process to start
-            or stop. If None or False, wait indefinitely.
+        :param float timeout: number of seconds to wait for the process
+            to start or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
-        :param int sig_stop: signal used to stop process run by the executor.
-            default is `signal.SIGTERM`
-        :param int sig_kill: signal used to kill process run by the executor.
-            default is `signal.SIGKILL`
+        :param int sig_stop: signal used to terminate (not pause) the processes
+            ran by the executor. This has nothing to do with SIGSTOP.
+            The default is `signal.SIGTERM`.
+        :param int sig_kill: signal used to kill processes ran by the executor
+            if the processes do not stop themselves for `timeout` seconds after
+            the signal provided by `sig_stop` is sent.
+            The default is `signal.SIGKILL`
 
         .. note::
 
@@ -361,7 +467,9 @@ class SimpleExecutor(object):
         return '<{module}.{executor}: "{command}">'.format(
             module=self.__class__.__module__,
             executor=self.__class__.__name__,
-            command=self.command
+            # The self.command is set in __init__ - there are several lines
+            # where it is not set:
+            command=getattr(self, 'command', '<Command not set>'),
         )
 
 

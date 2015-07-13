@@ -27,6 +27,8 @@ class OutputExecutor(SimpleExecutor):
 
     """Executor that awaits for string output being present in output."""
 
+    CLI_NAME = 'output'
+
     def __init__(self, command, banner, **kwargs):
         """
         Initialize OutputExecutor executor.
