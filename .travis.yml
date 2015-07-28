@@ -26,6 +26,10 @@ script:
     - "if [[ $TRAVIS_PYTHON_VERSION != '3.2' ]]; then for f in *.rst; do rst-lint $f; done; fi"
 after_success:
     - coveralls
+matrix:
+    allow_failures:
+        - os: osx
+sudo: false
 
 deploy:
     provider: pypi
