@@ -9,7 +9,7 @@ Tests would be best example here or a script that sets up processes and database
 for dev environment with one simple run.
 
 SimpleExecutor
---------
+--------------
 
 :class:`mirakuru.base.SimpleExecutor` is the simplest executor implementation.
 It simply starts the process passed to constructor, and reports it as running.
@@ -46,16 +46,16 @@ process output.
 What happens during start here, is that the executor constantly checks output
 produced by started process, and looks for the banner part occurring within the
 output.
-Once the output is identified, like in example `processed!` is found in output.
-It's considered as started, and executor releases your script from wait to work.
+Once the output is identified, as in example `processed!` is found in output.
+It is considered as started, and executor releases your script from wait to work.
 
 TCPExecutor
 -----------
 
 :class:`mirakuru.tcp.TCPExecutor` is the executor that should be used to start
 processes that are using TCP connection. This executor tries to connect with
-process on given host:port to see if it started accepting connections. Once it
-does, it reports the process as started and code returns to normal execution.
+the process on given host:port to see if it started accepting connections. Once it
+does, it reports the process as started and a code returns to normal execution.
 
 .. code-block:: python
 
@@ -68,15 +68,13 @@ does, it reports the process as started and code returns to normal execution.
 
     process.stop()
 
-
-
 HTTPExecutor
 ------------
 
 :class:`mirakuru.http.HTTPExecutor` is executor that will be used to start
-web applications for example. To start it, you apart from command, you need to pass an url.
-This url will be used to make a HEAD request to. Once successful,
-executor will be considered started, and code will return to normal execution.
+web applications for example. To start it, you apart from command, you need to pass a URL.
+This URL will be used to make a HEAD request. Once successful,
+the executor will be considered started, and a code will return to normal execution.
 
 .. code-block:: python
 
@@ -89,17 +87,15 @@ executor will be considered started, and code will return to normal execution.
 
     process.stop()
 
-This executor however, apart from HEAD request, also inherits TCPExecutor,
+This executor, however, apart from HEAD request, also inherits TCPExecutor,
 so it'll try to connect to process over TCP first, to determine,
 if it can try to make a HEAD request already.
 
-
-
 PidExecutor
-------------
+-----------
 
 :class:`mirakuru.pid.PidExecutor` is an executor that starts the given
-process, then waits for a given file to be found before it gives back control.
+process, and then waits for a given file to be found before it gives back control.
 An example use for this class is writing integration tests for processes that
 notify their running by creating a .pid file.
 
@@ -113,8 +109,6 @@ notify their running by creating a .pid file.
     # Do your stuff
 
     process.stop()
-
-
 
 As a Context manager
 --------------------
