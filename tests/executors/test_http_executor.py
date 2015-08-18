@@ -4,8 +4,9 @@ import socket
 from functools import partial
 
 import pytest
+from mock import patch
 
-from mirakuru import HTTPExecutor
+from mirakuru import HTTPExecutor, TCPExecutor
 from mirakuru import TimeoutExpired, AlreadyRunning
 from mirakuru.compat import HTTPConnection, OK, http_server_cmd
 from tests import test_server_path
@@ -124,3 +125,22 @@ def test_fail_if_other_executor_running():
             with executor2:
                 pass
         assert 'seems to be already running' in str(exc)
+
+
+@patch.object(HTTPExecutor, 'DEFAULT_PORT', PORT)
+def test_default_port():
+    """
+    Test default port for the base TCP check.
+
+    Check if HTTP executor fills in the default port for the TCP check
+    from the base class if no port is provided in the URL.
+    """
+    executor = HTTPExecutor(http_server_cmd, 'http://{}/'.format(HOST))
+
+    assert executor.url.port is None
+    assert executor.port == PORT
+
+    assert TCPExecutor.pre_start_check(executor) is False
+    executor.start()
+    assert TCPExecutor.pre_start_check(executor) is True
+    executor.stop()
