@@ -29,6 +29,9 @@ class HTTPExecutor(TCPExecutor):
 
     """Http enabled process executor."""
 
+    DEFAULT_PORT = 80
+    """Default TCP port in the HTTP protocol."""
+
     def __init__(self, command, url, **kwargs):
         """
         Initialize HTTPExecutor executor.
@@ -50,16 +53,21 @@ class HTTPExecutor(TCPExecutor):
         """
         An :func:`urlparse.urlparse` representation of an url.
 
-        It'll be used to check process status on."""
+        It'll be used to check process status on.
+        """
+
+        port = self.url.port
+        if port is None:
+            port = self.DEFAULT_PORT
 
         super(HTTPExecutor, self).__init__(
-            command, host=self.url.hostname, port=self.url.port, **kwargs
+            command, host=self.url.hostname, port=port, **kwargs
         )
 
     def after_start_check(self):
         """Check if defined url returns successful head."""
         try:
-            conn = HTTPConnection(self.url.hostname, self.url.port)
+            conn = HTTPConnection(self.host, self.port)
 
             conn.request('HEAD', self.url.path)
             response = conn.getresponse()
