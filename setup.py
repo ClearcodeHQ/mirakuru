@@ -78,7 +78,7 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Testing',
     ],
-    packages=find_packages(exclude='tests.*'),
+    packages=find_packages(),
     install_requires=[],
     tests_require=tests_require,
     test_suite='tests',
