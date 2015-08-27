@@ -4,6 +4,8 @@ CHANGELOG
 unreleased
 ----------
 
+- [fix] modify MANIFEST to prune tests folder
+- [feature] HTTPExecutor will now set the default 80 if not present in url
 - [feature] Detect subprocesses exiting erroneously while polling the checks and error early.
 - [fix] make test_forgotten_stop pass by preventing the shell from optimizing forking out
 
