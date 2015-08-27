@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+0.6.0
 ----------
 
 - [fix] modify MANIFEST to prune tests folder
