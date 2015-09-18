@@ -8,10 +8,13 @@ Usage:
     python tests/sample_daemon.py
 
 """
-
+import os
+import sys
 import time
 
 import daemon
+
+sys.path.append(os.getcwd())  # noqa
 
 from tests.signals import block_signals
 

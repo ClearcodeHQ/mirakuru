@@ -12,6 +12,8 @@ python:
 install:
     - "python setup.py develop"
     - "pip install mirakuru[tests]"
+    # pygments library used by rst-lint doesn't work on python 3.2.
+    - "if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install coverage==3.7.1; fi"
     - "pip install coveralls"
     # rst files verifier, and pygments to parse code-blocks
     - "pip install restructuredtext_lint pygments"
