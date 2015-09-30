@@ -26,6 +26,7 @@ import subprocess
 import uuid
 import logging
 from contextlib import contextmanager
+from threading  import Thread
 
 from mirakuru.exceptions import (
     TimeoutExpired,
@@ -83,7 +84,9 @@ class SimpleExecutor(object):
 
     def __init__(
             self, command, shell=False, timeout=None, sleep=0.1,
-            sig_stop=signal.SIGTERM, sig_kill=signal.SIGKILL
+            sig_stop=signal.SIGTERM, sig_kill=signal.SIGKILL,
+            stdout_callback=None,
+            stderr_callback=None,
     ):
         """
         Initialize executor.
@@ -97,6 +100,11 @@ class SimpleExecutor(object):
             default is `signal.SIGTERM`
         :param int sig_kill: signal used to kill process run by the executor.
             default is `signal.SIGKILL`
+        :param function stdout_callback: for each standard output line this 
+            callback be executed
+        :param function stderr_callback: for each error output line this 
+            callback be executed
+
 
         .. note::
 
@@ -119,6 +127,8 @@ class SimpleExecutor(object):
         self._sleep = sleep
         self._sig_stop = sig_stop
         self._sig_kill = sig_kill
+        self._stdout_callback = stdout_callback
+        self._stderr_callback = stderr_callback
 
         self._endtime = None
         self.process = None
@@ -179,10 +189,29 @@ class SimpleExecutor(object):
                 shell=self._shell,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 universal_newlines=True,
+                bufsize=1,  # do not buffer output
                 preexec_fn=os.setsid,
                 env=env
             )
+            def read_output(output, callback):
+                for line in iter(output.readline, ''):
+                    if line and not output.closed: callback(line)
+                output.close()
+
+            if self._stdout_callback:
+                stdout_thread = Thread(target=read_output, 
+                                       args=(self.process.stdout,
+                                             self._stdout_callback))
+                stdout_thread.daemon = True
+                stdout_thread.start()
+            if self._stderr_callback:
+                stderr_thread = Thread(target=read_output, 
+                                       args=(self.process.stderr,
+                                             self._stderr_callback))
+                stderr_thread.daemon = True
+                stderr_thread.start()
 
         self._set_timeout()
 
@@ -209,6 +238,8 @@ class SimpleExecutor(object):
                 self.process.stdin.close()
             if self.process.stdout:
                 self.process.stdout.close()
+            if self.process.stderr:
+                self.process.stderr.close()
 
             self.process = None
 

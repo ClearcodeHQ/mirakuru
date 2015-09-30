@@ -273,3 +273,28 @@ def test_executor_ignores_processes_exiting_with_0():
     # Both checks should have been called.
     assert executor.pre_start_check.called is True
     assert executor.after_start_check.called is True
+
+@pytest.mark.qqq
+def test_stdout_callback():
+    read_stdout = mock.Mock()
+    read_stderr = mock.Mock()
+
+    executor = SimpleExecutor(['echo', 'hello'],
+                              stdout_callback=read_stdout,
+                              stderr_callback=read_stderr,
+                              timeout=2.0)
+    executor.start()
+    assert read_stdout.call_args_list == [mock.call('hello\n')]
+    assert read_stderr.call_args_list == []
+
+@pytest.mark.qqq
+def test_stderr_callback():
+    read_stdout = mock.Mock()
+    read_stderr = mock.Mock()
+    executor = SimpleExecutor(['bash', '-c', 'echo hello >&2'],
+                              stdout_callback=read_stdout,
+                              stderr_callback=read_stderr,
+                              timeout=2.0)
+    executor.start()
+    assert read_stdout.call_args_list == []
+    assert read_stderr.call_args_list == [mock.call('hello\n')]
