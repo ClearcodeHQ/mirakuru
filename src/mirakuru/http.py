@@ -72,7 +72,7 @@ class HTTPExecutor(TCPExecutor):
             conn.request('HEAD', self.url.path)
             response = conn.getresponse()
 
-            if response.status is OK:
+            if response.status == OK:
                 conn.close()
                 return True
 

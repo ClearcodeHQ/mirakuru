@@ -32,7 +32,7 @@ def connect_to_server():
     """Common test to check if can connect to server."""
     conn = HTTPConnection(HOST, PORT)
     conn.request('GET', '/')
-    assert conn.getresponse().status is OK
+    assert conn.getresponse().status == OK
     conn.close()
 
 
