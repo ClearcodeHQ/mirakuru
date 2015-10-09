@@ -2,7 +2,6 @@
 
 
 class ExecutorError(Exception):
-
     """Base exception for executor failures."""
 
     def __init__(self, executor):
@@ -16,7 +15,6 @@ class ExecutorError(Exception):
 
 
 class TimeoutExpired(ExecutorError):
-
     """Is raised when the timeout expires while starting an executor."""
 
     def __init__(self, executor, timeout):
@@ -42,7 +40,6 @@ class TimeoutExpired(ExecutorError):
 
 
 class AlreadyRunning(ExecutorError):
-
     """
     Is raised when the executor seems to be already running.
 
@@ -65,7 +62,6 @@ class AlreadyRunning(ExecutorError):
 
 
 class ProcessExitedWithError(ExecutorError):
-
     """
     Raised when the process invoked by the executor returns a non-zero code.
 

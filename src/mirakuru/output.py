@@ -24,7 +24,6 @@ from mirakuru.base import SimpleExecutor
 
 
 class OutputExecutor(SimpleExecutor):
-
     """Executor that awaits for string output being present in output."""
 
     def __init__(self, command, banner, **kwargs):

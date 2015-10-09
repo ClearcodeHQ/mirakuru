@@ -22,7 +22,6 @@ from mirakuru.base import Executor
 
 
 class PidExecutor(Executor):
-
     """
     File existence checking process executor.
 
