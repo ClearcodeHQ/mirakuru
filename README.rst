@@ -12,8 +12,8 @@ This is where you should consider using **mirakuru** to add superpowers to your 
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Latest PyPI version
 
-.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v0.6.0
-    :target: https://readthedocs.org/projects/mirakuru/?badge=v0.6.0
+.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v0.6.1
+    :target: https://readthedocs.org/projects/mirakuru/?badge=v0.6.1
     :alt: Documentation Status
 
 .. image:: https://pypip.in/d/mirakuru/badge.png
@@ -35,16 +35,16 @@ This is where you should consider using **mirakuru** to add superpowers to your 
 Package status
 --------------
 
-.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.svg?branch=v0.6.0
+.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.svg?branch=v0.6.1
     :target: https://travis-ci.org/ClearcodeHQ/mirakuru
     :alt: Tests
 
-.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=v0.6.0
-    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v0.6.0
+.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=v0.6.1
+    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v0.6.1
     :alt: Coverage Status
 
-.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.svg?tag=v0.6.0
-     :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?tag=v0.6.0
+.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.svg?tag=v0.6.1
+     :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?tag=v0.6.1
      :alt: Requirements Status
 
 
