@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+0.6.1
+----------
+
+- [refactoring] moved source to src directory
+- [fix, feature] - python 3.5 fixes
+
 0.6.0
 ----------
 
