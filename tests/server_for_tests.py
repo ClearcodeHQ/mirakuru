@@ -23,7 +23,6 @@ from tests.signals import block_signals
 
 
 class SlowServerHandler(BaseHTTPRequestHandler):
-
     """Slow server handler."""
 
     timeout = 2

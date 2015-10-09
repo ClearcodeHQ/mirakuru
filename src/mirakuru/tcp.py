@@ -22,7 +22,6 @@ from mirakuru.base import Executor
 
 
 class TCPExecutor(Executor):
-
     """
     TCP-listening process executor.
 

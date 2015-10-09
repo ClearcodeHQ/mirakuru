@@ -26,7 +26,6 @@ from mirakuru.tcp import TCPExecutor
 
 
 class HTTPExecutor(TCPExecutor):
-
     """Http enabled process executor."""
 
     DEFAULT_PORT = 80

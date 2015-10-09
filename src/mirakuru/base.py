@@ -76,7 +76,6 @@ def processes_with_env(env_name, env_value):
 
 
 class SimpleExecutor(object):
-
     """Simple subprocess executor with start/stop/kill functionality."""
 
     ENV_UUID = 'mirakuru_uuid'
@@ -366,7 +365,6 @@ class SimpleExecutor(object):
 
 
 class Executor(SimpleExecutor):
-
     """Base class for executors with a pre- and after-start checks."""
 
     def pre_start_check(self):
