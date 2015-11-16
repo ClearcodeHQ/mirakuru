@@ -8,6 +8,7 @@ Contents
 
    basic
    api
+   contributing
    changelog
 
 
