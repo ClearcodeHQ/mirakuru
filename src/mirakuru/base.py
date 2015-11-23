@@ -99,10 +99,13 @@ class SimpleExecutor(object):
 
         .. note::
 
-            **timeout** set for executor is valid for all the level of waits
-            on the way up. That means that if some more advanced executor sets
-            timeout to 10 seconds and it will take 5 seconds for first check,
+            **timeout** set for an executor is valid for all the level of waits
+            on the way up. That means that if some more advanced executor establishes
+            the timeout to 10 seconds and it will take 5 seconds for the first check,
             second check will only have 5 seconds left.
+
+            Your executor will raise an exception if something goes wrong during this time.
+            The default value of timeout is ``None``, so it is a good practice to set this.
 
         """
         if isinstance(command, (list, tuple)):
