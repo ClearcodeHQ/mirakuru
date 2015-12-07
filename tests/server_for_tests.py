@@ -71,5 +71,5 @@ if __name__ == "__main__":
         block_signals()
 
     server = HTTPServer((host, int(port)), SlowServerHandler)
-    print("Starting slow server on {}:{}...".format(host, port))
+    print("Starting slow server on {0}:{1}...".format(host, port))
     server.serve_forever()
