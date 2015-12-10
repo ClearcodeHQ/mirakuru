@@ -19,7 +19,7 @@ sys.path.append(os.getcwd())  # noqa
 from tests.signals import block_signals
 
 
-with daemon.DaemonContext():
+with daemon.DaemonContext(initgroups=False):
     block_signals()
     while True:
         print('Sleeping mirakuru daemon...')
