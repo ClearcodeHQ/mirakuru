@@ -153,7 +153,7 @@ def test_stopping_brutally():
     """
     host_port = "127.0.0.1:8000"
     cmd = '{} {} {} True'.format(sys.executable, test_server_path, host_port)
-    executor = HTTPExecutor(cmd, 'http://%s/' % host_port, timeout=20)
+    executor = HTTPExecutor(cmd, 'http://{0!s}/'.format(host_port), timeout=20)
     executor.start()
     assert executor.running() is True
 
@@ -179,7 +179,7 @@ def test_forgotten_stop():
     # get substituted with 'sleep 300' and the marked commandline would be
     # overwritten.
     # Injecting some flow control (`&&`) forces bash to fork properly.
-    marked_command = 'sleep 300 && true #%s' % mark
+    marked_command = 'sleep 300 && true #{0!s}'.format(mark)
     executor = SimpleExecutor(marked_command, shell=True)
     executor.start()
     assert executor.running() is True
@@ -237,7 +237,7 @@ def test_executor_raises_if_process_exits_with_error():
     should raise an exception.
     """
     error_code = 12
-    failing_executor = Executor(['bash', '-c', 'exit %s' % error_code])
+    failing_executor = Executor(['bash', '-c', 'exit {0!s}'.format(error_code)])
     failing_executor.pre_start_check = mock.Mock(return_value=False)
     # After-start check will keep returning False to let the process terminate.
     failing_executor.after_start_check = mock.Mock(return_value=False)
@@ -246,7 +246,7 @@ def test_executor_raises_if_process_exits_with_error():
         failing_executor.start()
 
     assert exc.value.exit_code == 12
-    assert 'exited with a non-zero code: %s' % error_code in str(exc.value)
+    assert 'exited with a non-zero code: {0!s}'.format(error_code) in str(exc.value)
 
     # Pre-start check should have been called - after-start check might or
     # might not have been called - depending on the timing.
