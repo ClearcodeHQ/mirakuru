@@ -16,7 +16,7 @@ HOST = "127.0.0.1"
 PORT = 7987
 
 
-http_server_cmd = '{} {}'.format(http_server_cmd, PORT)
+http_server_cmd = '{0} {1}'.format(http_server_cmd, PORT)
 http_slow_cmd = '{python} {srv} {host}:{port}' \
     .format(python=sys.executable, srv=test_server_path, host=HOST, port=PORT)
 
@@ -135,7 +135,7 @@ def test_default_port():
     Check if HTTP executor fills in the default port for the TCP check
     from the base class if no port is provided in the URL.
     """
-    executor = HTTPExecutor(http_server_cmd, 'http://{}/'.format(HOST))
+    executor = HTTPExecutor(http_server_cmd, 'http://{0}/'.format(HOST))
 
     assert executor.url.port is None
     assert executor.port == PORT
