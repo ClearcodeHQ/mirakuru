@@ -8,27 +8,23 @@ or maybe you just need to set additional services up for your tests.
 This is where you should consider using **mirakuru** to add superpowers to your program or tests.
 
 
-.. image:: https://pypip.in/v/mirakuru/badge.png
+.. image:: https://img.shields.io/pypi/v/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Latest PyPI version
 
 .. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v0.6.1
-    :target: https://readthedocs.org/projects/mirakuru/?badge=v0.6.1
+    :target: http://mirakuru.readthedocs.org/en/v0.6.1/
     :alt: Documentation Status
 
-.. image:: https://pypip.in/d/mirakuru/badge.png
-    :target: https://pypi.python.org/pypi/mirakuru/
-    :alt: Number of PyPI downloads
-
-.. image:: https://pypip.in/wheel/mirakuru/badge.png
+.. image:: https://img.shields.io/pypi/wheel/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Wheel Status
 
-.. image:: https://pypip.in/egg/mirakuru/badge.png
+.. image:: https://img.shields.io/pypi/pyversions/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
-    :alt: Egg Status
+    :alt: Supported Python Versions
 
-.. image:: https://pypip.in/license/mirakuru/badge.png
+.. image:: https://img.shields.io/pypi/l/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: License
 
