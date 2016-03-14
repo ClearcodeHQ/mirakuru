@@ -1,46 +1,55 @@
 language: python
-os:
-  - linux
-  - osx
-python:
-  - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "pypy"
-  - "pypy3"
-install:
-    - "python setup.py develop"
-    - "pip install mirakuru[tests]"
-    # pygments library used by rst-lint doesn't work on python 3.2.
-    - "if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install coverage==3.7.1; fi"
-    - "pip install coveralls"
-    # rst files verifier, and pygments to parse code-blocks
-    - "pip install restructuredtext_lint pygments"
-    # code coverage tool
-    - "pip install coveralls"
-    # manually install wheel for deployment
-    - "pip install wheel"
-script:
-    - "py.test --verbose --capture=no --showlocals --cov mirakuru"
-    - "pylama"
-    # pygments library used by rst-lint doesn't work on python 3.2.
-    - "if [[ $TRAVIS_PYTHON_VERSION != '3.2' ]]; then for f in *.rst; do rst-lint $f; done; fi"
-after_success:
-    - coveralls
-matrix:
-    allow_failures:
-        - os: osx
 sudo: false
-
+matrix:
+  allow_failures:
+    - os: osx
+  include:
+    - os: osx
+      language: generic
+    - os: linux
+      python: "2.7"
+    - os: linux
+      python: "3.3"
+    - os: linux
+      python: "3.4"
+    - os: linux
+      python: "3.5"
+    - os: linux
+      python: "pypy"
+    - os: linux
+      python: "pypy3"
+# Perform the manual steps on osx to install python3 and activate venv
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install python3; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
+install:
+  - "python setup.py develop"
+  - "pip install mirakuru[tests]"
+  # pygments library used by rst-lint doesn't work on python 3.2.
+  - "if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install coverage==3.7.1; fi"
+  - "pip install coveralls"
+  # rst files verifier, and pygments to parse code-blocks
+  - "pip install restructuredtext_lint pygments"
+  # code coverage tool
+  - "pip install coveralls"
+  # manually install wheel for deployment
+  - "pip install wheel"
+script:
+  - "py.test --verbose --capture=no --showlocals --cov mirakuru tests/"
+  - "pylama"
+  # pygments library used by rst-lint doesn't work on python 3.2.
+  - "if [[ $TRAVIS_PYTHON_VERSION != '3.2' ]]; then for f in *.rst; do rst-lint $f; done; fi"
+after_success:
+  - coveralls
 deploy:
-    provider: pypi
-    user: fizyk
-    password:
-        secure: IBVXG0zLKsBkzdeoC33Lxir01jbvDHdjQ81CPC8PbDPCmUozXgf9eqRFV5VOIYQOboTBzQYRq7RB8efeNKSH3nKf73iahwIYf4ezIxRzUaMzoY4GkyrC/0fQhMk1lAjexrRM1f2o7TIAALPUDyB/EaRcPCBEghxscQEeTlAw08c=
-    on:
-        tags: true
-        all_branches: true
-        repo: ClearcodeHQ/mirakuru
-    distributions: "sdist bdist_wheel"
+  provider: pypi
+  user: fizyk
+  password:
+    secure: IBVXG0zLKsBkzdeoC33Lxir01jbvDHdjQ81CPC8PbDPCmUozXgf9eqRFV5VOIYQOboTBzQYRq7RB8efeNKSH3nKf73iahwIYf4ezIxRzUaMzoY4GkyrC/0fQhMk1lAjexrRM1f2o7TIAALPUDyB/EaRcPCBEghxscQEeTlAw08c=
+  on:
+    tags: true
+    all_branches: true
+    repo: ClearcodeHQ/mirakuru
+  distributions: "sdist bdist_wheel"
