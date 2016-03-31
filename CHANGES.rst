@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [style] - Migrated `%` string formating to format()
+- [style] - Explicitely numbered replacement fields in string
+- [docs] - added documentation for timeouts
+
 0.6.1
 ----------
 
