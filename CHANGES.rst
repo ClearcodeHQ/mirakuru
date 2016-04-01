@@ -4,6 +4,7 @@ CHANGELOG
 unreleased
 ----------
 
+- [feature] Context Manager to return Executor instance, allows creating Executor instance for the context only
 - [style] - Migrated `%` string formating to format()
 - [style] - Explicitely numbered replacement fields in string
 - [docs] - added documentation for timeouts

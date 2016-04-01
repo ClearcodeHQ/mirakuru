@@ -87,6 +87,12 @@ def test_running_context():
     assert executor.running() is False
 
 
+def test_executor_in_context_only():
+    """Start process and shuts it down only in context."""
+    with SimpleExecutor(sleep_300) as executor:
+        assert executor.running() is True
+
+
 def test_context_stopped():
     """Start for context, and shuts it for nested context."""
     executor = SimpleExecutor(sleep_300)

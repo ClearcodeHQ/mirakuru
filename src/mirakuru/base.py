@@ -129,8 +129,14 @@ class SimpleExecutor(object):
         self._uuid = str(uuid.uuid1())
 
     def __enter__(self):
-        """Enter context manager."""
+        """
+        Enter context manager.
+
+        :returns: itself
+        :rtype: SimpleExecutor
+        """
         self.start()
+        return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         """Exit context manager."""
