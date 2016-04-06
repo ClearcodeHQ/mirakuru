@@ -15,7 +15,7 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
-"""Mirakuru's installation module."""
+"""Mirakuru installation module."""
 
 import re
 import os
@@ -23,11 +23,17 @@ from setuptools import setup, find_packages
 
 
 here = os.path.dirname(__file__)
-with open(os.path.join(here, 'mirakuru', '__init__.py')) as v_file:
+with open(os.path.join(here, 'src', 'mirakuru', '__init__.py')) as v_file:
     package_version = re.compile(
         r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
-tests_require = ('pytest', 'pytest-cov', 'mock', 'python-daemon')
+tests_require = (
+    'pytest',  # tests framework used
+    'pytest-cov',  # coverage reports to verify tests quality
+    'mock',  # tests mocking tool
+    'python-daemon',  # used in test for easy creation of daemons
+    'pylama',  # code linter
+)
 extras_require = {
     'docs': ['sphinx'],
     'tests': tests_require
@@ -58,21 +64,21 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: '
-        'GNU Lesser General Public License v3 or later (LGPLv3+)',
+        'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Testing',
     ],
-    packages=find_packages(),
+    package_dir={'': 'src'},
+    packages=find_packages('src'),
     install_requires=[],
     tests_require=tests_require,
     test_suite='tests',

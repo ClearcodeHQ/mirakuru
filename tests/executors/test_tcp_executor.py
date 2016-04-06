@@ -1,4 +1,4 @@
-"""Tcp executor tests."""
+"""TCPExecutor tests."""
 
 import pytest
 
@@ -28,7 +28,7 @@ def test_start_and_wait(timeout):
 
 
 def test_it_raises_error_on_timeout():
-    """Check if TimeoutExpired gets rised correctly."""
+    """Check if TimeoutExpired gets raised correctly."""
     command = 'bash -c "sleep 10 && nc -l 3000"'
     executor = TCPExecutor(command, host='localhost', port=3000, timeout=2)
 

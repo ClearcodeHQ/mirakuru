@@ -9,19 +9,20 @@ Example usage:
 
     python tests/slow_server.py [host:port] True
 
-        - run immortal server (stopping procces only by SIGKILL)
+        - run immortal server (stopping process only by SIGKILL)
 
 """
-
 import sys
+import os
 import time
+
+sys.path.append(os.getcwd())  # noqa
 
 from mirakuru.compat import HTTPServer, BaseHTTPRequestHandler
 from tests.signals import block_signals
 
 
 class SlowServerHandler(BaseHTTPRequestHandler):
-
     """Slow server handler."""
 
     timeout = 2
@@ -40,7 +41,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         Serve HEAD request.
 
         but count to wait and return 500 response if wait time not exceeded
-        due to the fact, that HTTPServer will hang waiting for response
+        due to the fact that HTTPServer will hang waiting for response
         to return otherwise if none response will be returned.
         """
         if self.count_timeout():
@@ -70,5 +71,5 @@ if __name__ == "__main__":
         block_signals()
 
     server = HTTPServer((host, int(port)), SlowServerHandler)
-    print("Starting slow server on {}:{}...".format(host, port))
+    print("Starting slow server on {0}:{1}...".format(host, port))
     server.serve_forever()

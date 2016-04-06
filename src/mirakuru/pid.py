@@ -18,11 +18,10 @@
 """Pid executor definition."""
 
 import os.path
-from mirakuru.base import StartCheckExecutor
+from mirakuru.base import Executor
 
 
-class PidExecutor(StartCheckExecutor):
-
+class PidExecutor(Executor):
     """
     File existence checking process executor.
 
@@ -37,22 +36,23 @@ class PidExecutor(StartCheckExecutor):
 
         If the filename is empty, a ValueError is thrown.
 
-        :param (str, list) command: command to run to start service
+        :param (str, list) command: command to be run by the subprocess
         :param str filename: the file which is to exist
-        :param bool shell: see `subprocess.Popen`
-        :param int timeout: time to wait for the process to start or stop.
-            if None, wait indefinitely.
-        :param float sleep: how often to check for start/stop conditions
-        :param int sig_stop: signal used to stop process run by executor.
-            default is SIGTERM
-        :param int sig_kill: signal used to kill process run by  executor.
-            default is SIGKILL
+        :param bool shell: same as the `subprocess.Popen` shell definition
+        :param int timeout: number of seconds to wait for the process to start
+            or stop. If None or False, wait indefinitely.
+        :param float sleep: how often to check for start/stop condition
+        :param int sig_stop: signal used to stop process run by the executor.
+            default is `signal.SIGTERM`
+        :param int sig_kill: signal used to kill process run by the executor.
+            default is `signal.SIGKILL`
 
         :raises: ValueError
+
         """
         super(PidExecutor, self).__init__(command, **kwargs)
         if not filename:
-            raise ValueError("filename cannot be empty")
+            raise ValueError("filename must be defined")
         self.filename = filename
         """the name of the file which the process is to create."""
 

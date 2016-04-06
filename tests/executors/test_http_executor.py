@@ -4,8 +4,9 @@ import socket
 from functools import partial
 
 import pytest
+from mock import patch
 
-from mirakuru import HTTPExecutor
+from mirakuru import HTTPExecutor, TCPExecutor
 from mirakuru import TimeoutExpired, AlreadyRunning
 from mirakuru.compat import HTTPConnection, OK, http_server_cmd
 from tests import test_server_path
@@ -15,7 +16,7 @@ HOST = "127.0.0.1"
 PORT = 7987
 
 
-http_server_cmd = '{} {}'.format(http_server_cmd, PORT)
+http_server_cmd = '{0} {1}'.format(http_server_cmd, PORT)
 http_slow_cmd = '{python} {srv} {host}:{port}' \
     .format(python=sys.executable, srv=test_server_path, host=HOST, port=PORT)
 
@@ -31,7 +32,7 @@ def connect_to_server():
     """Common test to check if can connect to server."""
     conn = HTTPConnection(HOST, PORT)
     conn.request('GET', '/')
-    assert conn.getresponse().status is OK
+    assert conn.getresponse().status == OK
     conn.close()
 
 
@@ -82,8 +83,8 @@ def test_slow_server_starting():
     """
     Test whether or not executor awaits for slow starting servers.
 
-    Simple example. You run gunicorn, gunicorn is working
-    but you have to wait for worker procesess.
+    Simple example. You run Gunicorn and it is working but you have to
+    wait for worker processes.
     """
     executor = slow_server_executor()
     executor.start()
@@ -124,3 +125,22 @@ def test_fail_if_other_executor_running():
             with executor2:
                 pass
         assert 'seems to be already running' in str(exc)
+
+
+@patch.object(HTTPExecutor, 'DEFAULT_PORT', PORT)
+def test_default_port():
+    """
+    Test default port for the base TCP check.
+
+    Check if HTTP executor fills in the default port for the TCP check
+    from the base class if no port is provided in the URL.
+    """
+    executor = HTTPExecutor(http_server_cmd, 'http://{0}/'.format(HOST))
+
+    assert executor.url.port is None
+    assert executor.port == PORT
+
+    assert TCPExecutor.pre_start_check(executor) is False
+    executor.start()
+    assert TCPExecutor.pre_start_check(executor) is True
+    executor.stop()

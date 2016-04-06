@@ -1,72 +1,70 @@
 mirakuru
 ========
 
-Maybe you want to be able to start database only when you start your program,
-or maybe you need just to set up additional processes for your tests,
-this is where you should consider using **mirakuru**, to add superpowers to your program,
-or tests.
+Mirakuru is a process orchestration tool designed for functional and integration tests.
+
+Maybe you want to be able to start a database before you start your program
+or maybe you just need to set additional services up for your tests.
+This is where you should consider using **mirakuru** to add superpowers to your program or tests.
 
 
-.. image:: https://pypip.in/v/mirakuru/badge.png
+.. image:: https://img.shields.io/pypi/v/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Latest PyPI version
 
-.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v0.4.0
-    :target: https://readthedocs.org/projects/mirakuru/?badge=v0.4.0
+.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v0.6.1
+    :target: http://mirakuru.readthedocs.org/en/v0.6.1/
     :alt: Documentation Status
 
-.. image:: https://pypip.in/d/mirakuru/badge.png
-    :target: https://pypi.python.org/pypi/mirakuru/
-    :alt: Number of PyPI downloads
-
-.. image:: https://pypip.in/wheel/mirakuru/badge.png
+.. image:: https://img.shields.io/pypi/wheel/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Wheel Status
 
-.. image:: https://pypip.in/egg/mirakuru/badge.png
+.. image:: https://img.shields.io/pypi/pyversions/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
-    :alt: Egg Status
+    :alt: Supported Python Versions
 
-.. image:: https://pypip.in/license/mirakuru/badge.png
+.. image:: https://img.shields.io/pypi/l/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: License
 
 Package status
 --------------
 
-.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.svg?branch=v0.4.0
+.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.svg?branch=v0.6.1
     :target: https://travis-ci.org/ClearcodeHQ/mirakuru
     :alt: Tests
 
-.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=v0.4.0
-    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v0.4.0
+.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=v0.6.1
+    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v0.6.1
     :alt: Coverage Status
 
-.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.svg?tag=v0.4.0
-     :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?tag=v0.4.0
+.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.svg?tag=v0.6.1
+     :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?tag=v0.6.1
      :alt: Requirements Status
 
 
 About
 -----
 
-As developers, we have to work on project that rely on multiple processes to run.
-We guard ourselves with tests. But sometimes it's not enough what one process
-sends, and the other receives. Sometimes there's need to actually exchange data
-between processes. Or write selenium tests. Or maybe write a program that takes
-care of starting databases or other required services itself.
+In a project that relies on multiple processes there might be a need to guard code
+with tests that verify interprocess communication. So one needs to set up all of
+required databases, auxiliary and application services to verify their cooperation.
+Synchronising (or orchestrating) test procedure with tested processes might be a hell.
 
 If so, then **mirakuru** is what you need.
 
-``Mirakuru`` starts your required process, and wait for clear indication,
-that it's running. There are three basic executors with predefined conditions:
+``Mirakuru`` starts your process and waits for the clear indication that it's running.
+Library provides six executors to fit different cases:
 
-
-* Executor - simply starts
-* OutputExecutor - awaits for specified output to be given by process
-* TCPExecutor - waits for ability to connect through tcp with process
-* HTTPExecutor - waits for successful HEAD request (and tcp before)
-* PidExecutor - waits for a specified file to exist
+* SimpleExecutor - starts a process and does not wait for anything.
+  It is useful to stop or kill a process and its subprocesses.
+  Base class for all the rest of executors.
+* Executor - base class for executors verifying if a process has started.
+* OutputExecutor - waits for a specified output to be printed by a process.
+* TCPExecutor - waits for the ability to connect through TCP with a process.
+* HTTPExecutor - waits for a successful HEAD request (and TCP before).
+* PidExecutor - waits for a specified .pid file to exist.
 
 .. code-block:: python
 
@@ -75,20 +73,20 @@ that it's running. There are three basic executors with predefined conditions:
 
 
     def test_it_works():
-        executor = HTTPExecutor("./server", url="http://localhost:6543/")
+        # The ``./http_server`` here launches some HTTP server on the 6543 port,
+        # but naturally it is not immediate and takes a non-deterministic time:
+        executor = HTTPExecutor("./http_server", url="http://127.0.0.1:6543/")
 
-        # start and wait for it to run
+        # Start the server and wait for it to run (blocking):
         executor.start()
-        # should be running!
-        conn = HTTPConnection("localhost", 6543)
-        conn.request('GET', '/')
+        # Here the server should be running!
+        conn = HTTPConnection("127.0.0.1", 6543)
+        conn.request("GET", "/")
         assert conn.getresponse().status is OK
         executor.stop()
 
-The ``server`` command in this case is just a bash script that sleeps for some
-time and then launches the builtin SimpleHTTPServer on port 6543.
 
-Command by which executor spawns a process, can be either string or list.
+A command by which executor spawns a process can be defined by either string or list.
 
 .. code-block:: python
 
@@ -96,16 +94,17 @@ Command by which executor spawns a process, can be either string or list.
     TCPExecutor('python -m smtpd -n -c DebuggingServer localhost:1025', host='localhost', port=1025)
     # command as list
     TCPExecutor(
-        ['python, '-m', 'smtpd', '-n', '-c', 'DebuggingServer', 'localhost:1025'],
+        ['python', '-m', 'smtpd', '-n', '-c', 'DebuggingServer', 'localhost:1025'],
         host='localhost', port=1025
     )
 
-Author
-------
+Authors
+-------
 
-The project was first developed by `Mateusz Lenik <http://mlen.pl>`_
-as `summon_process <https://github.com/mlen/summon_process>`_.
-Later forked, renamed to **mirakuru** and tended to by The A Room @ `Clearcode <http://clearcode.cc>`_.
+The project was firstly developed by `Mateusz Lenik <http://mlen.pl>`_
+as the `summon_process <https://github.com/mlen/summon_process>`_.
+Later forked, renamed into **mirakuru** and tended to by The A Room @ `Clearcode <http://clearcode.cc>`_
+and `the other authors <https://github.com/ClearcodeHQ/mirakuru/blob/master/AUTHORS.rst>`_.
 
 License
 -------
@@ -119,4 +118,4 @@ Source code is available at: `ClearcodeHQ/mirakuru <https://github.com/Clearcode
 Issue tracker is located at `GitHub Issues <https://github.com/ClearcodeHQ/mirakuru/issues>`_.
 Projects `PyPI page <https://pypi.python.org/pypi/mirakuru>`_.
 
-When contributing, don't forget to add your name to AUTHORS.rst file.
+When contributing, don't forget to add your name to the AUTHORS.rst file.

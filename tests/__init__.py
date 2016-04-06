@@ -10,5 +10,5 @@ from os import path
 
 tests_path = path.abspath(path.dirname(__file__))
 
-test_server_path = path.join(tests_path, "test_server.py")
+test_server_path = path.join(tests_path, "server_for_tests.py")
 sample_daemon_path = path.join(tests_path, "sample_daemon.py")

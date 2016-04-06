@@ -16,31 +16,36 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Mirakuru's main module."""
+"""Mirakuru main module."""
 
 import logging
 
-from mirakuru.base import Executor
+from mirakuru.base import Executor, SimpleExecutor
 from mirakuru.output import OutputExecutor
 from mirakuru.tcp import TCPExecutor
 from mirakuru.http import HTTPExecutor
 from mirakuru.pid import PidExecutor
 
 from mirakuru.exceptions import (
+    ExecutorError,
     TimeoutExpired,
     AlreadyRunning,
+    ProcessExitedWithError,
 )
 
-__version__ = '0.4.0'
+__version__ = '0.6.1'
 
 __all__ = (
     'Executor',
+    'SimpleExecutor',
     'OutputExecutor',
     'TCPExecutor',
     'HTTPExecutor',
     'PidExecutor',
+    'ExecutorError',
     'TimeoutExpired',
     'AlreadyRunning',
+    'ProcessExitedWithError',
 )
 
 

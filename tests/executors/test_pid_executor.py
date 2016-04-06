@@ -1,4 +1,4 @@
-"""Pid Executor tests."""
+"""PidExecutor tests."""
 import os
 
 import pytest
@@ -8,7 +8,7 @@ from mirakuru import TimeoutExpired, AlreadyRunning
 
 
 filename = "pid-test-tmp{0}".format(os.getpid())
-sleep = 'bash -c "sleep 2 && touch {0}"'.format(filename)
+sleep = 'bash -c "sleep 1 && touch {0} && sleep 1"'.format(filename)
 
 
 @pytest.yield_fixture(autouse=True)

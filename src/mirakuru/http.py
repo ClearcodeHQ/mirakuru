@@ -26,44 +26,52 @@ from mirakuru.tcp import TCPExecutor
 
 
 class HTTPExecutor(TCPExecutor):
-
     """Http enabled process executor."""
+
+    DEFAULT_PORT = 80
+    """Default TCP port in the HTTP protocol."""
 
     def __init__(self, command, url, **kwargs):
         """
         Initialize HTTPExecutor executor.
 
-        :param (str, list) command: command to run to start service
-        :param str url: url where executor can check
+        :param (str, list) command: command to be run by the subprocess
+        :param str url: URL that executor checks to verify
             if process has already started.
-        :param bool shell: see `subprocess.Popen`
-        :param int timeout: time to wait for process to start or stop.
-            if None, wait indefinitely.
+        :param bool shell: same as the `subprocess.Popen` shell definition
+        :param int timeout: number of seconds to wait for the process to start
+            or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
-        :param int sig_stop: signal used to stop process run by executor.
-            default is SIGTERM
-        :param int sig_kill: signal used to kill process run by  executor.
-            default is SIGKILL
+        :param int sig_stop: signal used to stop process run by the executor.
+            default is `signal.SIGTERM`
+        :param int sig_kill: signal used to kill process run by the executor.
+            default is `signal.SIGKILL`
+
         """
         self.url = urlparse(url)
         """
         An :func:`urlparse.urlparse` representation of an url.
 
-        It'll be used to check process status on."""
+        It'll be used to check process status on.
+        """
+
+        port = self.url.port
+        if port is None:
+            port = self.DEFAULT_PORT
 
         super(HTTPExecutor, self).__init__(
-            command, host=self.url.hostname, port=self.url.port, **kwargs
+            command, host=self.url.hostname, port=port, **kwargs
         )
 
     def after_start_check(self):
         """Check if defined url returns successful head."""
         try:
-            conn = HTTPConnection(self.url.hostname, self.url.port)
+            conn = HTTPConnection(self.host, self.port)
 
             conn.request('HEAD', self.url.path)
             response = conn.getresponse()
 
-            if response.status is OK:
+            if response.status == OK:
                 conn.close()
                 return True
 
