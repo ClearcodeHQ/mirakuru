@@ -17,9 +17,10 @@
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """HTTP enabled process executor."""
 
+import re
 import socket
 
-from mirakuru.compat import HTTPConnection, HTTPException, OK
+from mirakuru.compat import HTTPConnection, HTTPException
 from mirakuru.compat import urlparse
 
 from mirakuru.tcp import TCPExecutor
@@ -29,9 +30,9 @@ class HTTPExecutor(TCPExecutor):
     """Http enabled process executor."""
 
     DEFAULT_PORT = 80
-    """Default TCP port in the HTTP protocol."""
+    """Default TCP port for the HTTP protocol."""
 
-    def __init__(self, command, url, **kwargs):
+    def __init__(self, command, url, status=r'^2\d\d$', **kwargs):
         """
         Initialize HTTPExecutor executor.
 
@@ -39,6 +40,11 @@ class HTTPExecutor(TCPExecutor):
         :param str url: URL that executor checks to verify
             if process has already started.
         :param bool shell: same as the `subprocess.Popen` shell definition
+        :param str|int status: HTTP status code(s) that an endpoint must
+            return for the executor being considered as running. This argument
+            is interpreted as a single status code - e.g. '200' or '404' but
+            also it can be a regular expression - e.g. '4..' or '(200|404)'.
+            Default: any 2XX HTTP status code.
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
@@ -59,19 +65,22 @@ class HTTPExecutor(TCPExecutor):
         if port is None:
             port = self.DEFAULT_PORT
 
+        self.status = str(status)
+        self.status_re = re.compile(str(status))
+
         super(HTTPExecutor, self).__init__(
             command, host=self.url.hostname, port=port, **kwargs
         )
 
     def after_start_check(self):
-        """Check if defined url returns successful head."""
+        """Check if defined URL returns expected status to a HEAD request."""
         try:
             conn = HTTPConnection(self.host, self.port)
 
             conn.request('HEAD', self.url.path)
-            response = conn.getresponse()
+            status = str(conn.getresponse().status)
 
-            if response.status == OK:
+            if status == self.status or self.status_re.match(status):
                 conn.close()
                 return True
 
