@@ -32,7 +32,7 @@ tests_require = (
     'pytest-cov',  # coverage reports to verify tests quality
     'mock',  # tests mocking tool
     'python-daemon',  # used in test for easy creation of daemons
-    'pylama',  # code linter
+    'pylama==6.4.0',  # code linter
 )
 extras_require = {
     'docs': ['sphinx'],
