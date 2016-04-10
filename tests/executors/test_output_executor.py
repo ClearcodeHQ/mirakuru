@@ -8,8 +8,7 @@ from mirakuru.exceptions import TimeoutExpired
 def test_executor_waits_for_process_output():
     """Check if executor waits for specified output."""
     command = 'bash -c "sleep 2 && echo foo && echo bar && sleep 100"'
-    executor = OutputExecutor(command, 'foo')
-    executor.start()
+    executor = OutputExecutor(command, 'foo').start()
 
     assert executor.running() is True
     # foo has been used for start as a banner.

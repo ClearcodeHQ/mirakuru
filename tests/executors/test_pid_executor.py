@@ -35,9 +35,8 @@ def run_around_tests():
 @pytest.mark.parametrize('timeout', (None, 5))
 def test_start_and_wait(timeout):
     """Test if the executor will await for the process to create a file."""
-    process = 'bash -c "sleep 2 && touch {0}  && sleep 10"'.format(filename)
-    executor = PidExecutor(process, filename, timeout=timeout)
-    with executor:
+    process = 'bash -c "sleep 2 && touch {0} && sleep 10"'.format(filename)
+    with PidExecutor(process, filename, timeout=timeout) as executor:
         assert executor.running() is True
 
     # check proper __str__ and __repr__ rendering:
@@ -72,7 +71,7 @@ def test_timeout_error():
 
 def test_fail_if_other_executor_running():
     """Test raising AlreadyRunning exception when port is blocked."""
-    process = 'bash -c "sleep 2 && touch {0}  && sleep 10"'.format(filename)
+    process = 'bash -c "sleep 2 && touch {0} && sleep 10"'.format(filename)
     executor = PidExecutor(process, filename)
     executor2 = PidExecutor(process, filename)
 

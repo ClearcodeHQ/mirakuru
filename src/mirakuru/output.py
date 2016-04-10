@@ -51,6 +51,9 @@ class OutputExecutor(SimpleExecutor):
         """
         Start process.
 
+        :returns: itself
+        :rtype: OutputExecutor
+
         .. note::
 
             Process will be considered started, when defined banner will appear
@@ -72,6 +75,7 @@ class OutputExecutor(SimpleExecutor):
             self.poll_obj.unregister(self.output())
         finally:
             del self.poll_obj
+        return self
 
     def _wait_for_output(self):
         """

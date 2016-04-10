@@ -86,8 +86,7 @@ def test_slow_server_starting():
     Simple example. You run Gunicorn and it is working but you have to
     wait for worker processes.
     """
-    executor = slow_server_executor()
-    executor.start()
+    executor = slow_server_executor().start()
     assert executor.running() is True
 
     connect_to_server()
