@@ -159,6 +159,9 @@ class SimpleExecutor(object):
 
         After process gets started, timeout countdown begins as well.
 
+        :returns: itself
+        :rtype: SimpleExecutor
+
         .. note::
             We want to open ``stdin``, ``stdout`` and ``stderr`` as text
             streams in universal newlines mode, so we have to set
@@ -193,6 +196,7 @@ class SimpleExecutor(object):
             )
 
         self._set_timeout()
+        return self
 
     def _set_timeout(self, timeout=None):
         """
@@ -250,6 +254,8 @@ class SimpleExecutor(object):
 
         :param int sig: signal used to stop process run by executor.
             None for default.
+        :returns: itself
+        :rtype: SimpleExecutor
 
         .. note::
 
@@ -257,7 +263,7 @@ class SimpleExecutor(object):
             you have to allow subprocesses to end gracefully.
         """
         if self.process is None:
-            return
+            return self
 
         if sig is None:
             sig = self._sig_stop
@@ -278,6 +284,7 @@ class SimpleExecutor(object):
 
         self._kill_all_kids(sig)
         self._clear_process()
+        return self
 
     @contextmanager
     def stopped(self):
@@ -286,10 +293,12 @@ class SimpleExecutor(object):
 
         Allows for easier writing resistance integration tests whenever one of
         the service fails.
+        :yields: itself
+        :rtype: SimpleExecutor
         """
         if self.running():
             self.stop()
-            yield
+            yield self
             self.start()
 
     def kill(self, wait=True, sig=None):
@@ -300,6 +309,8 @@ class SimpleExecutor(object):
             or False, to simply proceed after sending signal.
         :param int sig: signal used to kill process run by the executor.
             None by default.
+        :returns: itself
+        :rtype: SimpleExecutor
         """
         if sig is None:
             sig = self._sig_kill
@@ -310,6 +321,7 @@ class SimpleExecutor(object):
 
         self._kill_all_kids(sig)
         self._clear_process()
+        return self
 
     def output(self):
         """Return subprocess output."""
@@ -325,10 +337,12 @@ class SimpleExecutor(object):
 
         :param callback wait_for: callback to call
         :raises: mirakuru.exceptions.TimeoutExpired
+        :returns: itself
+        :rtype: SimpleExecutor
         """
         while self.check_timeout():
             if wait_for():
-                return
+                return self
             time.sleep(self._sleep)
 
         self.kill()
@@ -392,6 +406,8 @@ class Executor(SimpleExecutor):
 
         Checks if previous executor isn't running then start process
         (executor) and wait until it's started.
+        :returns: itself
+        :rtype: Executor
         """
         if self.pre_start_check():
             # Some other executor (or process) is running with same config:
@@ -400,6 +416,7 @@ class Executor(SimpleExecutor):
         super(Executor, self).start()
 
         self.wait_for(self.check_subprocess)
+        return self
 
     def check_subprocess(self):
         """

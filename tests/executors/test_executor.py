@@ -31,7 +31,7 @@ def ps_aux():
 @pytest.mark.parametrize('command', (sleep_300, sleep_300.split()))
 def test_running_process(command):
     """Start process and shuts it down."""
-    executor = SimpleExecutor(command)
+    executor = SimpleExecutor(command).start()
     executor.start()
     assert executor.running() is True
     executor.stop()
@@ -279,3 +279,18 @@ def test_executor_ignores_processes_exiting_with_0():
     # Both checks should have been called.
     assert executor.pre_start_check.called is True
     assert executor.after_start_check.called is True
+
+
+def test_executor_methods_returning_self():
+    """Test if SimpleExecutor lets to chain start, stop and kill methods."""
+    executor = SimpleExecutor(sleep_300).start().stop().kill().stop()
+    assert not executor.running()
+
+    # Check if context manager returns executor to use it in 'as' phrase:
+    with SimpleExecutor(sleep_300) as executor:
+        assert executor.running()
+
+    with SimpleExecutor(sleep_300).start().stopped() as executor:
+        assert not executor.running()
+
+    assert SimpleExecutor(sleep_300).start().stop().output

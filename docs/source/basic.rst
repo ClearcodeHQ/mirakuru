@@ -122,8 +122,7 @@ Mirakuru executors can also work as a context managers.
 
     from mirakuru import HTTPExecutor
 
-    process = HTTPExecutor('my_special_process', url='http://localhost:6543/status')
-    with process:
+    with HTTPExecutor('my_special_process', url='http://localhost:6543/status'):
 
         # Do your stuff
         assert process.running() is True
@@ -137,8 +136,6 @@ Stopping
 
 Mirakuru also allows to stop process for given context.
 To do this, simply use built-in stopped context manager.
-
-
 
 .. code-block:: python
 
@@ -157,3 +154,14 @@ To do this, simply use built-in stopped context manager.
     assert process.running() is True
 
 Defined process stops upon entering context, and starts upon exiting it.
+
+Methods chaining
+----------------
+
+Mirakuru encourages methods chaining so you can inline some operations, e.g.:
+
+.. code-block:: python
+
+    from mirakuru import SimpleExecutor
+
+    command_stdout = SimpleExecutor('my_special_process').start().stop().output
