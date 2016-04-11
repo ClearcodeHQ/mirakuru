@@ -7,17 +7,17 @@ matrix:
     - os: osx
       language: generic
     - os: linux
-      python: "2.7"
+      python: 2.7
     - os: linux
-      python: "3.3"
+      python: 3.3
     - os: linux
-      python: "3.4"
+      python: 3.4
     - os: linux
-      python: "3.5"
+      python: 3.5
     - os: linux
-      python: "pypy"
+      python: pypy
     - os: linux
-      python: "pypy3"
+      python: pypy3
 # Perform the manual steps on osx to install python3 and activate venv
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
@@ -25,19 +25,19 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
 install:
-  - "python setup.py develop"
-  - "pip install mirakuru[tests]"
-  - "pip install coveralls"
+  - python setup.py develop
+  - pip install mirakuru[tests]
+  - pip install coveralls
   # rst files verifier, and pygments to parse code-blocks
-  - "pip install restructuredtext_lint pygments"
+  - pip install restructuredtext_lint pygments
   # code coverage tool
-  - "pip install coveralls"
+  - pip install coveralls
   # manually install wheel for deployment
-  - "pip install wheel"
+  - pip install wheel
 script:
-  - "py.test --verbose --capture=no --showlocals --cov mirakuru tests/"
-  - "pylama"
-  - "for f in *.rst; do rst-lint $f; done"
+  - py.test --verbose --capture=no --showlocals --cov mirakuru tests/
+  - pylama
+  - rst-lint *.rst
 after_success:
   - coveralls
 deploy:
@@ -49,4 +49,4 @@ deploy:
     tags: true
     all_branches: true
     repo: ClearcodeHQ/mirakuru
-  distributions: "sdist bdist_wheel"
+  distributions: sdist bdist_wheel
