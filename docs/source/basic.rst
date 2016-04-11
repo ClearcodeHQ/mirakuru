@@ -91,6 +91,20 @@ This executor, however, apart from HEAD request, also inherits TCPExecutor,
 so it'll try to connect to process over TCP first, to determine,
 if it can try to make a HEAD request already.
 
+By default HTTPExecutor waits until its subprocess responds with 2XX HTTP status code.
+If you consider other codes as valid you need to specify them in 'status' argument.
+
+.. code-block:: python
+
+    from mirakuru import HTTPExecutor
+
+    process = HTTPExecutor('my_special_process', url='http://localhost:6543/status', status='(200|404)')
+    process.start()
+
+They can be a single code like 200, 404, 500 or a regular expression string -
+'^(2|4)00$', '2\d\d', '\d{3}', etc.
+
+
 PidExecutor
 -----------
 

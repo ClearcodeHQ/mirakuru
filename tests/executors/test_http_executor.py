@@ -143,3 +143,40 @@ def test_default_port():
     executor.start()
     assert TCPExecutor.pre_start_check(executor) is True
     executor.stop()
+
+
+@pytest.mark.parametrize('accepted_status, expected_timeout', (
+    # default behaviour - only 2XX HTTP status codes are accepted
+    (None, True),
+    # one explicit integer status code
+    (200, True),
+    # one explicit status code as a string
+    ('404', False),
+    # status codes as a regular expression
+    ('(2|4)\d\d', False),
+    # status codes as a regular expression
+    ('(200|404)', False),
+))
+def test_http_status_codes(accepted_status, expected_timeout):
+    """
+    Test how 'status' argument influences executor start.
+
+    :param int|str accepted_status: Executor 'status' value
+    :param bool expected_timeout: if Executor raises TimeoutExpired or not
+    """
+    kwargs = {
+        'command': http_server_cmd,
+        'url': 'http://{0}:{1}/badpath'.format(HOST, PORT),
+        'timeout': 2
+    }
+    if accepted_status:
+        kwargs['status'] = accepted_status
+    executor = HTTPExecutor(**kwargs)
+
+    if not expected_timeout:
+        executor.start()
+        executor.stop()
+    else:
+        with pytest.raises(TimeoutExpired):
+            executor.start()
+            executor.stop()
