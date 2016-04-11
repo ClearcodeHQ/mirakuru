@@ -192,8 +192,8 @@ def test_forgotten_stop():
     assert mark in ps_aux(), "The test process should be running."
     del executor
     gc.collect()  # to force 'del' immediate effect
-    assert (mark not in ps_aux(),
-            "The test process should not be running at this point.")
+    assert mark not in ps_aux(), \
+        "The test process should not be running at this point."
 
 
 def test_daemons_killing():
@@ -252,7 +252,8 @@ def test_executor_raises_if_process_exits_with_error():
         failing_executor.start()
 
     assert exc.value.exit_code == 12
-    assert 'exited with a non-zero code: {0!s}'.format(error_code) in str(exc.value)
+    error_msg = 'exited with a non-zero code: {0!s}'.format(error_code)
+    assert error_msg in str(exc.value)
 
     # Pre-start check should have been called - after-start check might or
     # might not have been called - depending on the timing.
