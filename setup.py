@@ -28,10 +28,11 @@ with open(os.path.join(here, 'src', 'mirakuru', '__init__.py')) as v_file:
         r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
 tests_require = (
-    'pytest',  # tests framework used
-    'pytest-cov',  # coverage reports to verify tests quality
-    'mock',  # tests mocking tool
-    'python-daemon',  # used in test for easy creation of daemons
+    'pytest==2.9.2',  # tests framework used
+    'pytest-cov==2.2.1',  # coverage reports to verify tests quality
+    'coverage==4.1.0',  # coverage gathering tool
+    'mock==2.0.0',  # tests mocking tool
+    'python-daemon==2.1.1',  # used in test for easy creation of daemons
     'pylama==7.0.9',  # code linters
     'pyflakes==1.1.0',
     'pep8==1.7.0',
