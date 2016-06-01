@@ -34,10 +34,10 @@ tests_require = (
     'mock==2.0.0',  # tests mocking tool
     'python-daemon==2.1.1',  # used in test for easy creation of daemons
     'pylama==7.0.9',  # code linters
-    'pyflakes==1.1.0',
+    'pyflakes==1.2.3',
     'pep8==1.7.0',
     'pep257==0.7.0',
-    'mccabe==0.4.0',
+    'mccabe==0.5.0',
 )
 extras_require = {
     'docs': ['sphinx'],
