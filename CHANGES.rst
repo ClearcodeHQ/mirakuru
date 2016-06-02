@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+0.7.0
 ----------
 
 - [feature] HTTPExecutor enriched with the 'status' argument.
