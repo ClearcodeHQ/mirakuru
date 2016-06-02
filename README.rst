@@ -12,7 +12,7 @@ This is where you should consider using **mirakuru** to add superpowers to your 
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Latest PyPI version
 
-.. image:: https://readthedocs.io/projects/mirakuru/badge/?version=v0.7.0
+.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v0.7.0
     :target: http://mirakuru.readthedocs.io/en/v0.7.0/
     :alt: Documentation Status
 
