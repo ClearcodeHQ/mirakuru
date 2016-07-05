@@ -27,6 +27,13 @@ with open(os.path.join(here, 'src', 'mirakuru', '__init__.py')) as v_file:
     package_version = re.compile(
         r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
+
+requirements = [
+    # psutil is used to find processes leaked during termination.
+    # It's installable but not importable on pypy3.
+    'psutil>=4.0.0',
+]
+
 tests_require = (
     'pytest==2.9.2',  # tests framework used
     'pytest-cov==2.2.1',  # coverage reports to verify tests quality
@@ -85,7 +92,7 @@ setup(
     ],
     package_dir={'': 'src'},
     packages=find_packages('src'),
-    install_requires=[],
+    install_requires=requirements,
     tests_require=tests_require,
     test_suite='tests',
     include_package_data=True,
