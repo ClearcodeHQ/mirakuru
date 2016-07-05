@@ -29,7 +29,7 @@ with open(os.path.join(here, 'src', 'mirakuru', '__init__.py')) as v_file:
 
 tests_require = (
     'pytest==2.9.2',  # tests framework used
-    'pytest-cov==2.2.1',  # coverage reports to verify tests quality
+    'pytest-cov==2.3.0',  # coverage reports to verify tests quality
     'coverage==4.1.0',  # coverage gathering tool
     'mock==2.0.0',  # tests mocking tool
     'python-daemon==2.1.1',  # used in test for easy creation of daemons
