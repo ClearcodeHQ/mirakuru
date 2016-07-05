@@ -1,13 +1,18 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [feature] Kill all running mirakuru subprocesses on python exit.
+
 0.7.0
 ----------
 
 - [feature] HTTPExecutor enriched with the 'status' argument.
   It allows to define which HTTP status code(s) signify that a HTTP server is running.
 - [feature] Changed executor methods to return itself to allow method chaining.
-- [feature] Context Manager to return Executor instance, allows creating Executor instance for the context only.
+- [feature] Context Manager to return Executor instance, allows creating Executor instance on the fly.
 - [style] Migrated `%` string formating to `format()`.
 - [style] Explicitly numbered replacement fields in string.
 - [docs] Added documentation for timeouts.

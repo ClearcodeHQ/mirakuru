@@ -17,24 +17,31 @@
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """Base executor with the most basic functionality."""
 
+import atexit
+from contextlib import contextmanager
+import logging
 import os
 import re
-import time
 import shlex
 import signal
 import subprocess
+import time
 import uuid
-import logging
-from contextlib import contextmanager
 
 from mirakuru.exceptions import (
-    TimeoutExpired,
     AlreadyRunning,
     ProcessExitedWithError,
+    TimeoutExpired,
 )
 
 
 log = logging.getLogger(__name__)
+
+
+ENV_UUID = 'mirakuru_uuid'
+"""
+Name of the environment variable used by mirakuru to mark its subprocesses.
+"""
 
 
 PS_XE_PID_MATCH = re.compile(r'^.*?(\d+).+$')
@@ -75,10 +82,18 @@ def processes_with_env(env_name, env_value):
     return pids
 
 
+@atexit.register
+def cleanup_subprocesses():
+    """On python exit: find possibly running subprocesses and kill them."""
+    pids = processes_with_env(ENV_UUID, os.getpid())
+    for pid in pids:
+        log.debug("Killing process %d ...", pid)
+        os.kill(pid, signal.SIGKILL)
+        log.debug("Killed process %d.", pid)
+
+
 class SimpleExecutor(object):
     """Simple subprocess executor with start/stop/kill functionality."""
-
-    ENV_UUID = 'mirakuru_uuid'
 
     def __init__(
             self, command, shell=False, timeout=None, sleep=0.1,
@@ -127,11 +142,11 @@ class SimpleExecutor(object):
         self.process = None
         """A :class:`subprocess.Popen` instance once process is started."""
 
-        self._uuid = str(uuid.uuid1())
+        self._uuid = '{0}__{1}'.format(os.getpid(), uuid.uuid1())
 
     def __enter__(self):
         """
-        Enter context manager.
+        Enter context manager starting the subprocess.
 
         :returns: itself
         :rtype: SimpleExecutor
@@ -140,7 +155,7 @@ class SimpleExecutor(object):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        """Exit context manager."""
+        """Exit context manager stopping the subprocess."""
         self.stop()
 
     def running(self):
@@ -184,7 +199,7 @@ class SimpleExecutor(object):
             #
             # There may be a situation when some subprocess will abandon
             # original envs from parents and then it won't be later found.
-            env[self.__class__.ENV_UUID] = self._uuid
+            env[ENV_UUID] = self._uuid
 
             self.process = subprocess.Popen(
                 command,
@@ -240,7 +255,7 @@ class SimpleExecutor(object):
         :return: process ids (pids) of killed processes
         :rtype list
         """
-        pids = processes_with_env(self.ENV_UUID, self._uuid)
+        pids = processes_with_env(ENV_UUID, self._uuid)
         for pid in pids:
             log.debug("Killing process %d ...", pid)
             os.kill(pid, sig)
@@ -365,7 +380,8 @@ class SimpleExecutor(object):
 
     def __del__(self):
         """Cleanup subprocesses created during Executor lifetime."""
-        self.kill()
+        if self.process:
+            self.kill()
 
     def __repr__(self):
         """Return unambiguous executor representation."""
