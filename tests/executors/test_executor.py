@@ -1,11 +1,11 @@
 """Test basic executor functionality."""
 import gc
+import shlex
+import signal
+from subprocess import check_output
 import sys
 import time
-import signal
-import shlex
 import uuid
-from subprocess import check_output
 
 import pytest
 import mock
@@ -206,29 +206,9 @@ def test_daemons_killing():
     """
     executor = SimpleExecutor(('python', sample_daemon_path), shell=True)
     executor.start()
-    time.sleep(1)
+    time.sleep(2)
     assert executor.running() is not True, \
-        "Executor should not have subprocess running as it's started daemon."
-
-    assert sample_daemon_path in ps_aux()
-    executor.kill()
-    assert sample_daemon_path not in ps_aux()
-
-    # Second part of this test verifies exceptions being called if `ps xe -ww`
-    # was called on some OS that doesn't have it.
-    executor.start()
-    time.sleep(1)
-
-    def fake_output(args):
-        check_output('something_not_existing_called')
-
-    with mock.patch('subprocess.check_output', side_effect=fake_output) as co:
-        with mock.patch('mirakuru.base.log') as log:
-            executor.kill()
-
-    assert co.mock_calls == [mock.call(('ps', 'xe', '-ww'))]
-    assert 'error' == log.mock_calls[0][0]
-    assert '`$ ps xe -ww` command was called' in log.mock_calls[0][1][0]
+        "Executor should not have subprocess running as it started a daemon."
 
     assert sample_daemon_path in ps_aux()
     executor.kill()
@@ -295,3 +275,18 @@ def test_executor_methods_returning_self():
         assert not executor.running()
 
     assert SimpleExecutor(sleep_300).start().stop().output
+
+
+def test_mirakuru_cleanup():
+    """Test if cleanup_subprocesses is fired correctly on python exit."""
+    cmd = '''
+        python -c 'from mirakuru import SimpleExecutor;
+                   from time import sleep;
+                   import gc;
+                   gc.disable();
+                   ex = SimpleExecutor(("python", "{0}")).start();
+                   sleep(1);
+                  '
+    '''.format(sample_daemon_path)
+    check_output(shlex.split(cmd.replace('\n', '')))
+    assert sample_daemon_path not in ps_aux()

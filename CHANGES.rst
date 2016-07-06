@@ -5,6 +5,7 @@ unreleased
 ----------
 
 - [feature] Kill all running mirakuru subprocesses on python exit.
+- [enhancement] Prefer psutil library (>=4.0.0) over calling 'ps xe' command to find leaked subprocesses.
 
 0.7.0
 ----------

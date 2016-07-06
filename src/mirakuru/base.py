@@ -15,25 +15,25 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
-"""Base executor with the most basic functionality."""
+"""Executor with the core functionality."""
 
 import atexit
 from contextlib import contextmanager
+import errno
 import logging
 import os
-import re
 import shlex
 import signal
 import subprocess
 import time
 import uuid
 
+from mirakuru.base_env import processes_with_env
 from mirakuru.exceptions import (
     AlreadyRunning,
     ProcessExitedWithError,
     TimeoutExpired,
 )
-
 
 log = logging.getLogger(__name__)
 
@@ -44,60 +44,27 @@ Name of the environment variable used by mirakuru to mark its subprocesses.
 """
 
 
-PS_XE_PID_MATCH = re.compile(r'^.*?(\d+).+$')
-"""_sre.SRE_Pattern matching PIDs in result from `$ ps xe -ww` command."""
-
-
-def processes_with_env(env_name, env_value):
-    """
-    Find PIDs of processes having environment variable matching given one.
-
-    Function uses `$ ps e -ww` command so it works only on systems
-    having such command available (Linux, MacOS). If not available function
-    will just log error.
-
-    :param str env_name: name of environment variable to be found
-    :param str env_value: environment variable value
-    :return: process ids (PIDs) of processes that have certain environment
-             variable with certain value
-    :rtype: set
-    """
-    pids = set()
-
-    try:
-        ps_xe = subprocess.check_output(('ps', 'xe', '-ww')).splitlines()
-    except OSError as err:
-        if err.errno == 2:
-            log.error("`$ ps xe -ww` command was called but it is not "
-                      "available on this operating system. Mirakuru will not "
-                      "be able to list the process tree and find if there are "
-                      "any leftovers of the Executor.")
-    else:
-        env = '{0}={1}'.format(env_name, env_value)
-
-        for line in ps_xe:
-            line = str(line)
-            if env in line:
-                pids.add(int(PS_XE_PID_MATCH.match(line).group(1)))
-    return pids
-
-
 @atexit.register
 def cleanup_subprocesses():
     """On python exit: find possibly running subprocesses and kill them."""
-    pids = processes_with_env(ENV_UUID, os.getpid())
+    pids = processes_with_env(ENV_UUID, str(os.getpid()))
     for pid in pids:
         log.debug("Killing process %d ...", pid)
-        os.kill(pid, signal.SIGKILL)
-        log.debug("Killed process %d.", pid)
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except OSError as err:
+            if err.errno != errno.ESRCH:
+                log.warning("Can not kill the %d leaked process: %r", pid, err)
+        else:
+            log.debug("Killed process %d.", pid)
 
 
 class SimpleExecutor(object):
     """Simple subprocess executor with start/stop/kill functionality."""
 
     def __init__(
-            self, command, shell=False, timeout=None, sleep=0.1,
-            sig_stop=signal.SIGTERM, sig_kill=signal.SIGKILL
+        self, command, shell=False, timeout=None, sleep=0.1,
+        sig_stop=signal.SIGTERM, sig_kill=signal.SIGKILL
     ):
         """
         Initialize executor.
@@ -142,7 +109,7 @@ class SimpleExecutor(object):
         self.process = None
         """A :class:`subprocess.Popen` instance once process is started."""
 
-        self._uuid = '{0}__{1}'.format(os.getpid(), uuid.uuid1())
+        self._uuid = '{0}:{1}'.format(os.getpid(), uuid.uuid4())
 
     def __enter__(self):
         """
@@ -200,7 +167,6 @@ class SimpleExecutor(object):
             # There may be a situation when some subprocess will abandon
             # original envs from parents and then it won't be later found.
             env[ENV_UUID] = self._uuid
-
             self.process = subprocess.Popen(
                 command,
                 shell=self._shell,
