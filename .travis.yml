@@ -25,14 +25,11 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
 install:
+  - "pip install -r requirements-test.txt"
   - python setup.py develop
   - pip install mirakuru[tests]
   # rst files verifier, and pygments to parse code-blocks
-  - pip install restructuredtext_lint pygments
-  # code coverage tool
-  - pip install coveralls
-  # manually install wheel for deployment
-  - pip install wheel
+  - pip install coveralls wheel
 script:
   - py.test --verbose --capture=no --showlocals --cov mirakuru tests/
   - pylama
