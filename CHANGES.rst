@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+0.8.1
+----------
+
+- [bugfix] Handle IOErrors from psutil (#112)
+- [bugfix] Pass global vars to atexit cleanup_subprocesses function (#111)
+
+
 0.8.0
 ----------
 
