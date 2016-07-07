@@ -44,19 +44,20 @@ Name of the environment variable used by mirakuru to mark its subprocesses.
 """
 
 
-@atexit.register
-def cleanup_subprocesses():
+# atexit functions tends to loose global imports sometimes so we pass all
+# needed imports as function arguments:
+def cleanup_subprocesses(processes_with_env, os, signal, errno):
     """On python exit: find possibly running subprocesses and kill them."""
     pids = processes_with_env(ENV_UUID, str(os.getpid()))
     for pid in pids:
-        log.debug("Killing process %d ...", pid)
         try:
             os.kill(pid, signal.SIGKILL)
         except OSError as err:
             if err.errno != errno.ESRCH:
-                log.warning("Can not kill the %d leaked process: %r", pid, err)
-        else:
-            log.debug("Killed process %d.", pid)
+                print("Can not kill the", pid, "leaked process", err)
+
+
+atexit.register(cleanup_subprocesses, processes_with_env, os, signal, errno)
 
 
 class SimpleExecutor(object):
