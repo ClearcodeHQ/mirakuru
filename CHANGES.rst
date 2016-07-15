@@ -2,7 +2,7 @@ CHANGELOG
 =========
 
 
-unreleased
+0.8.2
 ----------
 
 - [bugfix] atexit cleanup_subprocesses() function now reimports needed functions
