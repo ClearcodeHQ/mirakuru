@@ -5,5 +5,5 @@ pep8==1.7.0
 pep257==0.7.0
 mccabe==0.5.1
 psutil==4.3.0
-restructuredtext-lint==0.16.0
+restructuredtext-lint==0.17.0
 pygments==2.1.3
