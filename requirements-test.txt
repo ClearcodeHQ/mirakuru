@@ -3,7 +3,7 @@ coverage==4.2 # pytest-cov
 pyflakes==1.2.3
 pep8==1.7.0
 pep257==0.7.0
-mccabe==0.5.1
+mccabe==0.5.2
 psutil==4.3.0
 restructuredtext-lint==0.17.0
 pygments==2.1.3
