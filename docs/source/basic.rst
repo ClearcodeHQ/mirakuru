@@ -8,6 +8,7 @@ and you wouldn't want this process to be running all the time.
 Tests would be best example here or a script that sets up processes and databases
 for dev environment with one simple run.
 
+
 SimpleExecutor
 --------------
 
@@ -21,7 +22,7 @@ It simply starts the process passed to constructor, and reports it as running.
     process = SimpleExecutor('my_special_process')
     process.start()
 
-    # Do your stuff
+    # Here you can do your stuff, e.g. communicate with the started process
 
     process.stop()
 
@@ -39,7 +40,7 @@ process output.
     process = OutputExecutor('my_special_process', banner='processed!')
     process.start()
 
-    # Do your stuff
+    # Here you can do your stuff, e.g. communicate with the started process
 
     process.stop()
 
@@ -48,6 +49,7 @@ produced by started process, and looks for the banner part occurring within the
 output.
 Once the output is identified, as in example `processed!` is found in output.
 It is considered as started, and executor releases your script from wait to work.
+
 
 TCPExecutor
 -----------
@@ -64,9 +66,10 @@ does, it reports the process as started and a code returns to normal execution.
     process = TCPExecutor('my_special_process', host='localhost', port=1234)
     process.start()
 
-    # Do your stuff
+    # Here you can do your stuff, e.g. communicate with the started process
 
     process.stop()
+
 
 HTTPExecutor
 ------------
@@ -83,7 +86,7 @@ the executor will be considered started, and a code will return to normal execut
     process = HTTPExecutor('my_special_process', url='http://localhost:6543/status')
     process.start()
 
-    # Do your stuff
+    # Here you can do your stuff, e.g. communicate with the started process
 
     process.stop()
 
@@ -101,7 +104,7 @@ If you consider other codes as valid you need to specify them in 'status' argume
     process = HTTPExecutor('my_special_process', url='http://localhost:6543/status', status='(200|404)')
     process.start()
 
-They can be a single code like 200, 404, 500 or a regular expression string -
+The "status" argument can be a single code integer like 200, 404, 500 or a regular expression string -
 '^(2|4)00$', '2\d\d', '\d{3}', etc.
 
 
@@ -120,9 +123,10 @@ notify their running by creating a .pid file.
     process = PidExecutor('my_special_process', filename='/var/msp/my_special_process.pid')
     process.start()
 
-    # Do your stuff
+    # Here you can do your stuff, e.g. communicate with the started process
 
     process.stop()
+
 
 As a Context manager
 --------------------
@@ -136,9 +140,9 @@ Mirakuru executors can also work as a context managers.
 
     from mirakuru import HTTPExecutor
 
-    with HTTPExecutor('my_special_process', url='http://localhost:6543/status'):
+    with HTTPExecutor('my_special_process', url='http://localhost:6543/status') as process:
 
-        # Do your stuff
+        # Here you can do your stuff, e.g. communicate with the started process
         assert process.running() is True
 
     assert process.running() is False
@@ -155,19 +159,19 @@ To do this, simply use built-in stopped context manager.
 
     from mirakuru import HTTPExecutor
 
-    process = HTTPExecutor('my_special_process', url='http://localhost:6543/status')
-    process.start()
+    process = HTTPExecutor('my_special_process', url='http://localhost:6543/status').start()
 
-    # do some stuff
+    # Here you can do your stuff, e.g. communicate with the started process
 
     with process.stopped():
 
-        # Do something hidden
-
+        # Here you will not be able to communicate with the process as it is killed here
         assert process.running() is False
+        
     assert process.running() is True
 
 Defined process stops upon entering context, and starts upon exiting it.
+
 
 Methods chaining
 ----------------
