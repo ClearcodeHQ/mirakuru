@@ -15,7 +15,7 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
-"""This executor awaits for appearance of a predefined banner in output."""
+"""Executor that awaits for appearance of a predefined banner in output."""
 
 import re
 import select
