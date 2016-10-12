@@ -349,8 +349,16 @@ class SimpleExecutor(object):
 
     def __del__(self):
         """Cleanup subprocesses created during Executor lifetime."""
-        if self.process:
-            self.kill()
+        try:
+            if self.process:
+                self.kill()
+        except Exception:
+            print("*" * 80)
+            print("Exception while deleting Executor. '"
+                  "It is strongly suggested that you use")
+            print("it as a context manager instead.")
+            print("*" * 80)
+            raise
 
     def __repr__(self):
         """Return unambiguous executor representation."""
