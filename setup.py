@@ -17,15 +17,11 @@
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """Mirakuru installation module."""
 
-import re
 import os
 from setuptools import setup, find_packages
 
 
 here = os.path.dirname(__file__)
-with open(os.path.join(here, 'src', 'mirakuru', '__init__.py')) as v_file:
-    package_version = re.compile(
-        r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
 
 requirements = [
@@ -54,9 +50,10 @@ def read(fname):
     """
     return open(os.path.join(here, fname)).read()
 
+
 setup(
     name='mirakuru',
-    version=package_version,
+    version='0.8.2',
     description='Process executor for tests.',
     long_description=(
         read('README.rst') + '\n\n' + read('CHANGES.rst')

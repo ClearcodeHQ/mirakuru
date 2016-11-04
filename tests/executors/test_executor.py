@@ -104,6 +104,7 @@ def test_context_stopped():
 
     assert executor.running() is False
 
+
 echo_foobar = 'echo -n "foobar"'
 
 
