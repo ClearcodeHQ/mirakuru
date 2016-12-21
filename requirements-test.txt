@@ -5,6 +5,6 @@ pyflakes==1.3.0
 pycodestyle==2.2.0
 pydocstyle==1.1.1
 mccabe==0.5.3
-psutil==5.0.0
+psutil==5.0.1
 restructuredtext-lint==0.17.2
 pygments==2.1.3
