@@ -2,6 +2,7 @@
 import sys
 import socket
 from functools import partial
+import shlex
 
 import pytest
 from mock import patch
@@ -124,6 +125,9 @@ def test_fail_if_other_executor_running():
             with executor2:
                 pass
         assert 'seems to be already running' in str(exc)
+        expected_process = '%r[%d]' % (
+            shlex.split(http_server_cmd), executor.process.pid)
+        assert expected_process in str(exc)
 
 
 @patch.object(HTTPExecutor, 'DEFAULT_PORT', PORT)
