@@ -20,6 +20,10 @@ matrix:
       python: pypy
     - os: linux
       python: pypy3
+# blocklist branches
+branches:
+  except:
+  - requires-io-master
 before_install:
   # Perform the manual steps on osx to install python3 and activate venv
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
