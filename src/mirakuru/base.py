@@ -274,7 +274,7 @@ class SimpleExecutor(object):
     @contextmanager
     def stopped(self):
         """
-        Stopping process for given context and starts it afterwards.
+        Stop process for given context and starts it afterwards.
 
         Allows for easier writing resistance integration tests whenever one of
         the service fails.
@@ -386,7 +386,7 @@ class Executor(SimpleExecutor):
 
     def pre_start_check(self):
         """
-        Method fired before the start of executor.
+        Check process before the start of executor.
 
         Should be overridden in order to return True when some other
         executor (or process) has already started with the same configuration.
@@ -433,7 +433,7 @@ class Executor(SimpleExecutor):
 
     def after_start_check(self):
         """
-        Method fired after the start of executor.
+        Check process after the start of executor.
 
         Should be overridden in order to return boolean value if executor
         can be treated as started.
