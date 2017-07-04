@@ -29,7 +29,7 @@ slow_server_executor = partial(
 
 
 def connect_to_server():
-    """Common test to check if can connect to server."""
+    """Connect to http server and assert 200 response."""
     conn = HTTPConnection(HOST, PORT)
     conn.request('GET', '/')
     assert conn.getresponse().status == OK
