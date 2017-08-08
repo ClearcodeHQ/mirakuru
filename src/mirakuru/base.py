@@ -226,7 +226,10 @@ class SimpleExecutor(object):
         pids = processes_with_env(ENV_UUID, self._uuid)
         for pid in pids:
             log.debug("Killing process %d ...", pid)
-            os.kill(pid, sig)
+            try:
+                os.kill(pid, sig)
+            except ProcessLookupError:
+                pass
             log.debug("Killed process %d.", pid)
         return pids
 
