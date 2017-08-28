@@ -121,8 +121,7 @@ class SimpleExecutor(object):
         :returns: itself
         :rtype: SimpleExecutor
         """
-        self.start()
-        return self
+        return self.start()
 
     def __exit__(self, exc_type, exc_value, traceback):
         """Exit context manager stopping the subprocess."""
