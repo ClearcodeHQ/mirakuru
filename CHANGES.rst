@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [enhancement] small context manager code cleanup
+
 
 0.8.2
 ----------
