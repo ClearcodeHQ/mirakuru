@@ -229,6 +229,7 @@ class SimpleExecutor(object):
             try:
                 os.kill(pid, sig)
             except ProcessLookupError:
+                # the process has died before we tried to kill it.
                 pass
             log.debug("Killed process %d.", pid)
         return pids
