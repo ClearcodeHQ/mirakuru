@@ -11,5 +11,6 @@ mirakuru along its history.
 * Paweł Wilczyński
 * Daniel O'Connell
 * Michał Pawłowski
+* Grégoire Détrez
 
 Great thanks to `Mateusz Lenik <http://mlen.pl>`_ for original package!

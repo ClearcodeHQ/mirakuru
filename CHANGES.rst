@@ -4,6 +4,7 @@ CHANGELOG
 unreleased
 ----------
 
+- [enhancement] when killing the process ignore OsError with errno `no such process` as the process have already died.
 - [enhancement] small context manager code cleanup
 
 
