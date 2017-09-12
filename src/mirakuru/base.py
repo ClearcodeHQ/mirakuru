@@ -26,6 +26,7 @@ import signal
 import subprocess
 import time
 import uuid
+import errno
 
 from mirakuru.base_env import processes_with_env
 from mirakuru.exceptions import (
@@ -226,7 +227,14 @@ class SimpleExecutor(object):
         pids = processes_with_env(ENV_UUID, self._uuid)
         for pid in pids:
             log.debug("Killing process %d ...", pid)
-            os.kill(pid, sig)
+            try:
+                os.kill(pid, sig)
+            except OSError as err:
+                if err.errno == errno.ESRCH:
+                    # the process has died before we tried to kill it.
+                    pass
+                else:
+                    raise
             log.debug("Killed process %d.", pid)
         return pids
 
