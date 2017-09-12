@@ -230,7 +230,7 @@ class SimpleExecutor(object):
             try:
                 os.kill(pid, sig)
             except OSError as err:
-                if err.errno != errno.ESRCH:
+                if err.errno == errno.ESRCH:
                     # the process has died before we tried to kill it.
                     pass
                 else:
