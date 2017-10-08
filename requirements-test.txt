@@ -3,7 +3,7 @@ coverage==4.4.1 # pytest-cov
 pylama==7.4.3 # code linters
 pyflakes==1.6.0
 pycodestyle==2.3.1
-pydocstyle==2.0.0
+pydocstyle==2.1.0
 mccabe==0.6.1
 psutil==5.3.1
 restructuredtext-lint==1.1.1
