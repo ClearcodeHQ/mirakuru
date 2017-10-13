@@ -31,7 +31,9 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
 install:
-  - "pip install -r requirements-test.txt"
+  - pip install "setuptools>=21"
+  - pip install "pip>=9"
+  - pip install -r requirements-test.txt
   - python setup.py develop
   - pip install mirakuru[tests]
   # rst files verifier, and pygments to parse code-blocks
