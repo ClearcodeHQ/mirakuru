@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+0.8.3
 ----------
 
 - [enhancement] when killing the process ignore OsError with errno `no such process` as the process have already died.
