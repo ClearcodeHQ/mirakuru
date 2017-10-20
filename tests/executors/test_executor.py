@@ -3,29 +3,18 @@ import gc
 import shlex
 import signal
 from subprocess import check_output
-import sys
-import time
 import uuid
 
 import pytest
 import mock
 
-from mirakuru import Executor, HTTPExecutor
+from mirakuru import Executor
 from mirakuru.base import SimpleExecutor
 from mirakuru.exceptions import ProcessExitedWithError, TimeoutExpired
 
-from tests import test_server_path, sample_daemon_path
+from tests import sample_daemon_path, ps_aux
 
 sleep_300 = 'sleep 300'
-
-
-def ps_aux():
-    """
-    Return output of systems `ps aux -w` call.
-
-    :rtype str
-    """
-    return str(check_output(('ps', 'aux', '-w')))
 
 
 @pytest.mark.parametrize('command', (sleep_300, sleep_300.split()))
@@ -39,7 +28,7 @@ def test_running_process(command):
 
     # check proper __str__ and __repr__ rendering:
     assert 'SimpleExecutor' in repr(executor)
-    assert 'sleep 300' in str(executor)
+    assert sleep_300 in str(executor)
 
 
 def test_custom_signal_stop():
@@ -57,24 +46,6 @@ def test_stop_custom_signal_stop():
     executor.start()
     assert executor.running() is True
     executor.stop(sig=signal.SIGQUIT)
-    assert executor.running() is False
-
-
-def test_custom_signal_kill():
-    """Start process and shuts it down using signal SIGQUIT."""
-    executor = SimpleExecutor(sleep_300, sig_kill=signal.SIGQUIT)
-    executor.start()
-    assert executor.running() is True
-    executor.kill()
-    assert executor.running() is False
-
-
-def test_kill_custom_signal_kill():
-    """Start process and shuts it down using signal SIGQUIT passed to kill."""
-    executor = SimpleExecutor(sleep_300)
-    executor.start()
-    assert executor.running() is True
-    executor.kill(sig=signal.SIGQUIT)
     assert executor.running() is False
 
 
@@ -151,25 +122,6 @@ def test_stopping_not_yet_running_executor():
     executor.stop()
 
 
-def test_stopping_brutally():
-    """
-    Test if SimpleExecutor is stopping insubordinate process.
-
-    Check if the process that doesn't react to SIGTERM signal will be killed
-    by executor with SIGKILL automatically.
-    """
-    host_port = "127.0.0.1:8000"
-    cmd = '{0} {1} {2} True'.format(sys.executable, test_server_path, host_port)
-    executor = HTTPExecutor(cmd, 'http://{0!s}/'.format(host_port), timeout=20)
-    executor.start()
-    assert executor.running() is True
-
-    stop_at = time.time() + 10
-    executor.stop()
-    assert executor.running() is False
-    assert stop_at <= time.time(), "Subprocess killed earlier than in 10 secs"
-
-
 def test_forgotten_stop():
     """
     Test if SimpleExecutor subprocess is killed after an instance is deleted.
@@ -195,25 +147,6 @@ def test_forgotten_stop():
     gc.collect()  # to force 'del' immediate effect
     assert mark not in ps_aux(), \
         "The test process should not be running at this point."
-
-
-def test_daemons_killing():
-    """
-    Test if all subprocesses of SimpleExecutor can be killed.
-
-    The most problematic subprocesses are daemons or other services that
-    change the process group ID. This test verifies that daemon process
-    is killed after executor's kill().
-    """
-    executor = SimpleExecutor(('python', sample_daemon_path), shell=True)
-    executor.start()
-    time.sleep(2)
-    assert executor.running() is not True, \
-        "Executor should not have subprocess running as it started a daemon."
-
-    assert sample_daemon_path in ps_aux()
-    executor.kill()
-    assert sample_daemon_path not in ps_aux()
 
 
 def test_executor_raises_if_process_exits_with_error():
