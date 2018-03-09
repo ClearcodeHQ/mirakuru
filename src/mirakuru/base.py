@@ -51,9 +51,9 @@ def cleanup_subprocesses():
     # atexit functions tends to loose global imports sometimes so reimport
     # everything what is needed again here:
     import os
-    import signal
     import errno
     from mirakuru.base_env import processes_with_env
+    from mirakuru.compat import SIGKILL
 
     pids = processes_with_env(ENV_UUID, str(os.getpid()))
     for pid in pids:
