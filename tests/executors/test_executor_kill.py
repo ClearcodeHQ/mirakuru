@@ -35,10 +35,11 @@ def test_kill_custom_signal_kill():
 
 
 def test_already_closed():
-    """Check that the executor simply cleans after itself if the process exits early."""
+    """Check that the executor cleans after itself after it exited earlier."""
     with SimpleExecutor('python') as executor:
         assert executor.running()
         os.killpg(executor.process.pid, SIGKILL)
+
         def process_stopped():
             """Return True only only when self.process is not running."""
             return executor.running() is False
