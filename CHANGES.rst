@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+0.9.0
 ----------
 
 - [enhancement] Fallback to kill through SIGTERM on Windows, since SIGKILL is not available
