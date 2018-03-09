@@ -51,4 +51,5 @@ deploy:
     tags: true
     all_branches: true
     repo: ClearcodeHQ/mirakuru
+    python: 3.6
   distributions: sdist bdist_wheel
