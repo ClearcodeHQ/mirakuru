@@ -5,6 +5,7 @@ unreleased
 ----------
 
 - [enhancement] Fallback to kill through SIGTERM on Windows, since SIGKILL is not available
+- [enhancement] detect cases where during stop process already exited, and simply clean up afterwards
 
 0.8.3
 ----------

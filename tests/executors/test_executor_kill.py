@@ -4,9 +4,12 @@ import time
 import sys
 
 import errno
+
+import os
 from mock import patch
 
 from mirakuru import SimpleExecutor, HTTPExecutor
+from mirakuru.compat import SIGKILL
 
 from tests import sample_daemon_path, ps_aux, test_server_path
 
@@ -29,6 +32,20 @@ def test_kill_custom_signal_kill():
     assert executor.running() is True
     executor.kill(sig=signal.SIGQUIT)
     assert executor.running() is False
+
+
+def test_already_closed():
+    """Check that the executor cleans after itself after it exited earlier."""
+    with SimpleExecutor('python') as executor:
+        assert executor.running()
+        os.killpg(executor.process.pid, SIGKILL)
+
+        def process_stopped():
+            """Return True only only when self.process is not running."""
+            return executor.running() is False
+        executor.wait_for(process_stopped)
+        assert executor.process
+    assert not executor.process
 
 
 def test_daemons_killing():
