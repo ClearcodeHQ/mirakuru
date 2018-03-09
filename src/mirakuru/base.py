@@ -34,6 +34,7 @@ from mirakuru.exceptions import (
     ProcessExitedWithError,
     TimeoutExpired,
 )
+from mirakuru.compat import SIGKILL
 
 log = logging.getLogger(__name__)
 
@@ -50,14 +51,14 @@ def cleanup_subprocesses():
     # atexit functions tends to loose global imports sometimes so reimport
     # everything what is needed again here:
     import os
-    import signal
     import errno
     from mirakuru.base_env import processes_with_env
+    from mirakuru.compat import SIGKILL
 
     pids = processes_with_env(ENV_UUID, str(os.getpid()))
     for pid in pids:
         try:
-            os.kill(pid, signal.SIGKILL)
+            os.kill(pid, SIGKILL)
         except OSError as err:
             if err.errno != errno.ESRCH:
                 print("Can not kill the", pid, "leaked process", err)
@@ -68,7 +69,7 @@ class SimpleExecutor(object):
 
     def __init__(
         self, command, shell=False, timeout=None, sleep=0.1,
-        sig_stop=signal.SIGTERM, sig_kill=signal.SIGKILL
+        sig_stop=signal.SIGTERM, sig_kill=SIGKILL
     ):
         """
         Initialize executor.
@@ -81,7 +82,7 @@ class SimpleExecutor(object):
         :param int sig_stop: signal used to stop process run by the executor.
             default is `signal.SIGTERM`
         :param int sig_kill: signal used to kill process run by the executor.
-            default is `signal.SIGKILL`
+            default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
 
         .. note::
 

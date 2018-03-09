@@ -43,7 +43,7 @@ class TCPExecutor(Executor):
         :param int sig_stop: signal used to stop process run by the executor.
             default is `signal.SIGTERM`
         :param int sig_kill: signal used to kill process run by the executor.
-            default is `signal.SIGKILL`
+            default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
 
         """
         super(TCPExecutor, self).__init__(command, **kwargs)

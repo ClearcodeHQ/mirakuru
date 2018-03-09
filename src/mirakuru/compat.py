@@ -18,6 +18,7 @@
 """mirakuru Python 2 and 3 compatibility module."""
 
 import sys
+import signal
 
 
 python = sys.executable
@@ -36,6 +37,9 @@ else:
     from urllib.parse import urlparse
     http_server_cmd = "{python} -m http.server".format(python=python)
 
+# Windows does not have SIGKILL, fall back to SIGTERM.
+SIGKILL = getattr(signal, 'SIGKILL', signal.SIGTERM)
+
 
 __all__ = (
     'HTTPConnection',
@@ -45,4 +49,5 @@ __all__ = (
     'BaseHTTPRequestHandler',
     'urlparse',
     'http_server_cmd',
+    'SIGKILL',
 )
