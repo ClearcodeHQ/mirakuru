@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [enhancement] Run subprocesses in shell by default on Windows
+
 0.9.0
 ----------
 

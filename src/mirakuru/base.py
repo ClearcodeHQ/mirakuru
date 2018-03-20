@@ -75,7 +75,8 @@ class SimpleExecutor(object):
         Initialize executor.
 
         :param (str, list) command: command to be run by the subprocess
-        :param bool shell: same as the `subprocess.Popen` shell definition
+        :param bool shell: same as the `subprocess.Popen` shell definition.
+            On Windows always set to True.
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
@@ -104,7 +105,10 @@ class SimpleExecutor(object):
             self.command = command
             self.command_parts = shlex.split(command)
 
-        self._shell = shell
+        self._shell = True
+        if platform.system() != 'Windows':
+            self._shell = shell
+
         self._timeout = timeout
         self._sleep = sleep
         self._sig_stop = sig_stop
