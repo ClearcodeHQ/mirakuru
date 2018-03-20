@@ -27,6 +27,7 @@ import subprocess
 import time
 import uuid
 import errno
+import platform
 
 from mirakuru.base_env import processes_with_env
 from mirakuru.exceptions import (
@@ -175,14 +176,18 @@ class SimpleExecutor(object):
             # There may be a situation when some subprocess will abandon
             # original envs from parents and then it won't be later found.
             env[ENV_UUID] = self._uuid
+            popen_kwargs = {
+                'shell': self._shell,
+                'stdin': subprocess.PIPE,
+                'stdout': subprocess.PIPE,
+                'universal_newlines': True,
+                'env': env,
+            }
+            if platform.system() != 'Windows':
+                popen_kwargs['preexec_fn'] = os.setsid
             self.process = subprocess.Popen(
                 command,
-                shell=self._shell,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                universal_newlines=True,
-                preexec_fn=os.setsid,
-                env=env
+                **popen_kwargs
             )
 
         self._set_timeout()
