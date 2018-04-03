@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [enhancement] Run subprocesses in shell by default on Windows
+- [ehnancement] Do not pass preexec_fn on windows
+
 0.9.0
 ----------
 

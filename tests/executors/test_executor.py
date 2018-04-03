@@ -157,7 +157,10 @@ def test_executor_raises_if_process_exits_with_error():
     should raise an exception.
     """
     error_code = 12
-    failing_executor = Executor(['bash', '-c', 'exit {0!s}'.format(error_code)])
+    failing_executor = Executor(
+        ['bash', '-c', 'exit {0!s}'.format(error_code)],
+        timeout=5
+    )
     failing_executor.pre_start_check = mock.Mock(return_value=False)
     # After-start check will keep returning False to let the process terminate.
     failing_executor.after_start_check = mock.Mock(return_value=False)

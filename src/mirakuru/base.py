@@ -27,6 +27,7 @@ import subprocess
 import time
 import uuid
 import errno
+import platform
 
 from mirakuru.base_env import processes_with_env
 from mirakuru.exceptions import (
@@ -75,7 +76,8 @@ class SimpleExecutor(object):
         Initialize executor.
 
         :param (str, list) command: command to be run by the subprocess
-        :param bool shell: same as the `subprocess.Popen` shell definition
+        :param bool shell: same as the `subprocess.Popen` shell definition.
+            On Windows always set to True.
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
@@ -104,7 +106,10 @@ class SimpleExecutor(object):
             self.command = command
             self.command_parts = shlex.split(command)
 
-        self._shell = shell
+        self._shell = True
+        if platform.system() != 'Windows':
+            self._shell = shell
+
         self._timeout = timeout
         self._sleep = sleep
         self._sig_stop = sig_stop
@@ -171,14 +176,18 @@ class SimpleExecutor(object):
             # There may be a situation when some subprocess will abandon
             # original envs from parents and then it won't be later found.
             env[ENV_UUID] = self._uuid
+            popen_kwargs = {
+                'shell': self._shell,
+                'stdin': subprocess.PIPE,
+                'stdout': subprocess.PIPE,
+                'universal_newlines': True,
+                'env': env,
+            }
+            if platform.system() != 'Windows':
+                popen_kwargs['preexec_fn'] = os.setsid
             self.process = subprocess.Popen(
                 command,
-                shell=self._shell,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                universal_newlines=True,
-                preexec_fn=os.setsid,
-                env=env
+                **popen_kwargs
             )
 
         self._set_timeout()
