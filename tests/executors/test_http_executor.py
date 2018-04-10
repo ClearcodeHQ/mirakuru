@@ -153,7 +153,7 @@ def test_default_port():
     # one explicit status code as a string
     ('404', False),
     # status codes as a regular expression
-    ('(2|4)\d\d', False),
+    (r'(2|4)\d\d', False),
     # status codes as a regular expression
     ('(200|404)', False),
 ))
