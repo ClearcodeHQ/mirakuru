@@ -37,7 +37,7 @@ install:
   # rst files verifier, and pygments to parse code-blocks
   - pip install coveralls wheel
 script:
-  - py.test --verbose --capture=no --showlocals --cov mirakuru tests/
+  - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
   - pylama
   - rst-lint *.rst
 after_success:
