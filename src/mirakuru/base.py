@@ -271,7 +271,7 @@ class SimpleExecutor(object):
             sig = self._sig_stop
 
         try:
-            os.killpg(self.process.pid, sig)
+            os.kill(self.process.pid, sig)
         except OSError as err:
             if err.errno == errno.ESRCH:
                 pass
