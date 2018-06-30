@@ -28,7 +28,7 @@ after_success:
 jobs:
   include:
     - stage: osx
-      python: '3.6'
+      python: generic
       os: osx
 deploy:
   provider: pypi
