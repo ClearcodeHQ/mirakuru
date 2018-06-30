@@ -21,6 +21,7 @@ install:
   - pip install .[tests] coveralls wheel
 script:
   - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
+  - pycodestyle
   - pylama
   - rst-lint *.rst
 after_success:
