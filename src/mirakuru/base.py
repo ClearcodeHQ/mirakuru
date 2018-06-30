@@ -277,7 +277,7 @@ class SimpleExecutor(object):
         try:
             os.killpg(self.process.pid, sig)
         except OSError as err:
-            if err.errno == errno.ESRCH:
+            if err.errno in IGNORED_ERROR_CODES:
                 pass
             else:
                 raise
