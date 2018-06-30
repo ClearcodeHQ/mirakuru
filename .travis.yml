@@ -22,7 +22,7 @@ install:
 script:
   - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
   - pycodestyle
-  - pylama
+  - pydocstyle
   - rst-lint *.rst
 after_success:
   - coveralls
