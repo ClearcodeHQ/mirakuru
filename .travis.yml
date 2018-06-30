@@ -28,8 +28,13 @@ after_success:
 jobs:
   include:
     - stage: osx
-      python: '3.6'
+      language: generic
       os: osx
+      before_install:
+        - brew update
+        - brew upgrade python
+        - virtualenv venv -p python
+        - source venv/bin/activate
 deploy:
   provider: pypi
   user: fizyk
