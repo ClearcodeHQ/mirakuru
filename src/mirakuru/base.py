@@ -45,6 +45,10 @@ ENV_UUID = 'mirakuru_uuid'
 Name of the environment variable used by mirakuru to mark its subprocesses.
 """
 
+IGNORED_ERROR_CODES = [errno.ESRCH]
+if platform.system() == 'Darwin':
+    IGNORED_ERROR_CODES = [errno.ESRCH, errno.EPERM]
+
 
 @atexit.register
 def cleanup_subprocesses():
@@ -240,7 +244,7 @@ class SimpleExecutor(object):
             try:
                 os.kill(pid, sig)
             except OSError as err:
-                if err.errno == errno.ESRCH:
+                if err.errno in IGNORED_ERROR_CODES:
                     # the process has died before we tried to kill it.
                     pass
                 else:
