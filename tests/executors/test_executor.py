@@ -76,7 +76,7 @@ def test_context_stopped():
     assert executor.running() is False
 
 
-echo_foobar = 'echo -n "foobar"'
+echo_foobar = 'echo "foobar"'
 
 
 @pytest.mark.parametrize('command', (echo_foobar, shlex.split(echo_foobar)))
@@ -85,7 +85,7 @@ def test_process_output(command):
     executor = SimpleExecutor(command)
     executor.start()
 
-    assert executor.output().read() == 'foobar'
+    assert executor.output().read() == 'foobar\n'
     executor.stop()
 
 
@@ -95,7 +95,7 @@ def test_process_output_shell(command):
     executor = SimpleExecutor(command, shell=True)
     executor.start()
 
-    assert executor.output().read() == 'foobar'
+    assert executor.output().read().strip() == 'foobar'
     executor.stop()
 
 
