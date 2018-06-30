@@ -1,47 +1,41 @@
 language: python
 sudo: false
+python:
+- '2.7'
+- '3.4'
+- '3.5'
+- '3.6'
+- 'pypy-5.3.1'
+- 'pypy3.5-5.8.0'
 matrix:
   allow_failures:
     - os: osx
-  include:
-    - os: osx
-      language: generic
-    - os: linux
-      python: 2.7
-    - os: linux
-      python: 3.4
-    - os: linux
-      python: 3.5
-    - os: linux
-      python: 3.6
-    - os: linux
-      python: pypy-5.3.1
-    - os: linux
-      python: pypy3.5-5.8.0
 # blocklist branches
 branches:
   except:
   - requires-io-master
-before_install:
-  # Perform the manual steps on osx to install python3 and activate venv
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew upgrade python; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
 install:
   - pip install "setuptools>=21"
   - pip install "pip>=9"
   - pip install -r requirements-test.txt
-  - python setup.py develop
-  - pip install mirakuru[tests]
-  # rst files verifier, and pygments to parse code-blocks
-  - pip install coveralls wheel
+  - pip install .[tests] coveralls wheel
 script:
   - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
   - pylama
   - rst-lint *.rst
 after_success:
   - coveralls
+jobs:
+  include:
+    - stage: osx
+      language: generic
+      os: osx
+      before_install:
+        - brew update
+        - brew upgrade python
+        - pip3 install virtualenv
+        - virtualenv venv -p python
+        - source venv/bin/activate
 deploy:
   provider: pypi
   user: fizyk
