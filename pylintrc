@@ -207,7 +207,7 @@ function-naming-style=snake_case
 
 # Regular expression matching correct function names. Overrides function-
 # naming-style
-#function-rgx=
+function-rgx=(([a-z_][a-z0-9_]{2,50})|(_[a-z0-9_]*)|(__[a-z][a-z0-9_]+__))$
 
 # Good variable names which should always be accepted, separated by a comma
 good-names=i,
@@ -218,7 +218,7 @@ good-names=i,
            _
 
 # Include a hint for the correct naming format with invalid-name
-include-naming-hint=no
+include-naming-hint=yes
 
 # Naming style matching correct inline iteration names
 inlinevar-naming-style=any

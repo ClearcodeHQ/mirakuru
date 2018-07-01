@@ -9,21 +9,21 @@ from mock import patch
 from mirakuru import HTTPExecutor, TCPExecutor
 from mirakuru import TimeoutExpired, AlreadyRunning
 from mirakuru.compat import HTTPConnection, OK, http_server_cmd
-from tests import test_server_path
+from tests import TEST_SERVER_PATH
 
 
 HOST = "127.0.0.1"
 PORT = 7987
 
 
-http_server_cmd = '{0} {1}'.format(http_server_cmd, PORT)
-http_slow_cmd = '{python} {srv} {host}:{port}' \
-    .format(python=sys.executable, srv=test_server_path, host=HOST, port=PORT)
+HTTP_NORMAL_CMD = '{0} {1}'.format(http_server_cmd, PORT)
+HTTP_SLOW_CMD = '{python} {srv} {host}:{port}' \
+    .format(python=sys.executable, srv=TEST_SERVER_PATH, host=HOST, port=PORT)
 
 
-slow_server_executor = partial(
+slow_server_executor = partial(  # pylint: disable=invalid-name
     HTTPExecutor,
-    http_slow_cmd,
+    HTTP_SLOW_CMD,
     'http://{0}:{1}/'.format(HOST, PORT),
 )
 
@@ -38,7 +38,7 @@ def connect_to_server():
 
 def test_executor_starts_and_waits():
     """Test if process awaits for HEAD request to be completed."""
-    command = 'bash -c "sleep 3 && {0}"'.format(http_server_cmd)
+    command = 'bash -c "sleep 3 && {0}"'.format(HTTP_NORMAL_CMD)
 
     executor = HTTPExecutor(
         command,
@@ -60,7 +60,7 @@ def test_executor_starts_and_waits():
 def test_shell_started_server_stops():
     """Test if executor terminates properly executor with shell=True."""
     executor = HTTPExecutor(
-        http_server_cmd,
+        HTTP_NORMAL_CMD,
         'http://{0}:{1}/'.format(HOST, PORT),
         timeout=20,
         shell=True
@@ -104,13 +104,13 @@ def test_slow_server_timed_out():
     assert 'timed out after' in str(exc)
 
 
-def test_fail_if_other_executor_running():
+def test_fail_if_other_running():
     """Test raising AlreadyRunning exception when port is blocked."""
     executor = HTTPExecutor(
-        http_server_cmd, 'http://{0}:{1}/'.format(HOST, PORT),
+        HTTP_NORMAL_CMD, 'http://{0}:{1}/'.format(HOST, PORT),
     )
     executor2 = HTTPExecutor(
-        http_server_cmd, 'http://{0}:{1}/'.format(HOST, PORT),
+        HTTP_NORMAL_CMD, 'http://{0}:{1}/'.format(HOST, PORT),
     )
 
     with executor:
@@ -134,7 +134,7 @@ def test_default_port():
     Check if HTTP executor fills in the default port for the TCP check
     from the base class if no port is provided in the URL.
     """
-    executor = HTTPExecutor(http_server_cmd, 'http://{0}/'.format(HOST))
+    executor = HTTPExecutor(HTTP_NORMAL_CMD, 'http://{0}/'.format(HOST))
 
     assert executor.url.port is None
     assert executor.port == PORT
@@ -165,7 +165,7 @@ def test_http_status_codes(accepted_status, expected_timeout):
     :param bool expected_timeout: if Executor raises TimeoutExpired or not
     """
     kwargs = {
-        'command': http_server_cmd,
+        'command': HTTP_NORMAL_CMD,
         'url': 'http://{0}:{1}/badpath'.format(HOST, PORT),
         'timeout': 2
     }

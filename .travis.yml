@@ -23,7 +23,7 @@ script:
   - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
   - pycodestyle
   - pydocstyle
-  - pylint mirakuru
+  - pylint mirakuru tests
   - rst-lint *.rst
 after_success:
   - coveralls
@@ -38,6 +38,8 @@ jobs:
         - pip3 install virtualenv
         - virtualenv venv -p python3
         - source venv/bin/activate
+      script:
+        - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
 deploy:
   provider: pypi
   user: fizyk

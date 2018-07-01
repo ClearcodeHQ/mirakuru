@@ -1,5 +1,6 @@
 """General mirakuru library tests."""
-from mirakuru import *  # noqa
+# pylint: disable=wildcard-import,unused-wildcard-import
+from mirakuru import *
 
 
 def test_importing_mirakuru():

@@ -11,14 +11,14 @@ from mock import patch
 from mirakuru import SimpleExecutor, HTTPExecutor
 from mirakuru.compat import SIGKILL
 
-from tests import sample_daemon_path, ps_aux, test_server_path
+from tests import SAMPLE_DAEMON_PATH, ps_aux, TEST_SERVER_PATH
 
-sleep_300 = 'sleep 300'
+SLEEP_300 = 'sleep 300'
 
 
 def test_custom_signal_kill():
     """Start process and shuts it down using signal SIGQUIT."""
-    executor = SimpleExecutor(sleep_300, sig_kill=signal.SIGQUIT)
+    executor = SimpleExecutor(SLEEP_300, sig_kill=signal.SIGQUIT)
     executor.start()
     assert executor.running() is True
     executor.kill()
@@ -27,7 +27,7 @@ def test_custom_signal_kill():
 
 def test_kill_custom_signal_kill():
     """Start process and shuts it down using signal SIGQUIT passed to kill."""
-    executor = SimpleExecutor(sleep_300)
+    executor = SimpleExecutor(SLEEP_300)
     executor.start()
     assert executor.running() is True
     executor.kill(sig=signal.SIGQUIT)
@@ -56,15 +56,15 @@ def test_daemons_killing():
     change the process group ID. This test verifies that daemon process
     is killed after executor's kill().
     """
-    executor = SimpleExecutor(('python', sample_daemon_path), shell=True)
+    executor = SimpleExecutor(('python', SAMPLE_DAEMON_PATH), shell=True)
     executor.start()
     time.sleep(2)
     assert executor.running() is not True, \
         "Executor should not have subprocess running as it started a daemon."
 
-    assert sample_daemon_path in ps_aux()
+    assert SAMPLE_DAEMON_PATH in ps_aux()
     executor.kill()
-    assert sample_daemon_path not in ps_aux()
+    assert SAMPLE_DAEMON_PATH not in ps_aux()
 
 
 def test_stopping_brutally():
@@ -75,7 +75,7 @@ def test_stopping_brutally():
     by executor with SIGKILL automatically.
     """
     host_port = "127.0.0.1:8000"
-    cmd = '{0} {1} {2} True'.format(sys.executable, test_server_path, host_port)
+    cmd = '{0} {1} {2} True'.format(sys.executable, TEST_SERVER_PATH, host_port)
     executor = HTTPExecutor(cmd, 'http://{0!s}/'.format(host_port), timeout=20)
     executor.start()
     assert executor.running() is True
@@ -99,16 +99,18 @@ def test_stopping_children_of_stopped_process():
     Then:
         We ignore and skip OsError indicates there's no such process.
     """
-    def raise_os_error(*args, **kwargs):
+    # pylint: disable=protected-access, missing-docstring
+    def raise_os_error(*_, **__):
+
         os_error = OSError()
         os_error.errno = errno.ESRCH
         raise os_error
 
-    def processes_with_env_mock(*args, **kwargs):
+    def processes_with_env_mock(*_, **__):
         return [1]
 
     with patch(
-            'mirakuru.base.processes_with_env', new=processes_with_env_mock
+        'mirakuru.base.processes_with_env', new=processes_with_env_mock
     ), patch('os.kill', new=raise_os_error):
-        executor = SimpleExecutor(sleep_300)
+        executor = SimpleExecutor(SLEEP_300)
         executor._kill_all_kids(executor._sig_stop)
