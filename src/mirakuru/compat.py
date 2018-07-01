@@ -21,14 +21,14 @@ import sys
 import signal
 
 
-python = sys.executable
-
 # pylint: disable=no-name-in-module, import-error
 if sys.version_info.major == 2:
     from httplib import HTTPConnection, HTTPException, OK
     from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
     from urlparse import urlparse
-    http_server_cmd = "{python} -m SimpleHTTPServer".format(python=python)
+    http_server_cmd = (  # pylint: disable=invalid-name
+        "{python} -m SimpleHTTPServer"
+    ).format(python=sys.executable)
 else:
     # In Python 3 httplib is renamed to http.client
     from http.client import HTTPConnection, HTTPException, OK
@@ -36,7 +36,9 @@ else:
     from http.server import HTTPServer, BaseHTTPRequestHandler
     # In Python 3 urlparse is renamed to urllib.parse
     from urllib.parse import urlparse
-    http_server_cmd = "{python} -m http.server".format(python=python)
+    http_server_cmd = (  # pylint: disable=invalid-name
+        "{python} -m http.server"
+    ).format(python=sys.executable)
 
 # Windows does not have SIGKILL, fall back to SIGTERM.
 SIGKILL = getattr(signal, 'SIGKILL', signal.SIGTERM)

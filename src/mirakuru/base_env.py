@@ -100,6 +100,7 @@ def processes_with_env_ps(env_name, env_value):
             pids.add(int(PS_XE_PID_MATCH.match(line).group(1)))
     return pids
 
+
 # pylint: disable=invalid-name
 if psutil:
     processes_with_env = processes_with_env_psutil
