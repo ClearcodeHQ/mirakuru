@@ -37,7 +37,7 @@ from mirakuru.exceptions import (
 )
 from mirakuru.compat import SIGKILL
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 ENV_UUID = 'mirakuru_uuid'
@@ -53,6 +53,7 @@ if platform.system() == 'Darwin':
 @atexit.register
 def cleanup_subprocesses():
     """On python exit: find possibly running subprocesses and kill them."""
+    # pylint: disable=redefined-outer-name, reimported
     # atexit functions tends to loose global imports sometimes so reimport
     # everything what is needed again here:
     import os
@@ -73,8 +74,8 @@ class SimpleExecutor(object):
     """Simple subprocess executor with start/stop/kill functionality."""
 
     def __init__(
-        self, command, shell=False, timeout=None, sleep=0.1,
-        sig_stop=signal.SIGTERM, sig_kill=SIGKILL
+            self, command, shell=False, timeout=None, sleep=0.1,
+            sig_stop=signal.SIGTERM, sig_kill=SIGKILL
     ):
         """
         Initialize executor.

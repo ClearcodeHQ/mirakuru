@@ -23,6 +23,7 @@ import signal
 
 python = sys.executable
 
+# pylint: disable=no-name-in-module, import-error
 if sys.version_info.major == 2:
     from httplib import HTTPConnection, HTTPException, OK
     from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler

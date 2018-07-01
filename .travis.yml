@@ -23,6 +23,7 @@ script:
   - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
   - pycodestyle
   - pydocstyle
+  - pylint mirakuru
   - rst-lint *.rst
 after_success:
   - coveralls
