@@ -12,7 +12,10 @@ import pytest
 
 
 if sys.version_info >= (3,):
-    simplefilter('default', ResourceWarning)
+    simplefilter(
+        'default',
+        ResourceWarning  # pylint: disable=undefined-variable  # py3 only
+    )
 
 
 @pytest.fixture(autouse=True)
