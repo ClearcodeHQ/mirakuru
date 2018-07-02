@@ -12,7 +12,6 @@ import pytest
 
 
 if sys.version_info >= (3,):
-    from exceptions import ResourceWarning  # pylint: disable=no-name-in-module
     simplefilter('default', ResourceWarning)
 
 
