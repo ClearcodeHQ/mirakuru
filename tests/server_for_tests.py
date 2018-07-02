@@ -9,7 +9,7 @@ Example usage:
 
     python tests/slow_server.py [HOST:PORT] True
 
-        - run IMMORAL server (stopping process only by SIGKILL)
+        - run IMMORTAL server (stopping process only by SIGKILL)
 
 """
 import sys
@@ -62,16 +62,18 @@ class SlowServerHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
 
-    HOST, PORT, IMMORAL = "127.0.0.1", 8000, False
+    HOST, PORT, IMMORTAL = "127.0.0.1", 8000, False
     if len(sys.argv) in (2, 3):
         HOST, PORT = sys.argv[1].split(":")
 
     if len(sys.argv) == 3:
-        IMMORAL = sys.argv[2]
+        IMMORTAL = sys.argv[2]
 
-    if IMMORAL:
+    if IMMORTAL:
         block_signals()
 
-    server = HTTPServer((HOST, int(PORT)), SlowServerHandler)  # pylint: disable=invalid-name
+    server = HTTPServer(  # pylint: disable=invalid-name
+        (HOST, int(PORT)), SlowServerHandler
+    )
     print("Starting slow server on {0}:{1}...".format(HOST, PORT))
     server.serve_forever()
