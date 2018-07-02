@@ -14,7 +14,7 @@ import pytest
 if sys.version_info >= (3,):
     simplefilter(
         'default',
-        ResourceWarning  # pylint: disable=undefined-variable  # py3 only
+        ResourceWarning  # pylint: disable=undefined-variable
     )
 
 
