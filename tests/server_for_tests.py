@@ -3,13 +3,13 @@ HTTP server that responses with delays used for tests.
 
 Example usage:
 
-    python tests/slow_server.py [host:port]
+    python tests/slow_server.py [HOST:PORT]
 
-        - run HTTP Server, host and port are optional
+        - run HTTP Server, HOST and PORT are optional
 
-    python tests/slow_server.py [host:port] True
+    python tests/slow_server.py [HOST:PORT] True
 
-        - run immortal server (stopping process only by SIGKILL)
+        - run IMMORTAL server (stopping process only by SIGKILL)
 
 """
 import sys
@@ -18,8 +18,10 @@ import time
 
 sys.path.append(os.getcwd())  # noqa
 
+# pylint:disable=wrong-import-position
 from mirakuru.compat import HTTPServer, BaseHTTPRequestHandler
 from tests.signals import block_signals
+# pylint:enable=wrong-import-position
 
 
 class SlowServerHandler(BaseHTTPRequestHandler):
@@ -28,7 +30,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
     timeout = 2
     endtime = None
 
-    def do_GET(self):
+    def do_GET(self):  # pylint:disable=invalid-name
         """Serve GET request."""
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -36,7 +38,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         self.wfile.write(b'Hi. I am very slow.')
         return
 
-    def do_HEAD(self):
+    def do_HEAD(self):  # pylint:disable=invalid-name
         """
         Serve HEAD request.
 
@@ -51,7 +53,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         self.end_headers()
         return
 
-    def count_timeout(self):
+    def count_timeout(self):  # pylint: disable=no-self-use
         """Count down the timeout time."""
         if SlowServerHandler.endtime is None:
             SlowServerHandler.endtime = time.time() + SlowServerHandler.timeout
@@ -60,16 +62,18 @@ class SlowServerHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
 
-    host, port, immortal = "127.0.0.1", 8000, False
+    HOST, PORT, IMMORTAL = "127.0.0.1", 8000, False
     if len(sys.argv) in (2, 3):
-        host, port = sys.argv[1].split(":")
+        HOST, PORT = sys.argv[1].split(":")
 
     if len(sys.argv) == 3:
-        immortal = sys.argv[2]
+        IMMORTAL = sys.argv[2]
 
-    if immortal:
+    if IMMORTAL:
         block_signals()
 
-    server = HTTPServer((host, int(port)), SlowServerHandler)
-    print("Starting slow server on {0}:{1}...".format(host, port))
+    server = HTTPServer(  # pylint: disable=invalid-name
+        (HOST, int(PORT)), SlowServerHandler
+    )
+    print("Starting slow server on {0}:{1}...".format(HOST, PORT))
     server.serve_forever()

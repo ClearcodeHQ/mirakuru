@@ -28,7 +28,7 @@ except ImportError:
     psutil = None
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 PS_XE_PID_MATCH = re.compile(r'^.*?(\d+).+$')
@@ -101,6 +101,7 @@ def processes_with_env_ps(env_name, env_value):
     return pids
 
 
+# pylint: disable=invalid-name
 if psutil:
     processes_with_env = processes_with_env_psutil
 else:

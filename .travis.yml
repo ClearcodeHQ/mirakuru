@@ -8,9 +8,6 @@ python:
 - '3.6'
 - 'pypy-5.3.1'
 - 'pypy3.5-5.8.0'
-matrix:
-  allow_failures:
-    - os: osx
 # blocklist branches
 branches:
   except:
@@ -22,7 +19,9 @@ install:
   - pip install .[tests] coveralls wheel
 script:
   - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
-  - pylama
+  - pycodestyle
+  - pydocstyle
+  - pylint mirakuru tests
   - rst-lint *.rst
 after_success:
   - coveralls
@@ -35,8 +34,10 @@ jobs:
         - brew update
         - brew upgrade python
         - pip3 install virtualenv
-        - virtualenv venv -p python
+        - virtualenv venv -p python3
         - source venv/bin/activate
+      script:
+        - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
     - stage: deploy
       python: '3.6'
       if: tag = true

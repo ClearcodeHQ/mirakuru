@@ -4,6 +4,7 @@ CHANGELOG
 unreleased
 ----------
 
+- [enhancement] Do not fail if processes child throw EPERM error during clean up phase
 - [enhancement] Run subprocesses in shell by default on Windows
 - [ehnancement] Do not pass preexec_fn on windows
 

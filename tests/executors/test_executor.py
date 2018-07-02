@@ -12,12 +12,12 @@ from mirakuru import Executor
 from mirakuru.base import SimpleExecutor
 from mirakuru.exceptions import ProcessExitedWithError, TimeoutExpired
 
-from tests import sample_daemon_path, ps_aux
+from tests import SAMPLE_DAEMON_PATH, ps_aux
 
-sleep_300 = 'sleep 300'
+SLEEP_300 = 'sleep 300'
 
 
-@pytest.mark.parametrize('command', (sleep_300, sleep_300.split()))
+@pytest.mark.parametrize('command', (SLEEP_300, SLEEP_300.split()))
 def test_running_process(command):
     """Start process and shuts it down."""
     executor = SimpleExecutor(command).start()
@@ -28,12 +28,12 @@ def test_running_process(command):
 
     # check proper __str__ and __repr__ rendering:
     assert 'SimpleExecutor' in repr(executor)
-    assert sleep_300 in str(executor)
+    assert SLEEP_300 in str(executor)
 
 
 def test_custom_signal_stop():
     """Start process and shuts it down using signal SIGQUIT."""
-    executor = SimpleExecutor(sleep_300, sig_stop=signal.SIGQUIT)
+    executor = SimpleExecutor(SLEEP_300, sig_stop=signal.SIGQUIT)
     executor.start()
     assert executor.running() is True
     executor.stop()
@@ -42,7 +42,7 @@ def test_custom_signal_stop():
 
 def test_stop_custom_signal_stop():
     """Start process and shuts it down using signal SIGQUIT passed to stop."""
-    executor = SimpleExecutor(sleep_300)
+    executor = SimpleExecutor(SLEEP_300)
     executor.start()
     assert executor.running() is True
     executor.stop(sig=signal.SIGQUIT)
@@ -51,7 +51,7 @@ def test_stop_custom_signal_stop():
 
 def test_running_context():
     """Start process and shuts it down."""
-    executor = SimpleExecutor(sleep_300)
+    executor = SimpleExecutor(SLEEP_300)
     with executor:
         assert executor.running() is True
 
@@ -60,13 +60,13 @@ def test_running_context():
 
 def test_executor_in_context_only():
     """Start process and shuts it down only in context."""
-    with SimpleExecutor(sleep_300) as executor:
+    with SimpleExecutor(SLEEP_300) as executor:
         assert executor.running() is True
 
 
 def test_context_stopped():
     """Start for context, and shuts it for nested context."""
-    executor = SimpleExecutor(sleep_300)
+    executor = SimpleExecutor(SLEEP_300)
     with executor:
         assert executor.running() is True
         with executor.stopped():
@@ -76,32 +76,32 @@ def test_context_stopped():
     assert executor.running() is False
 
 
-echo_foobar = 'echo -n "foobar"'
+ECHO_FOOBAR = 'echo "foobar"'
 
 
-@pytest.mark.parametrize('command', (echo_foobar, shlex.split(echo_foobar)))
+@pytest.mark.parametrize('command', (ECHO_FOOBAR, shlex.split(ECHO_FOOBAR)))
 def test_process_output(command):
     """Start process, check output and shut it down."""
     executor = SimpleExecutor(command)
     executor.start()
 
-    assert executor.output().read() == 'foobar'
+    assert executor.output().read() == 'foobar\n'
     executor.stop()
 
 
-@pytest.mark.parametrize('command', (echo_foobar, shlex.split(echo_foobar)))
+@pytest.mark.parametrize('command', (ECHO_FOOBAR, shlex.split(ECHO_FOOBAR)))
 def test_process_output_shell(command):
     """Start process, check output and shut it down with shell set to True."""
     executor = SimpleExecutor(command, shell=True)
     executor.start()
 
-    assert executor.output().read() == 'foobar'
+    assert executor.output().read().strip() == 'foobar'
     executor.stop()
 
 
 def test_start_check_executor():
     """Validate Executor base class having NotImplemented methods."""
-    executor = Executor(sleep_300)
+    executor = Executor(SLEEP_300)
     with pytest.raises(NotImplementedError):
         executor.pre_start_check()
     with pytest.raises(NotImplementedError):
@@ -115,7 +115,7 @@ def test_stopping_not_yet_running_executor():
     We must make sure that it's possible to call .stop() and SimpleExecutor
     will not raise any exception and .start() can be called afterwards.
     """
-    executor = SimpleExecutor(sleep_300)
+    executor = SimpleExecutor(SLEEP_300)
     executor.stop()
     executor.start()
     assert executor.running() is True
@@ -201,17 +201,17 @@ def test_executor_ignores_processes_exiting_with_0():
 
 def test_executor_methods_returning_self():
     """Test if SimpleExecutor lets to chain start, stop and kill methods."""
-    executor = SimpleExecutor(sleep_300).start().stop().kill().stop()
+    executor = SimpleExecutor(SLEEP_300).start().stop().kill().stop()
     assert not executor.running()
 
     # Check if context manager returns executor to use it in 'as' phrase:
-    with SimpleExecutor(sleep_300) as executor:
+    with SimpleExecutor(SLEEP_300) as executor:
         assert executor.running()
 
-    with SimpleExecutor(sleep_300).start().stopped() as executor:
+    with SimpleExecutor(SLEEP_300).start().stopped() as executor:
         assert not executor.running()
 
-    assert SimpleExecutor(sleep_300).start().stop().output
+    assert SimpleExecutor(SLEEP_300).start().stop().output
 
 
 def test_mirakuru_cleanup():
@@ -224,6 +224,6 @@ def test_mirakuru_cleanup():
                    ex = SimpleExecutor(("python", "{0}")).start();
                    sleep(1);
                   '
-    '''.format(sample_daemon_path)
+    '''.format(SAMPLE_DAEMON_PATH)
     check_output(shlex.split(cmd.replace('\n', '')))
-    assert sample_daemon_path not in ps_aux()
+    assert SAMPLE_DAEMON_PATH not in ps_aux()

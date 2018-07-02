@@ -9,10 +9,10 @@ from os import path
 from subprocess import check_output
 
 
-tests_path = path.abspath(path.dirname(__file__))
+TEST_PATH = path.abspath(path.dirname(__file__))
 
-test_server_path = path.join(tests_path, "server_for_tests.py")
-sample_daemon_path = path.join(tests_path, "sample_daemon.py")
+TEST_SERVER_PATH = path.join(TEST_PATH, "server_for_tests.py")
+SAMPLE_DAEMON_PATH = path.join(TEST_PATH, "sample_daemon.py")
 
 
 def ps_aux():

@@ -11,16 +11,16 @@ from warnings import simplefilter
 import pytest
 
 
-if sys.version_info[0] == '3':
-    from exceptions import ResourceWarning
-    simplefilter('default', ResourceWarning)
+if sys.version_info >= (3,):
+    simplefilter(
+        'default',
+        ResourceWarning  # pylint: disable=undefined-variable
+    )
 
 
 @pytest.fixture(autouse=True)
-def error_warn(request, recwarn):
+def error_warn(recwarn):
     """Raise error whenever any warning gets listed."""
-    def list_errors_and_error():
-        if recwarn.list:
-            raise recwarn.list[0].message
-
-    request.addfinalizer(list_errors_and_error)
+    yield
+    if recwarn.list:
+        raise recwarn.list[0].message
