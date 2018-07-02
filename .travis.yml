@@ -39,17 +39,15 @@ jobs:
       script:
         - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
     - stage: deploy
-      python: '3.6'
-      if: tag = true
+      python: 3.6
+      if: tag IS present
       script: skip
-      after_success: skip
       deploy:
         provider: pypi
         user: fizyk
         password:
           secure: IBVXG0zLKsBkzdeoC33Lxir01jbvDHdjQ81CPC8PbDPCmUozXgf9eqRFV5VOIYQOboTBzQYRq7RB8efeNKSH3nKf73iahwIYf4ezIxRzUaMzoY4GkyrC/0fQhMk1lAjexrRM1f2o7TIAALPUDyB/EaRcPCBEghxscQEeTlAw08c=
         on:
-          all_branches: true
+          tags: true
           repo: ClearcodeHQ/mirakuru
-          python: 3.6
         distributions: sdist bdist_wheel

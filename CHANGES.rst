@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+1.0.0
 ----------
 
 - [enhancement] Do not fail if processes child throw EPERM error during clean up phase
