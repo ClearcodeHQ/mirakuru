@@ -21,7 +21,7 @@ script:
   - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
   - pycodestyle
   - pydocstyle
-  - pylint mirakuru tests
+  - if hash pylint 2>/dev/null; then pylint mirakuru tests; fi
   - rst-lint *.rst
 after_success:
   - coveralls
