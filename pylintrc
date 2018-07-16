@@ -56,7 +56,8 @@ confidence=
 # --disable=W"
 disable=superfluous-parens,
         inconsistent-return-statements,
-        print-statement
+        print-statement,
+        useless-object-inheritance,
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
