@@ -19,14 +19,21 @@ install:
   - pip install .[tests] coveralls wheel
 script:
   - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
-  - pycodestyle
-  - pydocstyle
-  - pylint mirakuru tests
-  - rst-lint *.rst
 after_success:
   - coveralls
 jobs:
   include:
+    - stage: linters
+      python: 3.6
+      install:
+        - pip install -r requirements-lint.txt
+        - pip install .[tests] coveralls wheel
+      script:
+        - pycodestyle
+        - pydocstyle
+        - pylint mirakuru tests
+        - rst-lint *.rst
+      after_success: skip
     - stage: osx
       language: generic
       os: osx

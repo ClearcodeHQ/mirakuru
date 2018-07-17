@@ -36,7 +36,6 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.end_headers()
         self.wfile.write(b'Hi. I am very slow.')
-        return
 
     def do_HEAD(self):  # pylint:disable=invalid-name
         """
@@ -51,7 +50,6 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         else:
             self.send_response(500)
         self.end_headers()
-        return
 
     def count_timeout(self):  # pylint: disable=no-self-use
         """Count down the timeout time."""
