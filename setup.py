@@ -34,7 +34,7 @@ tests_require = (
     'pytest==3.7.1',  # tests framework used
     'pytest-cov==2.5.1',  # coverage reports to verify tests quality
     'mock==2.0.0',  # tests mocking tool
-    'python-daemon==2.1.2',  # used in test for easy creation of daemons
+    'python-daemon==2.2.0',  # used in test for easy creation of daemons
 )
 extras_require = {
     'docs': ['sphinx'],
