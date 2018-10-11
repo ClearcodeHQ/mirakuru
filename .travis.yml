@@ -32,7 +32,6 @@ jobs:
         - pycodestyle
         - pydocstyle
         - pylint mirakuru tests
-        - rst-lint *.rst
       after_success: skip
     - stage: osx
       language: generic
