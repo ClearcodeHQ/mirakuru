@@ -12,11 +12,10 @@ PORT = 7986
 HTTP_SERVER = '{0} {1}'.format(http_server_cmd, PORT)
 
 
-@pytest.mark.parametrize('timeout', (None, 5))
-def test_start_and_wait(timeout):
+def test_start_and_wait():
     """Test if executor await for process to accept connections."""
     command = 'bash -c "sleep 2 && nc -l 3000"'
-    executor = TCPExecutor(command, 'localhost', port=3000, timeout=timeout)
+    executor = TCPExecutor(command, 'localhost', port=3000, timeout=5)
     executor.start()
 
     assert executor.running() is True
