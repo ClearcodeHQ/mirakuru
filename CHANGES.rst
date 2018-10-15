@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+1.1.0
 ----------
 
 - [enhancement] Executor's timeout to be set for both executor's start and stop
