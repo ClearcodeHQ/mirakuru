@@ -74,7 +74,7 @@ class SimpleExecutor(object):
     """Simple subprocess executor with start/stop/kill functionality."""
 
     def __init__(
-            self, command, shell=False, timeout=None, sleep=0.1,
+            self, command, shell=False, timeout=3600, sleep=0.1,
             sig_stop=signal.SIGTERM, sig_kill=SIGKILL
     ):
         """
@@ -84,7 +84,7 @@ class SimpleExecutor(object):
         :param bool shell: same as the `subprocess.Popen` shell definition.
             On Windows always set to True.
         :param int timeout: number of seconds to wait for the process to start
-            or stop. If None or False, wait indefinitely.
+            or stop.
         :param float sleep: how often to check for start/stop condition
         :param int sig_stop: signal used to stop process run by the executor.
             default is `signal.SIGTERM`
@@ -198,17 +198,9 @@ class SimpleExecutor(object):
         self._set_timeout()
         return self
 
-    def _set_timeout(self, timeout=None):
-        """
-        Set timeout for possible wait.
-
-        :param int timeout: [optional] specific timeout to set.
-            If not set, Executor._timeout will be used instead.
-        """
-        timeout = timeout or self._timeout
-
-        if timeout:
-            self._endtime = time.time() + timeout
+    def _set_timeout(self):
+        """Set timeout for possible wait."""
+        self._endtime = time.time() + self._timeout
 
     def _clear_process(self):
         """
@@ -287,8 +279,7 @@ class SimpleExecutor(object):
             """Return True only only when self.process is not running."""
             return self.running() is False
 
-        # set 10 seconds wait no matter what to kill the process
-        self._set_timeout(10)
+        self._set_timeout()
         try:
             self.wait_for(process_stopped)
         except TimeoutExpired:

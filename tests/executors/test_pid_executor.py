@@ -32,11 +32,10 @@ def run_around_tests():
         pass
 
 
-@pytest.mark.parametrize('timeout', (None, 5))
-def test_start_and_wait(timeout):
+def test_start_and_wait():
     """Test if the executor will await for the process to create a file."""
     process = 'bash -c "sleep 2 && touch {0} && sleep 10"'.format(FILENAME)
-    with PidExecutor(process, FILENAME, timeout=timeout) as executor:
+    with PidExecutor(process, FILENAME, timeout=5) as executor:
         assert executor.running() is True
 
     # check proper __str__ and __repr__ rendering:

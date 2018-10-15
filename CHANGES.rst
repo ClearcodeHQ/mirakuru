@@ -1,18 +1,30 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [enhancement] Executor's timeout to be set for both executor's start and stop
+- [enhancement] It's no longer possible to hang indefinitely on the start
+  or stop. Timeout is set to 3600 seconds by default, with values possible
+  between `0` and `sys.maxsize` with the latter still bit longer
+  than `2924712086` centuries.
+
 1.0.0
 ----------
 
-- [enhancement] Do not fail if processes child throw EPERM error during clean up phase
+- [enhancement] Do not fail if processes child throw EPERM error
+  during clean up phase
 - [enhancement] Run subprocesses in shell by default on Windows
 - [ehnancement] Do not pass preexec_fn on windows
 
 0.9.0
 ----------
 
-- [enhancement] Fallback to kill through SIGTERM on Windows, since SIGKILL is not available
-- [enhancement] detect cases where during stop process already exited, and simply clean up afterwards
+- [enhancement] Fallback to kill through SIGTERM on Windows,
+  since SIGKILL is not available
+- [enhancement] detect cases where during stop process already exited,
+  and simply clean up afterwards
 
 0.8.3
 ----------
