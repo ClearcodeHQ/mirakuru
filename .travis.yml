@@ -38,8 +38,6 @@ jobs:
       language: generic
       os: osx
       before_install:
-        - brew update
-        - brew upgrade python
         - pip3 install virtualenv
         - virtualenv venv -p python3
         - source venv/bin/activate
