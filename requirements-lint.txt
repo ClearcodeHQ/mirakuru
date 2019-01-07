@@ -3,4 +3,4 @@ pycodestyle==2.4.0
 pydocstyle==3.0.0
 pylint==2.2.2; python_version>'3.3'
 pygments
-restructuredtext-lint==1.2.1
+restructuredtext-lint==1.2.2
