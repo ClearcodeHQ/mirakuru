@@ -1,13 +1,12 @@
 language: python
 conditions: v1
-sudo: false
 python:
 - '2.7'
 - '3.4'
 - '3.5'
 - '3.6'
-- 'pypy-5.3.1'
-- 'pypy3.5-5.8.0'
+- 'pypy'
+- 'pypy3.5'
 # blocklist branches
 branches:
   except:
