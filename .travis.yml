@@ -1,6 +1,5 @@
 language: python
 conditions: v1
-sudo: false
 python:
 - '2.7'
 - '3.4'
