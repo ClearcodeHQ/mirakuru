@@ -1,4 +1,4 @@
 # test runs requirements (versions we'll be testing against) - automatically updated by requires.io
 coverage==4.5.3 # pytest-cov
-psutil==5.6.1
+psutil==5.6.2
 docutils  # needed for python-daemon
