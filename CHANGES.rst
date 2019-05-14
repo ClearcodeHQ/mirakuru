@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+Unreleased
+----------
+
+- [feature] Ability to define custom env vars for subprocess
+
 1.1.0
 ----------
 
