@@ -15,11 +15,11 @@ Example usage:
 import sys
 import os
 import time
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 sys.path.append(os.getcwd())  # noqa
 
 # pylint:disable=wrong-import-position
-from mirakuru.compat import HTTPServer, BaseHTTPRequestHandler
 from tests.signals import block_signals
 # pylint:enable=wrong-import-position
 

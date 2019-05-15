@@ -2,21 +2,19 @@
 import sys
 import socket
 from functools import partial
+from http.client import HTTPConnection, OK
 
 import pytest
 from mock import patch
 
 from mirakuru import HTTPExecutor, TCPExecutor
 from mirakuru import TimeoutExpired, AlreadyRunning
-from mirakuru.compat import HTTPConnection, OK, http_server_cmd
-from tests import TEST_SERVER_PATH
-
+from tests import TEST_SERVER_PATH, HTTP_SERVER_CMD
 
 HOST = "127.0.0.1"
 PORT = 7987
 
-
-HTTP_NORMAL_CMD = '{0} {1}'.format(http_server_cmd, PORT)
+HTTP_NORMAL_CMD = '{0} {1}'.format(HTTP_SERVER_CMD, PORT)
 HTTP_SLOW_CMD = '{python} {srv} {host}:{port}' \
     .format(python=sys.executable, srv=TEST_SERVER_PATH, host=HOST, port=PORT)
 
