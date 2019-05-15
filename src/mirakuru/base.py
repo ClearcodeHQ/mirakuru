@@ -75,7 +75,7 @@ class SimpleExecutor(object):
 
     def __init__(
             self, command, shell=False, timeout=3600, sleep=0.1,
-            sig_stop=signal.SIGTERM, sig_kill=SIGKILL
+            sig_stop=signal.SIGTERM, sig_kill=SIGKILL, envvars=None,
     ):
         """
         Initialize executor.
@@ -90,6 +90,7 @@ class SimpleExecutor(object):
             default is `signal.SIGTERM`
         :param int sig_kill: signal used to kill process run by the executor.
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
+        :param dict envvars: Additional environment variables
 
         .. note::
 
@@ -119,6 +120,7 @@ class SimpleExecutor(object):
         self._sleep = sleep
         self._sig_stop = sig_stop
         self._sig_kill = sig_kill
+        self._envvars = envvars or {}
 
         self._endtime = None
         self.process = None
@@ -170,6 +172,7 @@ class SimpleExecutor(object):
                 command = self.command_parts
 
             env = os.environ.copy()
+            env.update(self._envvars)
             # Trick with marking subprocesses with an environment variable.
             #
             # There is no easy way to recognize all subprocesses that were
