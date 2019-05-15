@@ -19,9 +19,8 @@
 
 import re
 import socket
-
-from mirakuru.compat import HTTPConnection, HTTPException
-from mirakuru.compat import urlparse
+from urllib.parse import urlparse
+from http.client import HTTPConnection, HTTPException
 
 from mirakuru.tcp import TCPExecutor
 

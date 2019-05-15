@@ -1,15 +1,14 @@
 """TCPExecutor tests."""
-
 import pytest
-
 from mirakuru import TCPExecutor
 from mirakuru import TimeoutExpired, AlreadyRunning
-from mirakuru.compat import http_server_cmd
+
+from tests import HTTP_SERVER_CMD
 
 
 PORT = 7986
 
-HTTP_SERVER = '{0} {1}'.format(http_server_cmd, PORT)
+HTTP_SERVER = '{0} {1}'.format(HTTP_SERVER_CMD, PORT)
 
 
 def test_start_and_wait():

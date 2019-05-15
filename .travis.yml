@@ -1,12 +1,11 @@
+dist: xenial
 language: python
 conditions: v1
 python:
-- '2.7'
-- '3.4'
-- '3.5'
-- '3.6'
-- 'pypy'
-- 'pypy3.5'
+- 3.5
+- 3.6
+- 3.7
+- pypy3.5
 # blocklist branches
 branches:
   except:
@@ -23,7 +22,7 @@ after_success:
 jobs:
   include:
     - stage: linters
-      python: 3.6
+      python: 3.7
       install:
         - pip install -r requirements-lint.txt
         - pip install .[tests] coveralls wheel
@@ -43,7 +42,7 @@ jobs:
       script:
         - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
     - stage: deploy
-      python: 3.6
+      python: 3.7
       if: tag IS present
       script: skip
       deploy:
