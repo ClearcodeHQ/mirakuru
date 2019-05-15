@@ -5,7 +5,8 @@ Unreleased
 ----------
 
 - [feature] Drop support for python 2
-- [feature] Ability to define custom env vars for subprocess
+- [feature] Ability to set custom env vars for orchestrated process
+- [feature] Ability to set custom cwd path for orchestrated process
 
 1.1.0
 ----------

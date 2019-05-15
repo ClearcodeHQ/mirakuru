@@ -74,13 +74,14 @@ class SimpleExecutor(object):
     """Simple subprocess executor with start/stop/kill functionality."""
 
     def __init__(
-            self, command, shell=False, timeout=3600, sleep=0.1,
+            self, command, cwd=None, shell=False, timeout=3600, sleep=0.1,
             sig_stop=signal.SIGTERM, sig_kill=SIGKILL, envvars=None,
     ):
         """
         Initialize executor.
 
         :param (str, list) command: command to be run by the subprocess
+        :param str cwd: current working directory to be set for executor
         :param bool shell: same as the `subprocess.Popen` shell definition.
             On Windows always set to True.
         :param int timeout: number of seconds to wait for the process to start
@@ -112,6 +113,7 @@ class SimpleExecutor(object):
             self.command = command
             self.command_parts = shlex.split(command)
 
+        self._cwd = cwd
         self._shell = True
         if platform.system() != 'Windows':
             self._shell = shell
@@ -190,6 +192,7 @@ class SimpleExecutor(object):
                 'stdout': subprocess.PIPE,
                 'universal_newlines': True,
                 'env': env,
+                'cwd': self._cwd,
             }
             if platform.system() != 'Windows':
                 popen_kwargs['preexec_fn'] = os.setsid
