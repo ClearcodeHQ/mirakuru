@@ -31,7 +31,7 @@ requirements = [
 ]
 
 tests_require = (
-    'pytest==4.6.0',  # tests framework used
+    'pytest==4.6.1',  # tests framework used
     'pytest-cov==2.7.1',  # coverage reports to verify tests quality
     'mock==3.0.5',  # tests mocking tool
     'python-daemon==2.2.3',  # used in test for easy creation of daemons
