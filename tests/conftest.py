@@ -11,8 +11,8 @@ from warnings import simplefilter
 
 import pytest
 
-is_travis = 'TRAVIS' in os.environ
-is_pypy_35 = platform.python_implementation() == 'PyPy' and sys.version_info < (3, 6)
+IS_TRAVIS = 'TRAVIS' in os.environ
+IS_PYPY_35 = platform.python_implementation() == 'PyPy' and sys.version_info < (3, 6)
 
 
 simplefilter(
@@ -25,5 +25,5 @@ simplefilter(
 def error_warn(recwarn):
     """Raise error whenever any warning gets listed."""
     yield
-    if recwarn.list and not (is_pypy_35 and is_travis):
+    if recwarn.list and not (IS_PYPY_35 and IS_TRAVIS):
         raise recwarn.list[0].message

@@ -46,7 +46,8 @@ class OutputExecutor(SimpleExecutor):
         super(OutputExecutor, self).__init__(command, **kwargs)
         self._banner = re.compile(banner)
         self.poll_obj = None
-        # TODO require at least stderr or stdout to be initialized
+        if not any((kwargs['stdout'], kwargs['stderr'])):
+            raise TypeError('At least one of stdout or stderr has to be initialized')
 
     def start(self):
         """
