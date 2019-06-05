@@ -238,15 +238,7 @@ class SimpleExecutor:
         It is required because of ResourceWarning in Python 3.
         """
         if self.process:
-
-            # TODO is this even needed? (See Popen implementation)
-            if self.process.stdin:
-                self.process.stdin.close()
-            if self.process.stdout:
-                self.process.stdout.close()
-            if self.process.stderr:
-                self.process.stderr.close()
-
+            self.process.__exit__(None, None, None)
             self.process = None
 
         self._endtime = None
