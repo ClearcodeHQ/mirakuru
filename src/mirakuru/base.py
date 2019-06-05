@@ -207,7 +207,6 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         return kwargs
 
-
     def start(self):
         """
         Start defined process.

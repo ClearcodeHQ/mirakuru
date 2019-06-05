@@ -12,7 +12,9 @@ from warnings import simplefilter
 import pytest
 
 IS_TRAVIS = 'TRAVIS' in os.environ
-IS_PYPY_35 = platform.python_implementation() == 'PyPy' and sys.version_info < (3, 6)
+IS_PYPY_35 = (
+    platform.python_implementation() == 'PyPy' and sys.version_info < (3, 6)
+)
 
 
 simplefilter(

@@ -47,7 +47,9 @@ class OutputExecutor(SimpleExecutor):
         self._banner = re.compile(banner)
         self.poll_obj = None
         if not any((self._stdout, self._stderr)):
-            raise TypeError('At least one of stdout or stderr has to be initialized')
+            raise TypeError(
+                'At least one of stdout or stderr has to be initialized'
+            )
 
     def start(self):
         """
@@ -105,9 +107,9 @@ class OutputExecutor(SimpleExecutor):
             Waiting for I/O completion. It does not work on Windows. Sorry.
         """
         for poll, output in polls:
-            # Here we should get an empty list or list with a tuple [(fd, event)]
-            # When we get list with a tuple we can use readline method on
-            # the file descriptor.
+            # Here we should get an empty list or list with a tuple
+            # [(fd, event)]. When we get list with a tuple we can use readline
+            # method on the file descriptor.
             poll_result = poll.poll(0)
 
             if poll_result:
