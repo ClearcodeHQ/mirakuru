@@ -70,10 +70,10 @@ def cleanup_subprocesses():
                 print("Can not kill the", pid, "leaked process", err)
 
 
-class SimpleExecutor:
+class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
     """Simple subprocess executor with start/stop/kill functionality."""
 
-    def __init__(
+    def __init__(  # pylint:disable=too-many-arguments
             self, command, cwd=None, shell=False, timeout=3600, sleep=0.1,
             sig_stop=signal.SIGTERM, sig_kill=SIGKILL, envvars=None,
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=None
@@ -93,6 +93,9 @@ class SimpleExecutor:
         :param int sig_kill: signal used to kill process run by the executor.
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
         :param dict envvars: Additional environment variables
+        :param int stdin: file descriptor for stdin
+        :param int stdout: file descriptor for stdout
+        :param int stderr: file descriptor for stderr
 
         .. note::
 
@@ -162,7 +165,7 @@ class SimpleExecutor:
     @property
     def _popen_kwargs(self):
         """
-
+        Get kwargs for the process instance.
 
         .. note::
             We want to open ``stdin``, ``stdout`` and ``stderr`` as text
