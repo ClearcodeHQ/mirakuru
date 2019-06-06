@@ -68,7 +68,7 @@ class OutputExecutor(SimpleExecutor):
 
         for output_handle, output_method in (
                 (self._stdout, self.output),
-                (self._stderr, self.err_output())
+                (self._stderr, self.err_output)
         ):
             if output_handle is not None:
                 # get a polling object
