@@ -67,23 +67,18 @@ class OutputExecutor(SimpleExecutor):
 
         polls = []
 
-        if self._stdin is not None:
-            # get a polling object
-            stdin_poll = select.poll()
+        for output_handle, output_method in (
+                (self._stdout, self.output),
+                (self._stderr, self.err_output())
+        ):
+            if output_handle is not None:
+                # get a polling object
+                std_poll = select.poll()
 
-            # register a file descriptor
-            # POLLIN because we will wait for data to read
-            stdin_poll.register(self.output(), select.POLLIN)
-            polls.append((stdin_poll, self.output()))
-
-        if self._stderr is not None:
-            # get a polling object
-            stderr_poll = select.poll()
-
-            # register a file descriptor
-            # POLLIN because we will wait for data to read
-            stderr_poll.register(self.err_output(), select.POLLIN)
-            polls.append((stderr_poll, self.err_output()))
+                # register a file descriptor
+                # POLLIN because we will wait for data to read
+                std_poll.register(output_method(), select.POLLIN)
+                polls.append((std_poll, output_method()))
 
         try:
             def await_for_output():
