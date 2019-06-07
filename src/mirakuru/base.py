@@ -70,12 +70,13 @@ def cleanup_subprocesses():
                 print("Can not kill the", pid, "leaked process", err)
 
 
-class SimpleExecutor(object):
+class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
     """Simple subprocess executor with start/stop/kill functionality."""
 
-    def __init__(
+    def __init__(  # pylint:disable=too-many-arguments
             self, command, cwd=None, shell=False, timeout=3600, sleep=0.1,
             sig_stop=signal.SIGTERM, sig_kill=SIGKILL, envvars=None,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=None
     ):
         """
         Initialize executor.
@@ -92,6 +93,9 @@ class SimpleExecutor(object):
         :param int sig_kill: signal used to kill process run by the executor.
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
         :param dict envvars: Additional environment variables
+        :param int stdin: file descriptor for stdin
+        :param int stdout: file descriptor for stdout
+        :param int stderr: file descriptor for stderr
 
         .. note::
 
@@ -124,6 +128,10 @@ class SimpleExecutor(object):
         self._sig_kill = sig_kill
         self._envvars = envvars or {}
 
+        self._stdin = stdin
+        self._stdout = stdout
+        self._stderr = stderr
+
         self._endtime = None
         self.process = None
         """A :class:`subprocess.Popen` instance once process is started."""
@@ -154,6 +162,51 @@ class SimpleExecutor(object):
             return False
         return self.process.poll() is None
 
+    @property
+    def _popen_kwargs(self):
+        """
+        Get kwargs for the process instance.
+
+        .. note::
+            We want to open ``stdin``, ``stdout`` and ``stderr`` as text
+            streams in universal newlines mode, so we have to set
+            ``universal_newlines`` to ``True``.
+
+        :return:
+        """
+        kwargs = {}
+
+        if self._stdin:
+            kwargs['stdin'] = self._stdin
+        if self._stdout:
+            kwargs['stdout'] = self._stdout
+        if self._stderr:
+            kwargs['stderr'] = self._stderr
+        kwargs['universal_newlines'] = True
+
+        kwargs['shell'] = self._shell
+
+        env = os.environ.copy()
+        env.update(self._envvars)
+        # Trick with marking subprocesses with an environment variable.
+        #
+        # There is no easy way to recognize all subprocesses that were
+        # spawned during lifetime of a certain subprocess so mirakuru does
+        # this hack in order to mark who was the original parent. Even if
+        # some subprocess got daemonized or changed original process group
+        # mirakuru will be able to find it by this environment variable.
+        #
+        # There may be a situation when some subprocess will abandon
+        # original envs from parents and then it won't be later found.
+        env[ENV_UUID] = self._uuid
+        kwargs['env'] = env
+
+        kwargs['cwd'] = self._cwd
+        if platform.system() != 'Windows':
+            kwargs['preexec_fn'] = os.setsid
+
+        return kwargs
+
     def start(self):
         """
         Start defined process.
@@ -162,43 +215,15 @@ class SimpleExecutor(object):
 
         :returns: itself
         :rtype: SimpleExecutor
-
-        .. note::
-            We want to open ``stdin``, ``stdout`` and ``stderr`` as text
-            streams in universal newlines mode, so we have to set
-            ``universal_newlines`` to ``True``.
         """
         if self.process is None:
             command = self.command
             if not self._shell:
                 command = self.command_parts
 
-            env = os.environ.copy()
-            env.update(self._envvars)
-            # Trick with marking subprocesses with an environment variable.
-            #
-            # There is no easy way to recognize all subprocesses that were
-            # spawned during lifetime of a certain subprocess so mirakuru does
-            # this hack in order to mark who was the original parent. Even if
-            # some subprocess got daemonized or changed original process group
-            # mirakuru will be able to find it by this environment variable.
-            #
-            # There may be a situation when some subprocess will abandon
-            # original envs from parents and then it won't be later found.
-            env[ENV_UUID] = self._uuid
-            popen_kwargs = {
-                'shell': self._shell,
-                'stdin': subprocess.PIPE,
-                'stdout': subprocess.PIPE,
-                'universal_newlines': True,
-                'env': env,
-                'cwd': self._cwd,
-            }
-            if platform.system() != 'Windows':
-                popen_kwargs['preexec_fn'] = os.setsid
             self.process = subprocess.Popen(
                 command,
-                **popen_kwargs
+                **self._popen_kwargs
             )
 
         self._set_timeout()
@@ -215,11 +240,7 @@ class SimpleExecutor(object):
         It is required because of ResourceWarning in Python 3.
         """
         if self.process:
-            if self.process.stdin:
-                self.process.stdin.close()
-            if self.process.stdout:
-                self.process.stdout.close()
-
+            self.process.__exit__(None, None, None)
             self.process = None
 
         self._endtime = None
@@ -337,6 +358,11 @@ class SimpleExecutor(object):
         """Return subprocess output."""
         if self.process is not None:
             return self.process.stdout
+
+    def err_output(self):
+        """Return subprocess stderr."""
+        if self.process is not None:
+            return self.process.stderr
 
     def wait_for(self, wait_for):
         """

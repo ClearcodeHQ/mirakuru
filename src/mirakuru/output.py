@@ -45,7 +45,10 @@ class OutputExecutor(SimpleExecutor):
         """
         super(OutputExecutor, self).__init__(command, **kwargs)
         self._banner = re.compile(banner)
-        self.poll_obj = None
+        if not any((self._stdout, self._stderr)):
+            raise TypeError(
+                'At least one of stdout or stderr has to be initialized'
+            )
 
     def start(self):
         """
@@ -61,37 +64,51 @@ class OutputExecutor(SimpleExecutor):
         """
         super(OutputExecutor, self).start()
 
-        # get a polling object
-        self.poll_obj = select.poll()
+        polls = []
 
-        # register a file descriptor
-        # POLLIN because we will wait for data to read
-        self.poll_obj.register(self.output(), select.POLLIN)
+        for output_handle, output_method in (
+                (self._stdout, self.output),
+                (self._stderr, self.err_output)
+        ):
+            if output_handle is not None:
+                # get a polling object
+                std_poll = select.poll()
+
+                # register a file descriptor
+                # POLLIN because we will wait for data to read
+                std_poll.register(output_method(), select.POLLIN)
+                polls.append((std_poll, output_method()))
 
         try:
-            self.wait_for(self._wait_for_output)
+            def await_for_output():
+                return self._wait_for_output(*polls)
 
-            # unregister the file descriptor and delete the polling object
-            self.poll_obj.unregister(self.output())
+            self.wait_for(await_for_output)
+
+            for poll, output in polls:
+                # unregister the file descriptor and delete the polling object
+                poll.unregister(output)
         finally:
-            del self.poll_obj
+            for poll in polls:
+                del poll
         return self
 
-    def _wait_for_output(self):
+    def _wait_for_output(self, *polls):
         """
         Check if output matches banner.
 
         .. warning::
             Waiting for I/O completion. It does not work on Windows. Sorry.
         """
-        # Here we should get an empty list or list with a tuple [(fd, event)]
-        # When we get list with a tuple we can use readline method on
-        # the file descriptor.
-        poll_result = self.poll_obj.poll(0)
+        for poll, output in polls:
+            # Here we should get an empty list or list with a tuple
+            # [(fd, event)]. When we get list with a tuple we can use readline
+            # method on the file descriptor.
+            poll_result = poll.poll(0)
 
-        if poll_result:
-            line = self.output().readline()
-            if self._banner.match(line):
-                return True
+            if poll_result:
+                line = output.readline()
+                if self._banner.match(line):
+                    return True
 
         return False
