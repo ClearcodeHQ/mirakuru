@@ -45,11 +45,14 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         due to the fact that HTTPServer will hang waiting for response
         to return otherwise if none response will be returned.
         """
+        self.timeout_status()
+        self.end_headers()
+
+    def timeout_status(self):
         if self.count_timeout():
             self.send_response(200)
         else:
             self.send_response(500)
-        self.end_headers()
 
     def count_timeout(self):  # pylint: disable=no-self-use
         """Count down the timeout time."""
@@ -58,20 +61,57 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         return time.time() >= SlowServerHandler.endtime
 
 
+class SlowGetServerHandler(SlowServerHandler):
+
+    def do_GET(self):
+        self.timeout_status()
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(b'Hi. I am very slow.')
+
+    def do_HEAD(self):
+        self.send_response(500)
+        self.end_headers()
+
+
+class SlowPostServerHandler(SlowServerHandler):
+
+    def do_POST(self):
+        self.timeout_status()
+        self.end_headers()
+        self.wfile.write(b'Hi. I am very slow.')
+
+    def do_HEAD(self):
+        self.send_response(500)
+        self.end_headers()
+
+
+
+
+
 if __name__ == "__main__":
 
-    HOST, PORT, IMMORTAL = "127.0.0.1", 8000, False
-    if len(sys.argv) in (2, 3):
+    HOST, PORT, IMMORTAL, METHOD = "127.0.0.1", 8000, False, 'HEAD'
+    if len(sys.argv) >= 2:
         HOST, PORT = sys.argv[1].split(":")
 
     if len(sys.argv) == 3:
         IMMORTAL = sys.argv[2]
 
+    if len(sys.argv) == 4:
+        METHOD = sys.argv[3]
+
     if IMMORTAL:
         block_signals()
 
+    handlers = {
+        'HEAD': SlowServerHandler,
+        'GET': SlowGetServerHandler,
+        'POST': SlowPostServerHandler,
+    }
+
     server = HTTPServer(  # pylint: disable=invalid-name
-        (HOST, int(PORT)), SlowServerHandler
+        (HOST, int(PORT)), handlers[METHOD]
     )
     print("Starting slow server on {0}:{1}...".format(HOST, PORT))
     server.serve_forever()

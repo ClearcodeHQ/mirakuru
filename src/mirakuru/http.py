@@ -31,7 +31,7 @@ class HTTPExecutor(TCPExecutor):
     DEFAULT_PORT = 80
     """Default TCP port for the HTTP protocol."""
 
-    def __init__(self, command, url, status=r'^2\d\d$', **kwargs):
+    def __init__(self, command, url, status=r'^2\d\d$', method='HEAD', **kwargs):
         """
         Initialize HTTPExecutor executor.
 
@@ -44,6 +44,7 @@ class HTTPExecutor(TCPExecutor):
             is interpreted as a single status code - e.g. '200' or '404' but
             also it can be a regular expression - e.g. '4..' or '(200|404)'.
             Default: any 2XX HTTP status code.
+        :param str method: default method to check status on
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
@@ -66,6 +67,7 @@ class HTTPExecutor(TCPExecutor):
 
         self.status = str(status)
         self.status_re = re.compile(str(status))
+        self.method = method
 
         super(HTTPExecutor, self).__init__(
             command, host=self.url.hostname, port=port, **kwargs
@@ -76,12 +78,12 @@ class HTTPExecutor(TCPExecutor):
         try:
             conn = HTTPConnection(self.host, self.port)
 
-            conn.request('HEAD', self.url.path)
+            conn.request(self.method, self.url.path)
             status = str(conn.getresponse().status)
 
             if status == self.status or self.status_re.match(status):
                 conn.close()
                 return True
 
-        except (HTTPException, socket.timeout, socket.error):
+        except (HTTPException, socket.timeout, socket.error) as e:
             return False

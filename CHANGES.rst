@@ -7,6 +7,7 @@ Unreleased
 - [feature] Drop support for python 2
 - [feature] Allow for configuring process outputs to pipe to
 - [feature] OutputExecutor can now check for banner in stderr
+- [feature] HTTPEecutor now can check status on different method.
 - [feature] Ability to set custom env vars for orchestrated process
 - [feature] Ability to set custom cwd path for orchestrated process
 

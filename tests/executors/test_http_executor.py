@@ -91,6 +91,25 @@ def test_slow_server_starting():
     executor.stop()
 
 
+@pytest.mark.parametrize('method', (
+    'HEAD', 'GET', 'POST'
+))
+def test_slow_method_server_starting(method):
+    """
+    Test whether or not executor awaits for slow starting servers.
+
+    Simple example. You run Gunicorn and it is working but you have to
+    wait for worker processes.
+    """
+
+    HTTP_GET_SLOW_CMD = '{python} {srv} {host}:{port} False {method}' \
+        .format(python=sys.executable, srv=TEST_SERVER_PATH, host=HOST, port=PORT, method=method)
+    with HTTPExecutor(
+            HTTP_GET_SLOW_CMD, 'http://{0}:{1}/'.format(HOST, PORT), method=method, timeout=30) as executor:
+        assert executor.running() is True
+        connect_to_server()
+
+
 def test_slow_server_timed_out():
     """Check if timeout properly expires."""
     executor = slow_server_executor(timeout=1)
