@@ -63,6 +63,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
 
 
 class SlowGetServerHandler(SlowServerHandler):
+    """Responds only on GET after a while."""
 
     def do_GET(self):  # pylint:disable=invalid-name
         "Serve GET request."
@@ -78,6 +79,7 @@ class SlowGetServerHandler(SlowServerHandler):
 
 
 class SlowPostServerHandler(SlowServerHandler):
+    """Responds only on POST after a while."""
 
     def do_POST(self):  # pylint:disable=invalid-name
         "Serve POST request."
@@ -90,6 +92,12 @@ class SlowPostServerHandler(SlowServerHandler):
         self.send_response(500)
         self.end_headers()
 
+
+HANDLERS = {
+    'HEAD': SlowServerHandler,
+    'GET': SlowGetServerHandler,
+    'POST': SlowPostServerHandler,
+}
 
 if __name__ == "__main__":
 
@@ -106,14 +114,8 @@ if __name__ == "__main__":
     if IMMORTAL:
         block_signals()
 
-    handlers = {
-        'HEAD': SlowServerHandler,
-        'GET': SlowGetServerHandler,
-        'POST': SlowPostServerHandler,
-    }
-
     server = HTTPServer(  # pylint: disable=invalid-name
-        (HOST, int(PORT)), handlers[METHOD]
+        (HOST, int(PORT)), HANDLERS[METHOD]
     )
     print("Starting slow server on {0}:{1}...".format(HOST, PORT))
     server.serve_forever()
