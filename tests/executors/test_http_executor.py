@@ -88,8 +88,13 @@ def test_slow_method_server_starting(method):
     wait for worker processes.
     """
 
-    http_method_slow_cmd = '{python} {srv} {host}:{port} False {method}' \
-        .format(python=sys.executable, srv=TEST_SERVER_PATH, host=HOST, port=PORT, method=method)
+    http_method_slow_cmd = '{python} {srv} {host}:{port} False {method}'.format(
+        python=sys.executable,
+        srv=TEST_SERVER_PATH,
+        host=HOST,
+        port=PORT,
+        method=method
+    )
     with HTTPExecutor(
             http_method_slow_cmd,
             'http://{0}:{1}/'.format(HOST, PORT), method=method, timeout=30
@@ -104,8 +109,13 @@ def test_slow_method_server_starting(method):
 def test_slow_method_server_timed_out(method):
     """Check if timeout properly expires."""
 
-    http_method_slow_cmd = '{python} {srv} {host}:{port} False {method}' \
-        .format(python=sys.executable, srv=TEST_SERVER_PATH, host=HOST, port=PORT, method=method)
+    http_method_slow_cmd = '{python} {srv} {host}:{port} False {method}'.format(
+        python=sys.executable,
+        srv=TEST_SERVER_PATH,
+        host=HOST,
+        port=PORT,
+        method=method
+    )
     executor = HTTPExecutor(
         http_method_slow_cmd,
         'http://{0}:{1}/'.format(HOST, PORT), method=method, timeout=1
