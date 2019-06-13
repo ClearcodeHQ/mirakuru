@@ -85,5 +85,5 @@ class HTTPExecutor(TCPExecutor):
                 conn.close()
                 return True
 
-        except (HTTPException, socket.timeout, socket.error) as e:
+        except (HTTPException, socket.timeout, socket.error):
             return False

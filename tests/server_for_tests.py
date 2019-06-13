@@ -49,6 +49,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def timeout_status(self):
+        """Set proper response status based on timeout."""
         if self.count_timeout():
             self.send_response(200)
         else:
@@ -63,25 +64,29 @@ class SlowServerHandler(BaseHTTPRequestHandler):
 
 class SlowGetServerHandler(SlowServerHandler):
 
-    def do_GET(self):
+    def do_GET(self):  # pylint:disable=invalid-name
+        "Serve GET request."
         self.timeout_status()
         self.send_header("Content-type", "text/html")
         self.end_headers()
         self.wfile.write(b'Hi. I am very slow.')
 
-    def do_HEAD(self):
+    def do_HEAD(self):  # pylint:disable=invalid-name
+        "Serve HEAD request."
         self.send_response(500)
         self.end_headers()
 
 
 class SlowPostServerHandler(SlowServerHandler):
 
-    def do_POST(self):
+    def do_POST(self):  # pylint:disable=invalid-name
+        "Serve POST request."
         self.timeout_status()
         self.end_headers()
         self.wfile.write(b'Hi. I am very slow.')
 
-    def do_HEAD(self):
+    def do_HEAD(self):  # pylint:disable=invalid-name
+        "Serve HEAD request."
         self.send_response(500)
         self.end_headers()
 
