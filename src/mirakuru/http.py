@@ -44,7 +44,7 @@ class HTTPExecutor(TCPExecutor):
             is interpreted as a single status code - e.g. '200' or '404' but
             also it can be a regular expression - e.g. '4..' or '(200|404)'.
             Default: any 2XX HTTP status code.
-        :param str method: default method to check status on
+        :param str method: method to check status on. Defaults to HEAD, GET or POST
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition

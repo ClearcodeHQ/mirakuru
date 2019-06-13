@@ -76,7 +76,7 @@ HTTPExecutor
 
 :class:`mirakuru.http.HTTPExecutor` is executor that will be used to start
 web applications for example. To start it, you apart from command, you need to pass a URL.
-This URL will be used to make a HEAD request. Once successful,
+This URL will be used to make a (by default) HEAD request. Once successful,
 the executor will be considered started, and a code will return to normal execution.
 
 .. code-block:: python
@@ -106,6 +106,16 @@ If you consider other codes as valid you need to specify them in 'status' argume
 
 The "status" argument can be a single code integer like 200, 404, 500 or a regular expression string -
 '^(2|4)00$', '2\d\d', '\d{3}', etc.
+
+There's also a possibility to change the request method used to perform request to the server.
+By default it's HEAD, but GET, POST or other are also possible.
+
+.. code-block:: python
+
+    from mirakuru import HTTPExecutor
+
+    process = HTTPExecutor('my_special_process', url='http://localhost:6543/status', status='(200|404)', method='GET')
+    process.start()
 
 
 PidExecutor
