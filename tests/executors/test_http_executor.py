@@ -120,7 +120,10 @@ def test_slow_post_payload_server_starting():
     )
     with HTTPExecutor(
             http_method_slow_cmd,
-            'http://{0}:{1}/'.format(HOST, PORT), method='POST', timeout=30, payload={'key': 'hole'}
+            'http://{0}:{1}/'.format(HOST, PORT),
+            method='POST',
+            timeout=30,
+            payload={'key': 'hole'}
     ) as executor:
         assert executor.running() is True
         connect_to_server()
