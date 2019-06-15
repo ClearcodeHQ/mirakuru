@@ -49,12 +49,12 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         self.timeout_status()
         self.end_headers()
 
-    def timeout_status(self, ok=200, bad=500):
+    def timeout_status(self):
         """Set proper response status based on timeout."""
         if self.count_timeout():
-            self.send_response(ok)
+            self.send_response(200)
         else:
-            self.send_response(bad)
+            self.send_response(500)
 
     def count_timeout(self):  # pylint: disable=no-self-use
         """Count down the timeout time."""

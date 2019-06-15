@@ -32,7 +32,8 @@ class HTTPExecutor(TCPExecutor):
     """Default TCP port for the HTTP protocol."""
 
     def __init__(
-            self, command, url, status=r'^2\d\d$', method='HEAD', payload=None, **kwargs
+            self, command, url, status=r'^2\d\d$', method='HEAD', payload=None,
+            **kwargs
     ):
         """
         Initialize HTTPExecutor executor.
@@ -87,7 +88,12 @@ class HTTPExecutor(TCPExecutor):
                     "Content-type": "application/x-www-form-urlencoded",
                     "Accept": "text/plain"
                 }
-                conn.request(self.method, self.url.path, urlencode(self.payload), headers)
+                conn.request(
+                    self.method,
+                    self.url.path,
+                    urlencode(self.payload),
+                    headers
+                )
             else:
                 conn.request(self.method, self.url.path)
             status = str(conn.getresponse().status)
