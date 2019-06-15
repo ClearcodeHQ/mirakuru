@@ -16,6 +16,7 @@ import sys
 import os
 import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.parse import parse_qs
 
 sys.path.append(os.getcwd())  # noqa
 
@@ -48,12 +49,12 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         self.timeout_status()
         self.end_headers()
 
-    def timeout_status(self):
+    def timeout_status(self, ok=200, bad=500):
         """Set proper response status based on timeout."""
         if self.count_timeout():
-            self.send_response(200)
+            self.send_response(ok)
         else:
-            self.send_response(500)
+            self.send_response(bad)
 
     def count_timeout(self):  # pylint: disable=no-self-use
         """Count down the timeout time."""
@@ -93,10 +94,32 @@ class SlowPostServerHandler(SlowServerHandler):
         self.end_headers()
 
 
+class SlowPostKeyServerHandler(SlowServerHandler):
+    """Responds only on POST after a while."""
+
+    def do_POST(self):  # pylint:disable=invalid-name
+        "Serve POST request."
+        content_len = int(self.headers.get('Content-Length'))
+        post_body = self.rfile.read(content_len)
+        form = parse_qs(post_body)
+        if form.get(b'key') == [b'hole']:
+            self.timeout_status()
+        else:
+            self.send_response(500)
+        self.end_headers()
+        self.wfile.write(b'Hi. I am very slow.')
+
+    def do_HEAD(self):  # pylint:disable=invalid-name
+        "Serve HEAD request."
+        self.send_response(500)
+        self.end_headers()
+
+
 HANDLERS = {
     'HEAD': SlowServerHandler,
     'GET': SlowGetServerHandler,
     'POST': SlowPostServerHandler,
+    'Key': SlowPostKeyServerHandler,
 }
 
 if __name__ == "__main__":

@@ -103,6 +103,29 @@ def test_slow_method_server_starting(method):
         connect_to_server()
 
 
+def test_slow_post_payload_server_starting():
+    """
+    Test whether or not executor awaits for slow starting servers.
+
+    Simple example. You run Gunicorn and it is working but you have to
+    wait for worker processes.
+    """
+
+    http_method_slow_cmd = '{python} {srv} {host}:{port} False {method}'.format(
+        python=sys.executable,
+        srv=TEST_SERVER_PATH,
+        host=HOST,
+        port=PORT,
+        method='Key'
+    )
+    with HTTPExecutor(
+            http_method_slow_cmd,
+            'http://{0}:{1}/'.format(HOST, PORT), method='POST', timeout=30, payload={'key': 'hole'}
+    ) as executor:
+        assert executor.running() is True
+        connect_to_server()
+
+
 @pytest.mark.parametrize('method', (
     'HEAD', 'GET', 'POST'
 ))

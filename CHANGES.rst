@@ -8,6 +8,7 @@ Unreleased
 - [feature] Allow for configuring process outputs to pipe to
 - [feature] OutputExecutor can now check for banner in stderr
 - [feature] HTTPEecutor now can check status on different method.
+  Along with properly configured payload for POST, PUT and PATCH methods.
 - [feature] Ability to set custom env vars for orchestrated process
 - [feature] Ability to set custom cwd path for orchestrated process
 
