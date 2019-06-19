@@ -84,15 +84,10 @@ class HTTPExecutor(TCPExecutor):
         try:
             conn = HTTPConnection(self.host, self.port)
             if self.payload and self.method in ('POST', 'PUT', 'PATCH'):
-                headers = {
-                    "Content-type": "application/x-www-form-urlencoded",
-                    "Accept": "text/plain"
-                }
                 conn.request(
                     self.method,
                     self.url.path,
-                    urlencode(self.payload),
-                    headers
+                    urlencode(self.payload)
                 )
             else:
                 conn.request(self.method, self.url.path)
