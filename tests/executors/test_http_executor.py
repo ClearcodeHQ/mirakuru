@@ -77,23 +77,75 @@ def test_shell_started_server_stops():
         connect_to_server()
 
 
-def test_slow_server_starting():
+@pytest.mark.parametrize('method', (
+    'HEAD', 'GET', 'POST'
+))
+def test_slow_method_server_starting(method):
     """
     Test whether or not executor awaits for slow starting servers.
 
     Simple example. You run Gunicorn and it is working but you have to
     wait for worker processes.
     """
-    executor = slow_server_executor().start()
-    assert executor.running() is True
 
-    connect_to_server()
-    executor.stop()
+    http_method_slow_cmd = '{python} {srv} {host}:{port} False {method}'.format(
+        python=sys.executable,
+        srv=TEST_SERVER_PATH,
+        host=HOST,
+        port=PORT,
+        method=method
+    )
+    with HTTPExecutor(
+            http_method_slow_cmd,
+            'http://{0}:{1}/'.format(HOST, PORT), method=method, timeout=30
+    ) as executor:
+        assert executor.running() is True
+        connect_to_server()
 
 
-def test_slow_server_timed_out():
+def test_slow_post_payload_server_starting():
+    """
+    Test whether or not executor awaits for slow starting servers.
+
+    Simple example. You run Gunicorn and it is working but you have to
+    wait for worker processes.
+    """
+
+    http_method_slow_cmd = '{python} {srv} {host}:{port} False {method}'.format(
+        python=sys.executable,
+        srv=TEST_SERVER_PATH,
+        host=HOST,
+        port=PORT,
+        method='Key'
+    )
+    with HTTPExecutor(
+            http_method_slow_cmd,
+            'http://{0}:{1}/'.format(HOST, PORT),
+            method='POST',
+            timeout=30,
+            payload={'key': 'hole'}
+    ) as executor:
+        assert executor.running() is True
+        connect_to_server()
+
+
+@pytest.mark.parametrize('method', (
+    'HEAD', 'GET', 'POST'
+))
+def test_slow_method_server_timed_out(method):
     """Check if timeout properly expires."""
-    executor = slow_server_executor(timeout=1)
+
+    http_method_slow_cmd = '{python} {srv} {host}:{port} False {method}'.format(
+        python=sys.executable,
+        srv=TEST_SERVER_PATH,
+        host=HOST,
+        port=PORT,
+        method=method
+    )
+    executor = HTTPExecutor(
+        http_method_slow_cmd,
+        'http://{0}:{1}/'.format(HOST, PORT), method=method, timeout=1
+    )
 
     with pytest.raises(TimeoutExpired) as exc:
         executor.start()
