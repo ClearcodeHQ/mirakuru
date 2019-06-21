@@ -55,16 +55,18 @@ Synchronising (or orchestrating) test procedure with tested processes might be a
 If so, then **mirakuru** is what you need.
 
 ``Mirakuru`` starts your process and waits for the clear indication that it's running.
-Library provides six executors to fit different cases:
+Library provides seven executors to fit different cases:
 
-* SimpleExecutor - starts a process and does not wait for anything.
+* **SimpleExecutor** - starts a process and does not wait for anything.
   It is useful to stop or kill a process and its subprocesses.
   Base class for all the rest of executors.
-* Executor - base class for executors verifying if a process has started.
-* OutputExecutor - waits for a specified output to be printed by a process.
-* TCPExecutor - waits for the ability to connect through TCP with a process.
-* HTTPExecutor - waits for a successful HEAD request (and TCP before).
-* PidExecutor - waits for a specified .pid file to exist.
+* **Executor** - base class for executors verifying if a process has started.
+* **OutputExecutor** - waits for a specified output to be printed by a process.
+* **TCPExecutor** - waits for the ability to connect through TCP with a process.
+* **UnixSocketExecutor** - waits for the ability to connect through Unix socket
+  with a process
+* **HTTPExecutor** - waits for a successful HEAD request (and TCP before).
+* **PidExecutor** - waits for a specified .pid file to exist.
 
 .. code-block:: python
 
