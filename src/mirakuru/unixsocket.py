@@ -30,7 +30,7 @@ class UnixSocketExecutor(Executor):
     Unixsocket listening process executor.
 
     Used to start (and wait to actually be running) processes that can accept
-    Unix socket connections.
+    stream Unix socket connections.
     """
 
     def __init__(
@@ -83,6 +83,6 @@ class UnixSocketExecutor(Executor):
         .. note::
 
             Process will be considered started, when it'll be able to accept
-            TCP connections as defined in initializer.
+            Unix Socket connections as defined in initializer.
         """
         return self.pre_start_check()  # we can reuse logic from `pre_start()`
