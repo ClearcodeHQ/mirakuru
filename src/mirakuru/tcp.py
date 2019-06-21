@@ -18,6 +18,8 @@
 """TCP executor definition."""
 
 import socket
+from typing import Union, List, Tuple, Any
+
 from mirakuru.base import Executor
 
 
@@ -29,7 +31,11 @@ class TCPExecutor(Executor):
     TCP connections.
     """
 
-    def __init__(self, command, host, port, **kwargs):
+    def __init__(self,
+                 command: Union[str, List[str], Tuple[str, ...]],
+                 host: str,
+                 port: int,
+                 **kwargs: Any) -> None:
         """
         Initialize TCPExecutor executor.
 
@@ -52,7 +58,7 @@ class TCPExecutor(Executor):
         self.port = port
         """Port number, process is listening on."""
 
-    def pre_start_check(self):
+    def pre_start_check(self) -> bool:
         """
         Check if process accepts connections.
 
@@ -71,7 +77,7 @@ class TCPExecutor(Executor):
             # close socket manually for sake of PyPy
             sock.close()
 
-    def after_start_check(self):
+    def after_start_check(self) -> bool:
         """
         Check if process accepts connections.
 

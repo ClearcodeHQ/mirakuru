@@ -21,6 +21,7 @@ import re
 import socket
 from urllib.parse import urlparse, urlencode
 from http.client import HTTPConnection, HTTPException
+from typing import Union, List, Tuple, Optional, Dict, Any
 
 from mirakuru.tcp import TCPExecutor
 
@@ -32,9 +33,14 @@ class HTTPExecutor(TCPExecutor):
     """Default TCP port for the HTTP protocol."""
 
     def __init__(
-            self, command, url, status=r'^2\d\d$', method='HEAD', payload=None,
-            **kwargs
-    ):
+            self,
+            command: Union[str, List[str], Tuple[str, ...]],
+            url: str,
+            status: str = r'^2\d\d$',
+            method: str = 'HEAD',
+            payload: Optional[Dict[str, str]] = None,
+            **kwargs: Any
+    ) -> None:
         """
         Initialize HTTPExecutor executor.
 
@@ -79,7 +85,7 @@ class HTTPExecutor(TCPExecutor):
             command, host=self.url.hostname, port=port, **kwargs
         )
 
-    def after_start_check(self):
+    def after_start_check(self) -> bool:
         """Check if defined URL returns expected status to a HEAD request."""
         try:
             conn = HTTPConnection(self.host, self.port)
@@ -96,6 +102,7 @@ class HTTPExecutor(TCPExecutor):
             if status == self.status or self.status_re.match(status):
                 conn.close()
                 return True
+            return False
 
         except (HTTPException, socket.timeout, socket.error):
             return False

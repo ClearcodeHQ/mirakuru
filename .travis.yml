@@ -30,6 +30,7 @@ jobs:
         - pycodestyle
         - pydocstyle
         - pylint mirakuru tests
+        - mypy src tests
         - rst-lint *.rst
       after_success: skip
     - stage: osx

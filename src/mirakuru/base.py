@@ -28,6 +28,11 @@ import time
 import uuid
 import errno
 import platform
+from types import TracebackType
+from typing import (
+    Union, IO, Any, List, Tuple, Optional, Dict, TypeVar, Type, Set, Iterator,
+    Callable
+)
 
 from mirakuru.base_env import processes_with_env
 from mirakuru.exceptions import (
@@ -49,9 +54,14 @@ IGNORED_ERROR_CODES = [errno.ESRCH]
 if platform.system() == 'Darwin':
     IGNORED_ERROR_CODES = [errno.ESRCH, errno.EPERM]
 
+# Type variables used for self in functions returning self, so it's correctly
+# typed in derived classes.
+SimpleExecutorType = TypeVar("SimpleExecutorType", bound="SimpleExecutor")
+ExecutorType = TypeVar("ExecutorType", bound="Executor")
+
 
 @atexit.register
-def cleanup_subprocesses():
+def cleanup_subprocesses() -> None:
     """On python exit: find possibly running subprocesses and kill them."""
     # pylint: disable=redefined-outer-name, reimported
     # atexit functions tends to loose global imports sometimes so reimport
@@ -74,10 +84,19 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
     """Simple subprocess executor with start/stop/kill functionality."""
 
     def __init__(  # pylint:disable=too-many-arguments
-            self, command, cwd=None, shell=False, timeout=3600, sleep=0.1,
-            sig_stop=signal.SIGTERM, sig_kill=SIGKILL, envvars=None,
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=None
-    ):
+            self,
+            command: Union[str, List[str], Tuple[str, ...]],
+            cwd: Optional[str] = None,
+            shell: bool = False,
+            timeout: Union[int, float] = 3600,
+            sleep: float = 0.1,
+            sig_stop: int = signal.SIGTERM,
+            sig_kill: int = SIGKILL,
+            envvars: Optional[Dict[str, str]] = None,
+            stdin: Union[None, int, IO[Any]] = subprocess.PIPE,
+            stdout: Union[None, int, IO[Any]] = subprocess.PIPE,
+            stderr: Union[None, int, IO[Any]] = None
+    ) -> None:
         """
         Initialize executor.
 
@@ -132,13 +151,13 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._stdout = stdout
         self._stderr = stderr
 
-        self._endtime = None
-        self.process = None
+        self._endtime = None  # type: Optional[float]
+        self.process = None  # type: Optional[subprocess.Popen]
         """A :class:`subprocess.Popen` instance once process is started."""
 
         self._uuid = '{0}:{1}'.format(os.getpid(), uuid.uuid4())
 
-    def __enter__(self):
+    def __enter__(self: SimpleExecutorType) -> SimpleExecutorType:
         """
         Enter context manager starting the subprocess.
 
@@ -147,15 +166,18 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """
         return self.start()
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self,
+                 exc_type: Optional[Type[BaseException]],
+                 exc_value: Optional[BaseException],
+                 traceback: Optional[TracebackType]) -> None:
         """Exit context manager stopping the subprocess."""
         self.stop()
 
-    def running(self):
+    def running(self) -> bool:
         """
         Check if executor is running.
 
-        :returns: True if process is running, False otherwise
+        :returns: SimpleExecutorTyperue if process is running, False otherwise
         :rtype: bool
         """
         if self.process is None:
@@ -163,7 +185,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         return self.process.poll() is None
 
     @property
-    def _popen_kwargs(self):
+    def _popen_kwargs(self) -> Dict[str, Any]:
         """
         Get kwargs for the process instance.
 
@@ -174,7 +196,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         :return:
         """
-        kwargs = {}
+        kwargs = {}  # type: Dict[str, Any]
 
         if self._stdin:
             kwargs['stdin'] = self._stdin
@@ -207,7 +229,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         return kwargs
 
-    def start(self):
+    def start(self: SimpleExecutorType) -> SimpleExecutorType:
         """
         Start defined process.
 
@@ -217,7 +239,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         :rtype: SimpleExecutor
         """
         if self.process is None:
-            command = self.command
+            command = \
+                self.command  # type: Union[str, List[str], Tuple[str, ...]]
             if not self._shell:
                 command = self.command_parts
 
@@ -229,11 +252,11 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._set_timeout()
         return self
 
-    def _set_timeout(self):
+    def _set_timeout(self) -> None:
         """Set timeout for possible wait."""
         self._endtime = time.time() + self._timeout
 
-    def _clear_process(self):
+    def _clear_process(self) -> None:
         """
         Close stdin/stdout of subprocess.
 
@@ -245,7 +268,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         self._endtime = None
 
-    def _kill_all_kids(self, sig):
+    def _kill_all_kids(self, sig: int) -> Set[int]:
         """
         Kill all subprocesses (and its subprocesses) that executor started.
 
@@ -256,7 +279,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         :param int sig: signal used to stop process run by executor.
         :return: process ids (pids) of killed processes
-        :rtype list
+        :rtype: set
         """
         pids = processes_with_env(ENV_UUID, self._uuid)
         for pid in pids:
@@ -272,7 +295,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             log.debug("Killed process %d.", pid)
         return pids
 
-    def stop(self, sig=None):
+    def stop(self: SimpleExecutorType, sig: int = None) -> SimpleExecutorType:
         """
         Stop process running.
 
@@ -302,7 +325,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             else:
                 raise
 
-        def process_stopped():
+        def process_stopped() -> bool:
             """Return True only only when self.process is not running."""
             return self.running() is False
 
@@ -318,7 +341,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         return self
 
     @contextmanager
-    def stopped(self):
+    def stopped(self: SimpleExecutorType) -> Iterator[SimpleExecutorType]:
         """
         Stop process for given context and starts it afterwards.
 
@@ -332,7 +355,10 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             yield self
             self.start()
 
-    def kill(self, wait=True, sig=None):
+    def kill(
+            self: SimpleExecutorType,
+            wait: bool = True,
+            sig: Optional[int] = None) -> SimpleExecutorType:
         """
         Kill the process if running.
 
@@ -345,7 +371,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """
         if sig is None:
             sig = self._sig_kill
-        if self.running():
+        if self.process and self.running():
             os.killpg(self.process.pid, sig)
             if wait:
                 self.process.wait()
@@ -354,17 +380,21 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._clear_process()
         return self
 
-    def output(self):
+    def output(self) -> Optional[IO[Any]]:
         """Return subprocess output."""
         if self.process is not None:
             return self.process.stdout
+        return None  # pragma: no cover
 
-    def err_output(self):
+    def err_output(self) -> Optional[IO[Any]]:
         """Return subprocess stderr."""
         if self.process is not None:
             return self.process.stderr
+        return None  # pragma: no cover
 
-    def wait_for(self, wait_for):
+    def wait_for(
+            self: SimpleExecutorType,
+            wait_for: Callable[[], bool]) -> SimpleExecutorType:
         """
         Wait for callback to return True.
 
@@ -384,7 +414,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self.kill()
         raise TimeoutExpired(self, timeout=self._timeout)
 
-    def check_timeout(self):
+    def check_timeout(self) -> bool:
         """
         Check if timeout has expired.
 
@@ -398,12 +428,12 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """
         return self._endtime is None or time.time() <= self._endtime
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Cleanup subprocesses created during Executor lifetime."""
         try:
             if self.process:
                 self.kill()
-        except Exception:
+        except Exception:  # pragma: no cover
             print("*" * 80)
             print("Exception while deleting Executor. '"
                   "It is strongly suggested that you use")
@@ -411,7 +441,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             print("*" * 80)
             raise
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return unambiguous executor representation."""
         command = self.command
         if len(command) > 10:
@@ -423,7 +453,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             id=hex(id(self))
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return readable executor representation."""
         return '<{module}.{executor}: "{command}">'.format(
             module=self.__class__.__module__,
@@ -435,7 +465,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 class Executor(SimpleExecutor):
     """Base class for executors with a pre- and after-start checks."""
 
-    def pre_start_check(self):
+    def pre_start_check(self) -> bool:
         """
         Check process before the start of executor.
 
@@ -445,7 +475,7 @@ class Executor(SimpleExecutor):
         """
         raise NotImplementedError
 
-    def start(self):
+    def start(self: ExecutorType) -> ExecutorType:
         """
         Start executor with additional checks.
 
@@ -463,15 +493,18 @@ class Executor(SimpleExecutor):
         self.wait_for(self.check_subprocess)
         return self
 
-    def check_subprocess(self):
+    def check_subprocess(self) -> bool:
         """
         Make sure the process didn't exit with an error and run the checks.
 
         :rtype: bool
-        :return: the actual check status
+        :return: the actual check status or False before starting the process
         :raise ProcessExitedWithError: when the main process exits with
             an error
         """
+        if self.process is None:  # pragma: no cover
+            # No process was started.
+            return False
         exit_code = self.process.poll()
         if exit_code is not None and exit_code != 0:
             # The main process exited with an error. Clean up the children
@@ -482,7 +515,7 @@ class Executor(SimpleExecutor):
 
         return self.after_start_check()
 
-    def after_start_check(self):
+    def after_start_check(self) -> bool:
         """
         Check process after the start of executor.
 
