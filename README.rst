@@ -12,8 +12,8 @@ This is where you should consider using **mirakuru** to add superpowers to your 
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Latest PyPI version
 
-.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v1.1.0
-    :target: http://mirakuru.readthedocs.io/en/v1.1.0/
+.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v2.0.0
+    :target: http://mirakuru.readthedocs.io/en/v2.0.0/
     :alt: Documentation Status
 
 .. image:: https://img.shields.io/pypi/wheel/mirakuru.svg
@@ -31,16 +31,16 @@ This is where you should consider using **mirakuru** to add superpowers to your 
 Package status
 --------------
 
-.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.svg?branch=v1.1.0
+.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.svg?branch=v2.0.0
     :target: https://travis-ci.org/ClearcodeHQ/mirakuru
     :alt: Tests
 
-.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=v1.1.0
-    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v1.1.0
+.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=v2.0.0
+    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v2.0.0
     :alt: Coverage Status
 
-.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.svg?tag=v1.1.0
-     :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?tag=v1.1.0
+.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.svg?tag=v2.0.0
+     :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?tag=v2.0.0
      :alt: Requirements Status
 
 
@@ -55,16 +55,18 @@ Synchronising (or orchestrating) test procedure with tested processes might be a
 If so, then **mirakuru** is what you need.
 
 ``Mirakuru`` starts your process and waits for the clear indication that it's running.
-Library provides six executors to fit different cases:
+Library provides seven executors to fit different cases:
 
-* SimpleExecutor - starts a process and does not wait for anything.
+* **SimpleExecutor** - starts a process and does not wait for anything.
   It is useful to stop or kill a process and its subprocesses.
   Base class for all the rest of executors.
-* Executor - base class for executors verifying if a process has started.
-* OutputExecutor - waits for a specified output to be printed by a process.
-* TCPExecutor - waits for the ability to connect through TCP with a process.
-* HTTPExecutor - waits for a successful HEAD request (and TCP before).
-* PidExecutor - waits for a specified .pid file to exist.
+* **Executor** - base class for executors verifying if a process has started.
+* **OutputExecutor** - waits for a specified output to be printed by a process.
+* **TCPExecutor** - waits for the ability to connect through TCP with a process.
+* **UnixSocketExecutor** - waits for the ability to connect through Unix socket
+  with a process
+* **HTTPExecutor** - waits for a successful HEAD request (and TCP before).
+* **PidExecutor** - waits for a specified .pid file to exist.
 
 .. code-block:: python
 

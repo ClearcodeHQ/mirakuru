@@ -7,6 +7,9 @@ Basic executors
 .. automodule:: mirakuru.output
     :private-members:
 
+.. automodule:: mirakuru.unixsocket
+    :private-members:
+
 .. automodule:: mirakuru.tcp
     :private-members:
 
