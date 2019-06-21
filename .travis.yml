@@ -14,9 +14,9 @@ install:
   - pip install "setuptools>=21"
   - pip install "pip>=9"
   - pip install -r requirements-test.txt
-  - pip install .[tests] coveralls wheel
+  - pip install -e .[tests] coveralls wheel
 script:
-  - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
+  - pytest -vvv --capture=no --showlocals --cov src/mirakuru tests/
 after_success:
   - coveralls
 jobs:
