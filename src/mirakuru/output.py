@@ -19,14 +19,21 @@
 
 import re
 import select
+from typing import Union, List, Any, TypeVar, Tuple, IO
 
 from mirakuru.base import SimpleExecutor
+
+
+OutputExecutorType = TypeVar("OutputExecutorType", bound="OutputExecutor")
 
 
 class OutputExecutor(SimpleExecutor):
     """Executor that awaits for string output being present in output."""
 
-    def __init__(self, command, banner, **kwargs):
+    def __init__(self,
+                 command: Union[str, List[str], Tuple[str, ...]],
+                 banner: str,
+                 **kwargs: Any) -> None:
         """
         Initialize OutputExecutor executor.
 
@@ -50,7 +57,7 @@ class OutputExecutor(SimpleExecutor):
                 'At least one of stdout or stderr has to be initialized'
             )
 
-    def start(self):
+    def start(self: OutputExecutorType) -> OutputExecutorType:
         """
         Start process.
 
@@ -64,7 +71,7 @@ class OutputExecutor(SimpleExecutor):
         """
         super(OutputExecutor, self).start()
 
-        polls = []
+        polls = []  # type: List[Tuple[select.poll, IO[Any]]]
 
         for output_handle, output_method in (
                 (self._stdout, self.output),
@@ -74,13 +81,17 @@ class OutputExecutor(SimpleExecutor):
                 # get a polling object
                 std_poll = select.poll()
 
+                output_file = output_method()
+                if output_file is None:
+                    raise ValueError(
+                        "The process is started but the output file is None")
                 # register a file descriptor
                 # POLLIN because we will wait for data to read
-                std_poll.register(output_method(), select.POLLIN)
-                polls.append((std_poll, output_method()))
+                std_poll.register(output_file, select.POLLIN)
+                polls.append((std_poll, output_file))
 
         try:
-            def await_for_output():
+            def await_for_output() -> bool:
                 return self._wait_for_output(*polls)
 
             self.wait_for(await_for_output)
@@ -93,7 +104,7 @@ class OutputExecutor(SimpleExecutor):
                 del poll_and_output
         return self
 
-    def _wait_for_output(self, *polls):
+    def _wait_for_output(self, *polls: Tuple[select.poll, IO[Any]]) -> bool:
         """
         Check if output matches banner.
 

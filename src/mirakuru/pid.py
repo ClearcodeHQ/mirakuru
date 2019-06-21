@@ -18,6 +18,8 @@
 """Pid executor definition."""
 
 import os.path
+from typing import Union, List, Tuple, Any
+
 from mirakuru.base import Executor
 
 
@@ -30,7 +32,10 @@ class PidExecutor(Executor):
     created.
     """
 
-    def __init__(self, command, filename, **kwargs):
+    def __init__(self,
+                 command: Union[str, List[str], Tuple[str, ...]],
+                 filename: str,
+                 **kwargs: Any) -> None:
         """
         Initialize the PidExecutor executor.
 
@@ -56,7 +61,7 @@ class PidExecutor(Executor):
         self.filename = filename
         """the name of the file which the process is to create."""
 
-    def pre_start_check(self):
+    def pre_start_check(self) -> bool:
         """
         Check if the specified file has been created.
 
@@ -67,7 +72,7 @@ class PidExecutor(Executor):
         """
         return os.path.isfile(self.filename)
 
-    def after_start_check(self):
+    def after_start_check(self) -> bool:
         """
         Check if the process has created the specified file.
 

@@ -36,7 +36,7 @@ PS_XE_PID_MATCH = re.compile(r'^.*?(\d+).+$')
 """_sre.SRE_Pattern matching PIDs in result from `$ ps xe -o pid,cmd`."""
 
 
-def processes_with_env_psutil(env_name, env_value):
+def processes_with_env_psutil(env_name: str, env_value: str) -> Set[int]:
     """
     Find PIDs of processes having environment variable matching given one.
 

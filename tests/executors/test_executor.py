@@ -1,3 +1,4 @@
+# mypy: no-strict-optional
 """Test basic executor functionality."""
 import gc
 import shlex
