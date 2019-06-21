@@ -33,7 +33,7 @@ class HTTPExecutor(TCPExecutor):
 
     def __init__(
             self, command, url, status=r'^2\d\d$', method='HEAD', payload=None,
-            **kwargs
+            headers=None, **kwargs
     ):
         """
         Initialize HTTPExecutor executor.
@@ -50,6 +50,7 @@ class HTTPExecutor(TCPExecutor):
         :param str method: request method to check status on.
             Defaults to HEAD.
         :param dict payload: Payload to send along the request
+        :param dict headers:
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
         :param float sleep: how often to check for start/stop condition
@@ -74,6 +75,7 @@ class HTTPExecutor(TCPExecutor):
         self.status_re = re.compile(str(status))
         self.method = method
         self.payload = payload
+        self.headers = headers
 
         super(HTTPExecutor, self).__init__(
             command, host=self.url.hostname, port=port, **kwargs
@@ -83,14 +85,14 @@ class HTTPExecutor(TCPExecutor):
         """Check if defined URL returns expected status to a HEAD request."""
         try:
             conn = HTTPConnection(self.host, self.port)
-            if self.payload and self.method in ('POST', 'PUT', 'PATCH'):
-                conn.request(
-                    self.method,
-                    self.url.path,
-                    urlencode(self.payload)
-                )
-            else:
-                conn.request(self.method, self.url.path)
+            body = urlencode(self.payload) if self.payload else None
+            headers = self.headers if self.headers else {}
+            conn.request(
+                self.method,
+                self.url.path,
+                body,
+                headers,
+            )
             status = str(conn.getresponse().status)
 
             if status == self.status or self.status_re.match(status):
