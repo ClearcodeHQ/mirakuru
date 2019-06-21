@@ -21,6 +21,7 @@ import errno
 import logging
 import re
 import subprocess
+from typing import Set
 
 try:
     import psutil
@@ -35,7 +36,7 @@ PS_XE_PID_MATCH = re.compile(r'^.*?(\d+).+$')
 """_sre.SRE_Pattern matching PIDs in result from `$ ps xe -o pid,cmd`."""
 
 
-def processes_with_env_psutil(env_name, env_value):
+def processes_with_env_psutil(env_name: str, env_value: str) -> Set[int]:
     """
     Find PIDs of processes having environment variable matching given one.
 
@@ -63,7 +64,7 @@ def processes_with_env_psutil(env_name, env_value):
     return pids
 
 
-def processes_with_env_ps(env_name, env_value):
+def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
     """
     Find PIDs of processes having environment variable matching given one.
 
@@ -77,7 +78,7 @@ def processes_with_env_ps(env_name, env_value):
              environment variable equal certain value
     :rtype: set
     """
-    pids = set()
+    pids = set()  # type: Set[int]
     ps_xe = ''
     try:
         cmd = 'ps', 'xe', '-o', 'pid,cmd'
@@ -97,7 +98,12 @@ def processes_with_env_ps(env_name, env_value):
     for line in ps_xe:
         line = str(line)
         if env in line:
-            pids.add(int(PS_XE_PID_MATCH.match(line).group(1)))
+            match = PS_XE_PID_MATCH.match(line)
+            # This always matches: all lines other than the header (not
+            # containing our environment variable) have a PID required by the
+            # reggex. Still check it for mypy.
+            if match:
+                pids.add(int(match.group(1)))
     return pids
 
 

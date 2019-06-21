@@ -1,14 +1,20 @@
 """Mirakuru exceptions."""
 
+from typing import Union, TYPE_CHECKING
+
+if TYPE_CHECKING:  # pragma: no cover
+    from mirakuru.base import SimpleExecutor  # pylint:disable=cyclic-import
+
 
 class ExecutorError(Exception):
     """Base exception for executor failures."""
 
-    def __init__(self, executor):
+    def __init__(self, executor: "SimpleExecutor") -> None:
         """
         Exception initialization.
 
-        :param mirakuru.base.Executor executor: for which exception occurred
+        :param mirakuru.base.SimpleExecutor executor: for which exception
+            occurred
         """
         super(ExecutorError, self).__init__(self)
         self.executor = executor
@@ -17,17 +23,20 @@ class ExecutorError(Exception):
 class TimeoutExpired(ExecutorError):
     """Is raised when the timeout expires while starting an executor."""
 
-    def __init__(self, executor, timeout):
+    def __init__(self,
+                 executor: "SimpleExecutor",
+                 timeout: Union[int, float]) -> None:
         """
         Exception initialization with an extra ``timeout`` argument.
 
-        :param mirakuru.base.Executor executor: for which exception occurred
+        :param mirakuru.base.SimpleExecutor executor: for which exception
+            occurred
         :param int timeout: timeout for which exception occurred
         """
         super(TimeoutExpired, self).__init__(executor)
         self.timeout = timeout
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Return Exception's string representation.
 
@@ -47,7 +56,7 @@ class AlreadyRunning(ExecutorError):
     same configuration we can't bind to same port.
     """
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Return Exception's string representation.
 
@@ -70,17 +79,18 @@ class ProcessExitedWithError(ExecutorError):
     exit with 0 in case of successful daemonization.
     """
 
-    def __init__(self, executor, exit_code):
+    def __init__(self, executor: "SimpleExecutor", exit_code: int) -> None:
         """
         Exception initialization with an extra ``exit_code`` argument.
 
-        :param mirakuru.base.Executor executor: for which exception occurred
+        :param mirakuru.base.SimpleExecutor executor: for which exception
+            occurred
         :param int exit_code: code the subprocess exited with
         """
         super(ProcessExitedWithError, self).__init__(executor)
         self.exit_code = exit_code
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Return Exception's string representation.
 

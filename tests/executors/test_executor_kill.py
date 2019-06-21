@@ -1,3 +1,4 @@
+# mypy: no-strict-optional
 """Tests that check various kill behaviours."""
 import signal
 import time

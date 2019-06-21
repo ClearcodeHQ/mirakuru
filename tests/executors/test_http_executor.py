@@ -3,6 +3,7 @@ import sys
 import socket
 from functools import partial
 from http.client import HTTPConnection, OK
+from typing import Dict, Any
 
 import pytest
 from mock import patch
@@ -218,7 +219,7 @@ def test_http_status_codes(accepted_status, expected_timeout):
         'command': HTTP_NORMAL_CMD,
         'url': 'http://{0}:{1}/badpath'.format(HOST, PORT),
         'timeout': 2
-    }
+    }  # type: Dict[str, Any]
     if accepted_status:
         kwargs['status'] = accepted_status
     executor = HTTPExecutor(**kwargs)
