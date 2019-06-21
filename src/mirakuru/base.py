@@ -129,15 +129,12 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         """
         if isinstance(command, (list, tuple)):
-            full_command = ' '.join(command)
+            self.command = ' '.join(command)
             """Command that the executor runs."""
-            command_parts = command
+            self.command_parts = command
         else:
-            full_command = command
-            command_parts = shlex.split(command)
-
-        self.command = shlex.quote(full_command)
-        self.command_parts = command_parts
+            self.command = command
+            self.command_parts = shlex.split(command)
 
         self._cwd = cwd
         self._shell = True
