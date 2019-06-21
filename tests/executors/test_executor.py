@@ -161,9 +161,11 @@ def test_executor_raises_if_process_exits_with_error():
         ['bash', '-c', 'exit {0!s}'.format(error_code)],
         timeout=5
     )
-    failing_executor.pre_start_check = mock.Mock(return_value=False)
+    failing_executor.pre_start_check = mock.Mock(  # type: ignore
+        return_value=False)
     # After-start check will keep returning False to let the process terminate.
-    failing_executor.after_start_check = mock.Mock(return_value=False)
+    failing_executor.after_start_check = mock.Mock(  # type: ignore
+        return_value=False)
 
     with pytest.raises(ProcessExitedWithError) as exc:
         failing_executor.start()
@@ -174,7 +176,7 @@ def test_executor_raises_if_process_exits_with_error():
 
     # Pre-start check should have been called - after-start check might or
     # might not have been called - depending on the timing.
-    assert failing_executor.pre_start_check.called is True
+    assert failing_executor.pre_start_check.called is True  # type: ignore
 
 
 def test_executor_ignores_processes_exiting_with_0():
@@ -187,16 +189,16 @@ def test_executor_ignores_processes_exiting_with_0():
     # We execute a process that will return zero. In order to give the process
     # enough time to return we keep the polling loop spinning for a second.
     executor = Executor(['bash', '-c', 'exit 0'], timeout=1.0)
-    executor.pre_start_check = mock.Mock(return_value=False)
-    executor.after_start_check = mock.Mock(return_value=False)
+    executor.pre_start_check = mock.Mock(return_value=False)  # type: ignore
+    executor.after_start_check = mock.Mock(return_value=False)  # type: ignore
 
     with pytest.raises(TimeoutExpired):
         # We keep the post-checks spinning forever so it eventually times out.
         executor.start()
 
     # Both checks should have been called.
-    assert executor.pre_start_check.called is True
-    assert executor.after_start_check.called is True
+    assert executor.pre_start_check.called is True  # type: ignore
+    assert executor.after_start_check.called is True  # type: ignore
 
 
 def test_executor_methods_returning_self():

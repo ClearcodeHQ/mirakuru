@@ -89,8 +89,8 @@ class OutputExecutor(SimpleExecutor):
                 # unregister the file descriptor and delete the polling object
                 poll.unregister(output)
         finally:
-            for poll in polls:
-                del poll
+            for poll_and_output in polls:
+                del poll_and_output
         return self
 
     def _wait_for_output(self, *polls):
