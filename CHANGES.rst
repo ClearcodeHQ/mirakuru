@@ -4,6 +4,7 @@ CHANGELOG
 Unreleased
 ----------
 
+- [feature] Mirakuru is now fully type hinted
 - [feature] Drop support for python 2
 - [feature] Allow for configuring process outputs to pipe to
 - [feature] OutputExecutor can now check for banner in stderr
