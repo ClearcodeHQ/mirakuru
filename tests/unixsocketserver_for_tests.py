@@ -20,6 +20,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+"""Sample unixsocket server with small modifications."""
 
 import socket
 import sys
@@ -44,34 +45,34 @@ except OSError:
         raise
 
 # Create a UDS socket
-sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+SOCK = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 
 # Bind the socket to the address
 print('starting up on {}'.format(SOCKET_ADDRESS))
-sock.bind(SOCKET_ADDRESS)
+SOCK.bind(SOCKET_ADDRESS)
 sleep(SLEEP)
 
 # Listen for incoming connections
-sock.listen(1)
+SOCK.listen(1)
 
 while True:
     # Wait for a connection
     print('waiting for a connection')
-    connection, client_address = sock.accept()
+    CONNECTION, CLIENT_ADDRESS = SOCK.accept()
     try:
-        print('connection from', client_address)
+        print('connection from', CLIENT_ADDRESS)
 
         # Receive the data in small chunks and retransmit it
         while True:
-            data = connection.recv(16)
-            print('received {!r}'.format(data))
-            if data:
+            RECEIVED_DATA = CONNECTION.recv(16)
+            print('received {!r}'.format(RECEIVED_DATA))
+            if RECEIVED_DATA:
                 print('sending data back to the client')
-                connection.sendall(data)
+                CONNECTION.sendall(RECEIVED_DATA)
             else:
-                print('no data from', client_address)
+                print('no data from', CLIENT_ADDRESS)
                 break
 
     finally:
         # Clean up the connection
-        connection.close()
+        CONNECTION.close()

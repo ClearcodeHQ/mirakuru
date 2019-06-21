@@ -22,7 +22,7 @@ from typing import Union, List, Tuple, Any
 
 from mirakuru import Executor
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class UnixSocketExecutor(Executor):
@@ -33,15 +33,17 @@ class UnixSocketExecutor(Executor):
     Unix socket connections.
     """
 
-    def __init__(self,
-                 command: Union[str, List[str], Tuple[str, ...]],
-                 socket: str,
-                 **kwargs: Any) -> None:
+    def __init__(
+            self,
+            command: Union[str, List[str], Tuple[str, ...]],
+            socket_name: str,
+            **kwargs: Any
+    ) -> None:
         """
         Initialize UnixSocketExecutor executor.
 
         :param (str, list) command: command to be run by the subprocess
-        :param str socket: unix socket path
+        :param str socket_name: unix socket path
         :param bool shell: same as the `subprocess.Popen` shell definition
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
@@ -52,7 +54,7 @@ class UnixSocketExecutor(Executor):
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
         """
         super().__init__(command, **kwargs)
-        self.socket = socket
+        self.socket = socket_name
 
     def pre_start_check(self) -> bool:
         """
@@ -68,7 +70,7 @@ class UnixSocketExecutor(Executor):
             exec_sock.connect(self.socket)
             return True
         except socket.error as msg:
-            log.debug('Can not connect to socket: %s', msg)
+            LOG.debug('Can not connect to socket: %s', msg)
             return False
         finally:
             # close socket manually for sake of PyPy

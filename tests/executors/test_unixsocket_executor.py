@@ -26,7 +26,7 @@ SOCKET_SERVER_CMD = (
 def test_start_and_wait():
     """Test if executor await for process to accept connections."""
     executor = UnixSocketExecutor(
-        SOCKET_SERVER_CMD + " 2", socket=SOCKET_PATH, timeout=5
+        SOCKET_SERVER_CMD + " 2", socket_name=SOCKET_PATH, timeout=5
     )
     with executor:
         assert executor.running() is True
@@ -35,7 +35,7 @@ def test_start_and_wait():
 def test_start_and_timeout():
     """Test if executor will properly times out."""
     executor = UnixSocketExecutor(
-        SOCKET_SERVER_CMD + " 10", socket=SOCKET_PATH, timeout=5
+        SOCKET_SERVER_CMD + " 10", socket_name=SOCKET_PATH, timeout=5
     )
 
     with pytest.raises(TimeoutExpired):
