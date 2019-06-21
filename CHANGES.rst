@@ -12,6 +12,7 @@ Unreleased
   Along with properly configured payload and headers.
 - [feature] Ability to set custom env vars for orchestrated process
 - [feature] Ability to set custom cwd path for orchestrated process
+- [enhancement] psutil is no longer required on cygwin
 
 1.1.0
 ----------
