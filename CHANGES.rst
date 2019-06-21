@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-Unreleased
+2.0.0
 ----------
 
 - [feature] Add UnixSocketExecutor for executors that communicate with Unix Sockets
