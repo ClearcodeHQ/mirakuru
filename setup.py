@@ -26,8 +26,9 @@ here = os.path.dirname(__file__)
 
 requirements = [
     # psutil is used to find processes leaked during termination.
-    # It's installable but not importable on pypy3.
-    'psutil>=4.0.0',
+    # It runs on many platforms but not Cygwin:
+    # <https://github.com/giampaolo/psutil/issues/82>.
+    'psutil>=4.0.0; sys_platform != "cygwin"',
 ]
 
 tests_require = (
