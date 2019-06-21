@@ -384,13 +384,13 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """Return subprocess output."""
         if self.process is not None:
             return self.process.stdout
-        return None
+        return None  # pragma: no cover
 
     def err_output(self) -> Optional[IO[Any]]:
         """Return subprocess stderr."""
         if self.process is not None:
             return self.process.stderr
-        return None
+        return None  # pragma: no cover
 
     def wait_for(
             self: SimpleExecutorType,
@@ -433,7 +433,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         try:
             if self.process:
                 self.kill()
-        except Exception:
+        except Exception:  # pragma: no cover
             print("*" * 80)
             print("Exception while deleting Executor. '"
                   "It is strongly suggested that you use")
@@ -502,7 +502,7 @@ class Executor(SimpleExecutor):
         :raise ProcessExitedWithError: when the main process exits with
             an error
         """
-        if self.process is None:
+        if self.process is None:  # pragma: no cover
             # No process was started.
             return False
         exit_code = self.process.poll()

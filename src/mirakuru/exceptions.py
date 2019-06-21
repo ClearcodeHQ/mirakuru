@@ -2,7 +2,7 @@
 
 from typing import Union, TYPE_CHECKING
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from mirakuru.base import SimpleExecutor  # pylint:disable=cyclic-import
 
 
