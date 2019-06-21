@@ -13,6 +13,7 @@ Unreleased
 - [feature] Ability to set custom env vars for orchestrated process
 - [feature] Ability to set custom cwd path for orchestrated process
 - [enhancement] psutil is no longer required on cygwin
+- [enhancement] Us shlex.quote on command's string for even greater consistency in runs
 
 1.1.0
 ----------
