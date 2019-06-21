@@ -4,6 +4,7 @@ CHANGELOG
 Unreleased
 ----------
 
+- [feature] Add UnixSocketExecutor for executors that communicate with Unix Sockets
 - [feature] Mirakuru is now fully type hinted
 - [feature] Drop support for python 2
 - [feature] Allow for configuring process outputs to pipe to

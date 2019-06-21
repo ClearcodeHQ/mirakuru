@@ -129,7 +129,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         HOST, PORT = sys.argv[1].split(":")
 
-    if len(sys.argv) == 3:
+    if len(sys.argv) >= 3:
         IMMORTAL = sys.argv[2]
 
     if len(sys.argv) == 4:
