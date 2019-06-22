@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+2.0.1
 ----------
 
 - [repackage] - mark python 3.5 as required. Should disallow installing on python 2
