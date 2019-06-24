@@ -21,7 +21,7 @@ SLEEP_300 = 'sleep 300'
 @pytest.mark.parametrize('command', (SLEEP_300, SLEEP_300.split()))
 def test_running_process(command):
     """Start process and shuts it down."""
-    executor = SimpleExecutor(command).start()
+    executor = SimpleExecutor(command)
     executor.start()
     assert executor.running() is True
     executor.stop()
@@ -30,6 +30,15 @@ def test_running_process(command):
     # check proper __str__ and __repr__ rendering:
     assert 'SimpleExecutor' in repr(executor)
     assert SLEEP_300 in str(executor)
+
+
+@pytest.mark.parametrize('command', (SLEEP_300, SLEEP_300.split()))
+def test_command(command):
+    """Check that the command and command parts are equivalent."""
+
+    executor = SimpleExecutor(command)
+    assert executor.command == SLEEP_300
+    assert executor.command_parts == SLEEP_300.split()
 
 
 def test_custom_signal_stop():
