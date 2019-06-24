@@ -7,6 +7,11 @@ unreleased
 - [enhancement] Apply shelx.quote on command parts if command is given as a list
   Should result in similar results when running such command with or without shell.
 
+2.0.1
+----------
+
+- [repackage] - mark python 3.5 as required. Should disallow installing on python 2
+
 2.0.0
 ----------
 
