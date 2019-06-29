@@ -152,7 +152,7 @@ def test_slow_method_server_timed_out(method):
         executor.start()
 
     assert executor.running() is False
-    assert 'timed out after' in str(exc)
+    assert 'timed out after' in str(exc.value)
 
 
 def test_fail_if_other_running():
@@ -174,7 +174,7 @@ def test_fail_if_other_running():
         with pytest.raises(AlreadyRunning) as exc:
             with executor2:
                 pass
-        assert 'seems to be already running' in str(exc)
+        assert 'seems to be already running' in str(exc.value)
 
 
 @patch.object(HTTPExecutor, 'DEFAULT_PORT', PORT)
