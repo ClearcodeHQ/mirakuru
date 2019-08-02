@@ -76,8 +76,8 @@ def test_stopping_brutally():
     by executor with SIGKILL automatically.
     """
     host_port = "127.0.0.1:8000"
-    cmd = '{0} {1} {2} True'.format(sys.executable, TEST_SERVER_PATH, host_port)
-    executor = HTTPExecutor(cmd, 'http://{0!s}/'.format(host_port), timeout=20)
+    cmd = f'{sys.executable} {TEST_SERVER_PATH} {host_port} True'
+    executor = HTTPExecutor(cmd, f'http://{host_port!s}/', timeout=20)
     executor.start()
     assert executor.running() is True
 

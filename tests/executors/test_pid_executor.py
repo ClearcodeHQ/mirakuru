@@ -7,8 +7,8 @@ from mirakuru import PidExecutor
 from mirakuru import TimeoutExpired, AlreadyRunning
 
 
-FILENAME = "pid-test-tmp{0}".format(os.getpid())
-SLEEP = 'bash -c "sleep 1 && touch {0} && sleep 1"'.format(FILENAME)
+FILENAME = f"pid-test-tmp{os.getpid()}"
+SLEEP = f'bash -c "sleep 1 && touch {FILENAME} && sleep 1"'
 
 
 @pytest.yield_fixture(autouse=True)
@@ -34,7 +34,7 @@ def run_around_tests():
 
 def test_start_and_wait():
     """Test if the executor will await for the process to create a file."""
-    process = 'bash -c "sleep 2 && touch {0} && sleep 10"'.format(FILENAME)
+    process = f'bash -c "sleep 2 && touch {FILENAME} && sleep 10"'
     with PidExecutor(process, FILENAME, timeout=5) as executor:
         assert executor.running() is True
 
@@ -70,7 +70,7 @@ def test_timeout_error():
 
 def test_fail_if_other_executor_running():
     """Test raising AlreadyRunning exception when port is blocked."""
-    process = 'bash -c "sleep 2 && touch {0} && sleep 10"'.format(FILENAME)
+    process = f'bash -c "sleep 2 && touch {FILENAME} && sleep 10"'
     executor = PidExecutor(process, FILENAME)
     executor2 = PidExecutor(process, FILENAME)
 

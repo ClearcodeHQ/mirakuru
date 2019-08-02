@@ -13,7 +13,7 @@ from tests import HTTP_SERVER_CMD
 
 PORT = 7986
 
-HTTP_SERVER = '{0} {1}'.format(HTTP_SERVER_CMD, PORT)
+HTTP_SERVER = f'{HTTP_SERVER_CMD} {PORT}'
 
 
 def test_start_and_wait():
