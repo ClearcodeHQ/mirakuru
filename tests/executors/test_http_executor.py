@@ -215,11 +215,11 @@ def test_http_status_codes(accepted_status, expected_timeout):
     :param int|str accepted_status: Executor 'status' value
     :param bool expected_timeout: if Executor raises TimeoutExpired or not
     """
-    kwargs = {
+    kwargs: Dict[str, Any] = {
         'command': HTTP_NORMAL_CMD,
         'url': 'http://{0}:{1}/badpath'.format(HOST, PORT),
         'timeout': 2
-    }  # type: Dict[str, Any]
+    }
     if accepted_status:
         kwargs['status'] = accepted_status
     executor = HTTPExecutor(**kwargs)

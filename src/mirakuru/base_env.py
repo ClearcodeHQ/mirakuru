@@ -78,7 +78,7 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
              environment variable equal certain value
     :rtype: set
     """
-    pids = set()  # type: Set[int]
+    pids: Set[int] = set()
     ps_xe = ''
     try:
         cmd = 'ps', 'xe', '-o', 'pid,cmd'

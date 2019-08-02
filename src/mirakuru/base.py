@@ -151,8 +151,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._stdout = stdout
         self._stderr = stderr
 
-        self._endtime = None  # type: Optional[float]
-        self.process = None  # type: Optional[subprocess.Popen]
+        self._endtime: Optional[float] = None
+        self.process: Optional[subprocess.Popen] = None
         """A :class:`subprocess.Popen` instance once process is started."""
 
         self._uuid = '{0}:{1}'.format(os.getpid(), uuid.uuid4())
@@ -196,7 +196,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         :return:
         """
-        kwargs = {}  # type: Dict[str, Any]
+        kwargs: Dict[str, Any] = {}
 
         if self._stdin:
             kwargs['stdin'] = self._stdin
@@ -239,8 +239,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         :rtype: SimpleExecutor
         """
         if self.process is None:
-            command = \
-                self.command  # type: Union[str, List[str], Tuple[str, ...]]
+            command: Union[str, List[str], Tuple[str, ...]] = self.command
             if not self._shell:
                 command = self.command_parts
 

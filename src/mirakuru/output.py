@@ -71,7 +71,7 @@ class OutputExecutor(SimpleExecutor):
         """
         super(OutputExecutor, self).start()
 
-        polls = []  # type: List[Tuple[select.poll, IO[Any]]]
+        polls: List[Tuple[select.poll, IO[Any]]] = []
 
         for output_handle, output_method in (
                 (self._stdout, self.output),
