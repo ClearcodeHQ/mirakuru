@@ -4,9 +4,9 @@ import socket
 from functools import partial
 from http.client import HTTPConnection, OK
 from typing import Dict, Any
+from unittest.mock import patch
 
 import pytest
-from mock import patch
 
 from mirakuru import HTTPExecutor, TCPExecutor
 from mirakuru import TimeoutExpired, AlreadyRunning

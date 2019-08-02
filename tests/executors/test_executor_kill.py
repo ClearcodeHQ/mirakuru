@@ -7,7 +7,7 @@ import sys
 import errno
 
 import os
-from mock import patch
+from unittest.mock import patch
 import pytest
 
 from mirakuru import SimpleExecutor, HTTPExecutor

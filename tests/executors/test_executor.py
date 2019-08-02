@@ -5,9 +5,9 @@ import shlex
 import signal
 from subprocess import check_output
 import uuid
+from unittest import mock
 
 import pytest
-import mock
 
 from mirakuru import Executor
 from mirakuru.base import SimpleExecutor
