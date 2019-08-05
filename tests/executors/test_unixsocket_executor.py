@@ -14,13 +14,7 @@ from tests import TEST_SOCKET_SERVER_PATH
 
 SOCKET_PATH = '/tmp/mirakuru.sock'
 
-SOCKET_SERVER_CMD = (
-    "{python} {srv} {socket_path}"
-).format(
-    python=sys.executable,
-    srv=TEST_SOCKET_SERVER_PATH,
-    socket_path=SOCKET_PATH,
-)
+SOCKET_SERVER_CMD = f"{sys.executable} {TEST_SOCKET_SERVER_PATH} {SOCKET_PATH}"
 
 
 def test_start_and_wait():

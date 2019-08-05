@@ -141,5 +141,5 @@ if __name__ == "__main__":
     server = HTTPServer(  # pylint: disable=invalid-name
         (HOST, int(PORT)), HANDLERS[METHOD]
     )
-    print("Starting slow server on {0}:{1}...".format(HOST, PORT))
+    print(f"Starting slow server on {HOST}:{PORT}...")
     server.serve_forever()

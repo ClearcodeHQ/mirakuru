@@ -151,11 +151,11 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._stdout = stdout
         self._stderr = stderr
 
-        self._endtime = None  # type: Optional[float]
-        self.process = None  # type: Optional[subprocess.Popen]
+        self._endtime: Optional[float] = None
+        self.process: Optional[subprocess.Popen] = None
         """A :class:`subprocess.Popen` instance once process is started."""
 
-        self._uuid = '{0}:{1}'.format(os.getpid(), uuid.uuid4())
+        self._uuid = f'{os.getpid()}:{uuid.uuid4()}'
 
     def __enter__(self: SimpleExecutorType) -> SimpleExecutorType:
         """
@@ -196,7 +196,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         :return:
         """
-        kwargs = {}  # type: Dict[str, Any]
+        kwargs: Dict[str, Any] = {}
 
         if self._stdin:
             kwargs['stdin'] = self._stdin
@@ -239,8 +239,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         :rtype: SimpleExecutor
         """
         if self.process is None:
-            command = \
-                self.command  # type: Union[str, List[str], Tuple[str, ...]]
+            command: Union[str, List[str], Tuple[str, ...]] = self.command
             if not self._shell:
                 command = self.command_parts
 
@@ -446,20 +445,15 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         command = self.command
         if len(command) > 10:
             command = command[:10] + '...'
-        return '<{module}.{executor}: "{command}" {id}>'.format(
-            module=self.__class__.__module__,
-            executor=self.__class__.__name__,
-            command=command,
-            id=hex(id(self))
-        )
+        module = self.__class__.__module__
+        executor = self.__class__.__name__
+        return f'<{module}.{executor}: "{command}" {hex(id(self))}>'
 
     def __str__(self) -> str:
         """Return readable executor representation."""
-        return '<{module}.{executor}: "{command}">'.format(
-            module=self.__class__.__module__,
-            executor=self.__class__.__name__,
-            command=self.command
-        )
+        module = self.__class__.__module__
+        executor = self.__class__.__name__
+        return f'<{module}.{executor}: "{self.command}" {hex(id(self))}>'
 
 
 class Executor(SimpleExecutor):

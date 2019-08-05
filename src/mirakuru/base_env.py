@@ -78,7 +78,7 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
              environment variable equal certain value
     :rtype: set
     """
-    pids = set()  # type: Set[int]
+    pids: Set[int] = set()
     ps_xe = ''
     try:
         cmd = 'ps', 'xe', '-o', 'pid,cmd'
@@ -93,7 +93,7 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
     except subprocess.CalledProcessError:
         log.error("`$ ps xe -o pid,cmd` command exited with non-zero code.")
 
-    env = '{0}={1}'.format(env_name, env_value)
+    env = f'{env_name}={env_value}'
 
     for line in ps_xe:
         line = str(line)

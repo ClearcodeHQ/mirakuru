@@ -48,7 +48,7 @@ except OSError:
 SOCK = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 
 # Bind the socket to the address
-print('starting up on {}'.format(SOCKET_ADDRESS))
+print(f'starting up on {SOCKET_ADDRESS}')
 SOCK.bind(SOCKET_ADDRESS)
 sleep(SLEEP)
 
@@ -65,7 +65,7 @@ while True:
         # Receive the data in small chunks and retransmit it
         while True:
             RECEIVED_DATA = CONNECTION.recv(16)
-            print('received {!r}'.format(RECEIVED_DATA))
+            print(f'received {RECEIVED_DATA!r}')
             if RECEIVED_DATA:
                 print('sending data back to the client')
                 CONNECTION.sendall(RECEIVED_DATA)

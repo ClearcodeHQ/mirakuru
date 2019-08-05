@@ -12,7 +12,7 @@ def block_signals():
     """
     def sighandler(signum, _):
         """Signal handling function."""
-        print('Tried to kill with signal {0}.'.format(signum))
+        print(f'Tried to kill with signal {signum}.')
 
     for sgn in [x for x in dir(signal) if x.startswith("SIG")]:
         try:

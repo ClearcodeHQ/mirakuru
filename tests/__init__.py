@@ -15,9 +15,7 @@ TEST_SERVER_PATH = path.join(TEST_PATH, "server_for_tests.py")
 TEST_SOCKET_SERVER_PATH = path.join(TEST_PATH, 'unixsocketserver_for_tests.py')
 SAMPLE_DAEMON_PATH = path.join(TEST_PATH, "sample_daemon.py")
 
-HTTP_SERVER_CMD = (
-    "{python} -m http.server"
-).format(python=sys.executable)
+HTTP_SERVER_CMD = f"{sys.executable} -m http.server"
 
 
 def ps_aux():

@@ -34,7 +34,6 @@ requirements = [
 tests_require = (
     'pytest==5.0.1',  # tests framework used
     'pytest-cov==2.7.1',  # coverage reports to verify tests quality
-    'mock==3.0.5',  # tests mocking tool
     'python-daemon==2.2.3',  # used in test for easy creation of daemons
 )
 extras_require = {
@@ -64,7 +63,7 @@ setup(
     author='Clearcode - The A Room',
     author_email='thearoom@clearcode.cc',
     license='LGPL',
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -75,7 +74,6 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3 :: Only',

@@ -5,9 +5,9 @@ import shlex
 import signal
 from subprocess import check_output
 import uuid
+from unittest import mock
 
 import pytest
-import mock
 
 from mirakuru import Executor
 from mirakuru.base import SimpleExecutor
@@ -148,7 +148,7 @@ def test_forgotten_stop():
     # get substituted with 'sleep 300' and the marked commandline would be
     # overwritten.
     # Injecting some flow control (`&&`) forces bash to fork properly.
-    marked_command = 'sleep 300 && true #{0!s}'.format(mark)
+    marked_command = f'sleep 300 && true #{mark!s}'
     executor = SimpleExecutor(marked_command, shell=True)
     executor.start()
     assert executor.running() is True
@@ -168,7 +168,7 @@ def test_executor_raises_if_process_exits_with_error():
     """
     error_code = 12
     failing_executor = Executor(
-        ['bash', '-c', 'exit {0!s}'.format(error_code)],
+        ['bash', '-c', f'exit {error_code!s}'],
         timeout=5
     )
     failing_executor.pre_start_check = mock.Mock(  # type: ignore
@@ -181,7 +181,7 @@ def test_executor_raises_if_process_exits_with_error():
         failing_executor.start()
 
     assert exc.value.exit_code == 12
-    error_msg = 'exited with a non-zero code: {0!s}'.format(error_code)
+    error_msg = f'exited with a non-zero code: {error_code!s}'
     assert error_msg in str(exc.value)
 
     # Pre-start check should have been called - after-start check might or
@@ -228,14 +228,15 @@ def test_executor_methods_returning_self():
 
 def test_mirakuru_cleanup():
     """Test if cleanup_subprocesses is fired correctly on python exit."""
-    cmd = '''
+    cmd = f'''
         python -c 'from mirakuru import SimpleExecutor;
                    from time import sleep;
                    import gc;
                    gc.disable();
-                   ex = SimpleExecutor(("python", "{0}")).start();
+                   ex = SimpleExecutor(
+                       ("python", "{SAMPLE_DAEMON_PATH}")).start();
                    sleep(1);
                   '
-    '''.format(SAMPLE_DAEMON_PATH)
+    '''
     check_output(shlex.split(cmd.replace('\n', '')))
     assert SAMPLE_DAEMON_PATH not in ps_aux()
