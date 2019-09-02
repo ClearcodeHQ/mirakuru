@@ -24,7 +24,7 @@ from typing import Union, List, Any, TypeVar, Tuple, IO
 from mirakuru.base import SimpleExecutor
 
 
-IS_DARWIN = platform.system()
+IS_DARWIN = platform.system() == 'Darwin'
 
 
 OutputExecutorType = TypeVar("OutputExecutorType", bound="OutputExecutor")
