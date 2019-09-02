@@ -16,12 +16,15 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """Executor that awaits for appearance of a predefined banner in output."""
-
+import platform
 import re
 import select
 from typing import Union, List, Any, TypeVar, Tuple, IO
 
 from mirakuru.base import SimpleExecutor
+
+
+IS_DARWIN = platform.system()
 
 
 OutputExecutorType = TypeVar("OutputExecutorType", bound="OutputExecutor")
@@ -71,38 +74,59 @@ class OutputExecutor(SimpleExecutor):
         """
         super(OutputExecutor, self).start()
 
-        polls: List[Tuple[select.poll, IO[Any]]] = []
+        if not IS_DARWIN:
+            polls: List[Tuple[select.poll, IO[Any]]] = []
+            for output_handle, output_method in (
+                    (self._stdout, self.output),
+                    (self._stderr, self.err_output)
+            ):
+                if output_handle is not None:
+                    # get a polling object
+                    std_poll = select.poll()
 
-        for output_handle, output_method in (
-                (self._stdout, self.output),
-                (self._stderr, self.err_output)
-        ):
-            if output_handle is not None:
-                # get a polling object
-                std_poll = select.poll()
+                    output_file = output_method()
+                    if output_file is None:
+                        raise ValueError(
+                            "The process is started but the output file is None")
+                    # register a file descriptor
+                    # POLLIN because we will wait for data to read
+                    std_poll.register(output_file, select.POLLIN)
+                    polls.append((std_poll, output_file))
 
-                output_file = output_method()
-                if output_file is None:
-                    raise ValueError(
-                        "The process is started but the output file is None")
-                # register a file descriptor
-                # POLLIN because we will wait for data to read
-                std_poll.register(output_file, select.POLLIN)
-                polls.append((std_poll, output_file))
+            try:
+                def await_for_output() -> bool:
+                    return self._wait_for_output(*polls)
 
-        try:
+                self.wait_for(await_for_output)
+
+                for poll, output in polls:
+                    # unregister the file descriptor and delete the polling object
+                    poll.unregister(output)
+            finally:
+                for poll_and_output in polls:
+                    del poll_and_output
+        else:
+            outputs = []
+            for output_handle, output_method in (
+                    (self._stdout, self.output),
+                    (self._stderr, self.err_output)
+            ):
+                if output_handle is not None:
+                    outputs.append(output_method())
+
             def await_for_output() -> bool:
-                return self._wait_for_output(*polls)
+                self._wait_for_darwin_output(outputs)
 
-            self.wait_for(await_for_output)
-
-            for poll, output in polls:
-                # unregister the file descriptor and delete the polling object
-                poll.unregister(output)
-        finally:
-            for poll_and_output in polls:
-                del poll_and_output
         return self
+
+    def _wait_for_darwin_output(self, *fds: Tuple[IO[Any]]) -> bool:
+        """Select implementation to be used on MacOSX"""
+        rlist, _, _ = select.select(fds, [], [], timeout=0)
+        for output in rlist:
+            line = output.readline()
+            if self._banner.match(line):
+                return True
+        return False
 
     def _wait_for_output(self, *polls: Tuple[select.poll, IO[Any]]) -> bool:
         """
