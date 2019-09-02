@@ -19,7 +19,7 @@
 import platform
 import re
 import select
-from typing import Union, List, Any, TypeVar, Tuple, IO
+from typing import Union, List, Any, TypeVar, Tuple, IO, Optional
 
 from mirakuru.base import SimpleExecutor
 
@@ -87,7 +87,9 @@ class OutputExecutor(SimpleExecutor):
                     output_file = output_method()
                     if output_file is None:
                         raise ValueError(
-                            "The process is started but the output file is None")
+                            "The process is started but "
+                            "the output file is None"
+                        )
                     # register a file descriptor
                     # POLLIN because we will wait for data to read
                     std_poll.register(output_file, select.POLLIN)
@@ -100,7 +102,8 @@ class OutputExecutor(SimpleExecutor):
                 self.wait_for(await_for_output)
 
                 for poll, output in polls:
-                    # unregister the file descriptor and delete the polling object
+                    # unregister the file descriptor
+                    # and delete the polling object
                     poll.unregister(output)
             finally:
                 for poll_and_output in polls:
@@ -119,7 +122,7 @@ class OutputExecutor(SimpleExecutor):
 
         return self
 
-    def _wait_for_darwin_output(self, *fds: Tuple[IO[Any]]) -> bool:
+    def _wait_for_darwin_output(self, *fds: List[Optional[IO[Any]]]) -> bool:
         """Select implementation to be used on MacOSX"""
         rlist, _, _ = select.select(fds, [], [], timeout=0)
         for output in rlist:
