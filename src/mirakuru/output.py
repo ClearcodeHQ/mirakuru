@@ -118,7 +118,7 @@ class OutputExecutor(SimpleExecutor):
                     outputs.append(output_method())
 
             def await_for_output() -> bool:
-                return self._wait_for_darwin_output(outputs)
+                return self._wait_for_darwin_output(*outputs)
 
             self.wait_for(await_for_output)
 
