@@ -4,6 +4,9 @@ CHANGELOG
 unreleased
 ----------
 
+- [ehnancement] For output executor on MacOs fallback to `select.select` for OuputExecutor.
+  Increases compatibility with MacOS where presence of `select.poll` depends
+  on the compiler used.
 - [enhancement] Apply shelx.quote on command parts if command is given as a list
   Should result in similar results when running such command with or without shell.
 
