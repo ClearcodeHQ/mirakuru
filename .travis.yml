@@ -10,13 +10,14 @@ python:
 branches:
   except:
   - requires-io-master
+  - /^dependabot.*$/
 install:
   - pip install "setuptools>=21"
   - pip install "pip>=9"
   - pip install -r requirements-test.txt
-  - pip install -e .[tests] coveralls wheel
+  - pip install coveralls
 script:
-  - pytest -vvv --capture=no --showlocals --cov src/mirakuru tests/
+  - pytest
 after_success:
   - coveralls
 jobs:
@@ -25,7 +26,6 @@ jobs:
       python: 3.7
       install:
         - pip install -r requirements-lint.txt
-        - pip install .[tests] coveralls wheel
       script:
         - pycodestyle
         - pydocstyle
@@ -41,7 +41,7 @@ jobs:
         - virtualenv venv -p python3
         - source venv/bin/activate
       script:
-        - pytest -vvv --capture=no --showlocals --cov mirakuru tests/
+        - pytest
     - stage: deploy
       python: 3.7
       if: tag IS present

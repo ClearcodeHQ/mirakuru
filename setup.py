@@ -32,9 +32,9 @@ requirements = [
 ]
 
 tests_require = (
-    'pytest==5.0.1',  # tests framework used
-    'pytest-cov==2.7.1',  # coverage reports to verify tests quality
-    'python-daemon==2.2.3',  # used in test for easy creation of daemons
+    'pytest',  # tests framework used
+    'pytest-cov',  # coverage reports to verify tests quality
+    'python-daemon',  # used in test for easy creation of daemons
 )
 extras_require = {
     'docs': ['sphinx'],
