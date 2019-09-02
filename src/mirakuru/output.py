@@ -126,7 +126,7 @@ class OutputExecutor(SimpleExecutor):
 
     def _wait_for_darwin_output(self, *fds: List[Optional[IO[Any]]]) -> bool:
         """Select implementation to be used on MacOSX"""
-        rlist, _, _ = select.select(fds, [], [], timeout=0)
+        rlist, _, _ = select.select(fds, [], [], 0)
         for output in rlist:
             line = output.readline()
             if self._banner.match(line):
