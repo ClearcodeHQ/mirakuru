@@ -4,6 +4,8 @@ CHANGELOG
 unreleased
 ----------
 
+- [feature] Drop support for python 3.5. Rely on typing syntax and fstrings that
+  is available since python 3.6 only
 - [ehnancement] For output executor on MacOs fallback to `select.select` for OutputExecutor.
   Increases compatibility with MacOS where presence of `select.poll` depends
   on the compiler used.
