@@ -39,10 +39,6 @@ Package status
     :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v2.1.0
     :alt: Coverage Status
 
-.. image:: https://requires.io/github/ClearcodeHQ/mirakuru/requirements.svg?tag=v2.1.0
-     :target: https://requires.io/github/ClearcodeHQ/mirakuru/requirements/?tag=v2.1.0
-     :alt: Requirements Status
-
 
 About
 -----
