@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+2.1.0
 ----------
 
 - [feature] Drop support for python 3.5. Rely on typing syntax and fstrings that
