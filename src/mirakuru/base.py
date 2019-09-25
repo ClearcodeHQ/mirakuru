@@ -63,13 +63,14 @@ ExecutorType = TypeVar("ExecutorType", bound="Executor")
 @atexit.register
 def cleanup_subprocesses() -> None:
     """On python exit: find possibly running subprocesses and kill them."""
-    # pylint: disable=redefined-outer-name, reimported
+    # pylint: disable=redefined-outer-name, reimported, import-outside-toplevel
     # atexit functions tends to loose global imports sometimes so reimport
     # everything what is needed again here:
     import os
     import errno
     from mirakuru.base_env import processes_with_env
     from mirakuru.compat import SIGKILL
+    # pylint: enable=redefined-outer-name, reimported, import-outside-toplevel
 
     pids = processes_with_env(ENV_UUID, str(os.getpid()))
     for pid in pids:
