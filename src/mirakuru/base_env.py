@@ -21,7 +21,7 @@ import errno
 import logging
 import re
 import subprocess
-from typing import Set
+from typing import Set, List
 
 try:
     import psutil
@@ -79,7 +79,7 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
     :rtype: set
     """
     pids: Set[int] = set()
-    ps_xe = ''
+    ps_xe: List[bytes] = []
     try:
         cmd = 'ps', 'xe', '-o', 'pid,cmd'
         ps_xe = subprocess.check_output(cmd).splitlines()
@@ -96,9 +96,9 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
     env = f'{env_name}={env_value}'
 
     for line in ps_xe:
-        line = str(line)
-        if env in line:
-            match = PS_XE_PID_MATCH.match(line)
+        sline = str(line)
+        if env in sline:
+            match = PS_XE_PID_MATCH.match(sline)
             # This always matches: all lines other than the header (not
             # containing our environment variable) have a PID required by the
             # reggex. Still check it for mypy.
