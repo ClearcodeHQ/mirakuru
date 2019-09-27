@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+2.0.2
 ----------
 
 - [enhancement] Change typing definition to allow mirakuru run on
