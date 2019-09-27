@@ -167,7 +167,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         return self.start()
 
     def __exit__(self,
-                 exc_type: Optional[Type[BaseException]],
+                 exc_type: Type[BaseException],
                  exc_value: Optional[BaseException],
                  traceback: Optional[TracebackType]) -> None:
         """Exit context manager stopping the subprocess."""

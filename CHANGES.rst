@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [enhancement] Change typing definition to allow mirakuru run on
+  python 3.5.0 to 3.5.2
+
 2.0.1
 ----------
 
