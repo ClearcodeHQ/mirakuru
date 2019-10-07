@@ -1,6 +1,6 @@
 # test runs requirements (versions we'll be testing against) - automatically updated
 psutil==5.6.3
-pytest==5.2.0  # tests framework used
+pytest==5.2.1  # tests framework used
 pytest-cov==2.7.1  # coverage reports to verify tests quality
 coverage==4.5.4 # pytest-cov
 python-daemon==2.2.3  # used in test for easy creation of daemons
