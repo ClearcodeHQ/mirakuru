@@ -74,6 +74,9 @@ class HTTPExecutor(TCPExecutor):
         It'll be used to check process status on.
         """
 
+        if not self.url.hostname:
+            raise ValueError("Url provided does not contain hostname")
+
         port = self.url.port
         if port is None:
             port = self.DEFAULT_PORT
