@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [ehnancement] adjust typing handling in HTTPExecutor
+
 2.1.0
 ----------
 
