@@ -8,7 +8,6 @@ import errno
 
 import os
 from unittest.mock import patch
-import pytest
 
 from mirakuru import SimpleExecutor, HTTPExecutor
 from mirakuru.compat import SIGKILL
@@ -50,11 +49,6 @@ def test_already_closed():
     assert not executor.process
 
 
-@pytest.mark.xfail(
-    condition=sys.version_info >= (3, 8),
-    reason='python-daemon 2.2.3 fails with '
-    '<https://pagure.io/python-daemon/issue/34>; '
-    'unxfail when a newer version is used')
 def test_daemons_killing():
     """
     Test if all subprocesses of SimpleExecutor can be killed.
