@@ -1,5 +1,5 @@
 # test runs requirements (versions we'll be testing against) - automatically updated
-psutil==5.6.5
+psutil==5.6.6
 pytest==5.3.0  # tests framework used
 pytest-cov==2.8.1  # coverage reports to verify tests quality
 coverage==4.5.4 # pytest-cov
