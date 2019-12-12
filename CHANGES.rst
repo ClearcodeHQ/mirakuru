@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+2.1.1
 ----------
 
 - [bug] Always close connection for HTTPExecutor after_start_check

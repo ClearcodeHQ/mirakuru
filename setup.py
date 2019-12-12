@@ -53,7 +53,7 @@ def read(fname):
 
 setup(
     name='mirakuru',
-    version='2.1.0',
+    version='2.1.1',
     description='Process executor for tests.',
     long_description=(
         read('README.rst') + '\n\n' + read('CHANGES.rst')
