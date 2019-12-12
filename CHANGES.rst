@@ -5,6 +5,8 @@ unreleased
 ----------
 
 - [bug] Always close connection for HTTPExecutor after_start_check
+- [enhancement] Log debug message if execption occured during
+  HTTPExecutor start check
 - [ehnancement] adjust typing handling in HTTPExecutor
 
 2.1.0

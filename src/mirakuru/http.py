@@ -19,11 +19,14 @@
 
 import re
 import socket
+from logging import getLogger
 from urllib.parse import urlparse, urlencode
 from http.client import HTTPConnection, HTTPException
 from typing import Union, List, Tuple, Optional, Dict, Any
 
 from mirakuru.tcp import TCPExecutor
+
+LOG = getLogger(__name__)
 
 
 class HTTPExecutor(TCPExecutor):
@@ -92,7 +95,7 @@ class HTTPExecutor(TCPExecutor):
         )
 
     def after_start_check(self) -> bool:
-        """Check if defined URL returns expected status to a HEAD request."""
+        """Check if defined URL returns expected status to a check request."""
         conn = HTTPConnection(self.host, self.port)
         try:
             body = urlencode(self.payload) if self.payload else None
@@ -112,5 +115,9 @@ class HTTPExecutor(TCPExecutor):
                 return True
             return False
 
-        except (HTTPException, socket.timeout, socket.error):
+        except (HTTPException, socket.timeout, socket.error) as e:
+            LOG.debug(
+                "Encounter %s while trying to check if service has started.",
+                e
+            )
             return False
