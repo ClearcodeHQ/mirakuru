@@ -4,6 +4,7 @@ CHANGELOG
 unreleased
 ----------
 
+- [bug] Always close connection for HTTPExecutor after_start_check
 - [ehnancement] adjust typing handling in HTTPExecutor
 
 2.1.0

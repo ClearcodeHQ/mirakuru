@@ -93,8 +93,8 @@ class HTTPExecutor(TCPExecutor):
 
     def after_start_check(self) -> bool:
         """Check if defined URL returns expected status to a HEAD request."""
+        conn = HTTPConnection(self.host, self.port)
         try:
-            conn = HTTPConnection(self.host, self.port)
             body = urlencode(self.payload) if self.payload else None
             headers = self.headers if self.headers else {}
             conn.request(
@@ -103,10 +103,12 @@ class HTTPExecutor(TCPExecutor):
                 body,
                 headers,
             )
-            status = str(conn.getresponse().status)
+            try:
+                status = str(conn.getresponse().status)
+            finally:
+                conn.close()
 
             if status == self.status or self.status_re.match(status):
-                conn.close()
                 return True
             return False
 
