@@ -115,9 +115,9 @@ class HTTPExecutor(TCPExecutor):
                 return True
             return False
 
-        except (HTTPException, socket.timeout, socket.error) as e:
+        except (HTTPException, socket.timeout, socket.error) as ex:
             LOG.debug(
                 "Encounter %s while trying to check if service has started.",
-                e
+                ex
             )
             return False
