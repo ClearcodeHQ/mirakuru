@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+2.1.2
+----------
+
+- [bugfix][macos] Fixed typing issue on macOS
+
 2.1.1
 ----------
 
