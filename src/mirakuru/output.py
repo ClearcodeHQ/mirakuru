@@ -133,7 +133,7 @@ class OutputExecutor(SimpleExecutor):
                 return True
         return False
 
-    def _wait_for_output(self, *polls: Tuple[select.poll, IO[Any]]) -> bool:
+    def _wait_for_output(self, *polls: Tuple['select.poll', IO[Any]]) -> bool:
         """
         Check if output matches banner.
 
