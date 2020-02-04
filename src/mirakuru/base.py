@@ -336,8 +336,21 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             # at this moment, process got killed,
             pass
 
+        if self.process is None:
+            # the process has already been force killed and cleaned up by the
+            # `wait_for` above.
+            return self
         self._kill_all_kids(sig)
+        exit_code = self.process.wait()
         self._clear_process()
+
+        # Did the process shut down cleanly? A an exit code of `-sig` means
+        # that it has terminated due to signal `sig`, which is intended. So
+        # don't treat that as an error.
+        # pylint: disable=invalid-unary-operand-type
+        if exit_code and exit_code != -sig:
+            raise ProcessExitedWithError(self, exit_code)
+
         return self
 
     @contextmanager
