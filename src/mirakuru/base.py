@@ -38,6 +38,7 @@ from mirakuru.base_env import processes_with_env
 from mirakuru.exceptions import (
     AlreadyRunning,
     ProcessExitedWithError,
+    ProcessFinishedWithError,
     TimeoutExpired,
 )
 from mirakuru.compat import SIGKILL
@@ -349,7 +350,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         # don't treat that as an error.
         # pylint: disable=invalid-unary-operand-type
         if exit_code and exit_code != -sig:
-            raise ProcessExitedWithError(self, exit_code)
+            raise ProcessFinishedWithError(self, exit_code)
 
         return self
 

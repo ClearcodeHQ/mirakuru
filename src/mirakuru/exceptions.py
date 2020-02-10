@@ -101,3 +101,12 @@ class ProcessExitedWithError(ExecutorError):
         """
         return (f"The process invoked by the {self.executor} executor has "
                 f"exited with a non-zero code: {self.exit_code}.")
+
+
+class ProcessFinishedWithError(ProcessExitedWithError):
+    """
+    Raised when the process invoked by the executor fails when stopping.
+
+    When a process is stopped, it should shut down cleanly and return zero as
+    exit code. When is returns a non-zero exit code, this exception is raised.
+    """

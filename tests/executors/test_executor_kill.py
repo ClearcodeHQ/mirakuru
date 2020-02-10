@@ -13,7 +13,7 @@ import pytest
 
 from mirakuru import SimpleExecutor, HTTPExecutor
 from mirakuru.compat import SIGKILL
-from mirakuru.exceptions import ProcessExitedWithError
+from mirakuru.exceptions import ProcessFinishedWithError
 
 from tests import SAMPLE_DAEMON_PATH, ps_aux, TEST_SERVER_PATH
 
@@ -40,7 +40,7 @@ def test_kill_custom_signal_kill():
 
 def test_already_closed():
     """Check that the executor cleans after itself after it exited earlier."""
-    with pytest.raises(ProcessExitedWithError) as excinfo:
+    with pytest.raises(ProcessFinishedWithError) as excinfo:
         with SimpleExecutor('python') as executor:
             assert executor.running()
             os.killpg(executor.process.pid, SIGKILL)
