@@ -9,8 +9,11 @@ import errno
 import os
 from unittest.mock import patch
 
+import pytest
+
 from mirakuru import SimpleExecutor, HTTPExecutor
 from mirakuru.compat import SIGKILL
+from mirakuru.exceptions import ProcessFinishedWithError
 
 from tests import SAMPLE_DAEMON_PATH, ps_aux, TEST_SERVER_PATH
 
@@ -37,15 +40,17 @@ def test_kill_custom_signal_kill():
 
 def test_already_closed():
     """Check that the executor cleans after itself after it exited earlier."""
-    with SimpleExecutor('python') as executor:
-        assert executor.running()
-        os.killpg(executor.process.pid, SIGKILL)
+    with pytest.raises(ProcessFinishedWithError) as excinfo:
+        with SimpleExecutor('python') as executor:
+            assert executor.running()
+            os.killpg(executor.process.pid, SIGKILL)
 
-        def process_stopped():
-            """Return True only only when self.process is not running."""
-            return executor.running() is False
-        executor.wait_for(process_stopped)
-        assert executor.process
+            def process_stopped():
+                """Return True only only when self.process is not running."""
+                return executor.running() is False
+            executor.wait_for(process_stopped)
+            assert executor.process
+    assert excinfo.value.exit_code == -9
     assert not executor.process
 
 
