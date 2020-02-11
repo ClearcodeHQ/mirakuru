@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [enhancement] If process is being closed and the shutdown won't be clean (won't return exit code 0)
+  mirakuru will now rise ProcessFinishedWithError exception with exit_code
+
 2.1.2
 ----------
 
