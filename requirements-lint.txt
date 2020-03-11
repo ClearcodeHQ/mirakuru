@@ -4,5 +4,5 @@ pydocstyle==5.0.2
 pylint==2.4.4
 pygments
 restructuredtext-lint==1.3.0
-mypy==0.761
+mypy==0.770
 -r requirements-test.txt
