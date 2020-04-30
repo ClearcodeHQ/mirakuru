@@ -296,13 +296,15 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             log.debug("Killed process %d.", pid)
         return pids
 
-    def stop(self: SimpleExecutorType, sig: int = None) -> SimpleExecutorType:
+    def stop(self: SimpleExecutorType, sig: int = None, exp_sig: int = None) -> SimpleExecutorType:
         """
         Stop process running.
 
         Wait 10 seconds for the process to end, then just kill it.
 
         :param int sig: signal used to stop process run by executor.
+            None for default.
+        :param int exp_sig: expected exit code.
             None for default.
         :returns: itself
         :rtype: SimpleExecutor
@@ -349,7 +351,11 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         # that it has terminated due to signal `sig`, which is intended. So
         # don't treat that as an error.
         # pylint: disable=invalid-unary-operand-type
-        if exit_code and exit_code != -sig:
+        expected_exit_code = -sig
+        if exp_sig is not None:
+            expected_exit_code = exp_sig
+
+        if exit_code and exit_code != expected_exit_code:
             raise ProcessFinishedWithError(self, exit_code)
 
         return self
