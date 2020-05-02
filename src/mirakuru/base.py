@@ -353,7 +353,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         # pylint: disable=invalid-unary-operand-type
         expected_exit_code = -sig
         if exp_sig is not None:
-            expected_exit_code = exp_sig
+            expected_exit_code = -exp_sig
 
         if exit_code and exit_code != expected_exit_code:
             raise ProcessFinishedWithError(self, exit_code)
