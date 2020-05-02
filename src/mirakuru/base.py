@@ -45,7 +45,6 @@ from mirakuru.compat import SIGKILL
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-
 ENV_UUID = 'mirakuru_uuid'
 """
 Name of the environment variable used by mirakuru to mark its subprocesses.
@@ -296,7 +295,11 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             log.debug("Killed process %d.", pid)
         return pids
 
-    def stop(self: SimpleExecutorType, sig: int = None, exp_sig: int = None) -> SimpleExecutorType:
+    def stop(
+            self: SimpleExecutorType,
+            sig: int = None,
+            exp_sig: int = None
+    ) -> SimpleExecutorType:
         """
         Stop process running.
 
