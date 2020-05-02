@@ -63,8 +63,8 @@ def test_stop_custom_exit_signal_stop():
     """Start process and shuts it down expecting process to finish with custom signal."""
     executor = SimpleExecutor('false && sleep 300', shell=True)
     executor.start()
-    assert executor.running() is True
-    executor.stop(sig=signal.SIGQUIT, exp_sig=1)
+    # false exits instant, so there should not be a process to stop (exit 3)
+    executor.stop(sig=signal.SIGQUIT, exp_sig=3)
     assert executor.running() is False
 
 
