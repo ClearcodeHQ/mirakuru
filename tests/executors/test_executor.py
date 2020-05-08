@@ -61,11 +61,18 @@ def test_stop_custom_signal_stop():
 
 def test_stop_custom_exit_signal_stop():
     """Start process and expect it to finish with custom signal."""
-    executor = SimpleExecutor('false && sleep 300', shell=True)
+    executor = SimpleExecutor('false', shell=True)
     executor.start()
-    # false exits instant, so there should not be a process to stop (exit 3)
+    # false exits instant, so there should not be a process to stop
     executor.stop(sig=signal.SIGQUIT, exp_sig=3)
     assert executor.running() is False
+
+
+def test_stop_custom_exit_signal_context():
+    """Start process and expect custom exit signal in context manager."""
+    with SimpleExecutor('false', exp_sig=3, shell=True) as executor:
+        executor.stop(sig=signal.SIGQUIT)
+        assert executor.running() is False
 
 
 def test_running_context():

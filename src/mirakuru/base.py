@@ -93,6 +93,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             sleep: float = 0.1,
             sig_stop: int = signal.SIGTERM,
             sig_kill: int = SIGKILL,
+            exp_sig: int = None,
             envvars: Optional[Dict[str, str]] = None,
             stdin: Union[None, int, IO[Any]] = subprocess.PIPE,
             stdout: Union[None, int, IO[Any]] = subprocess.PIPE,
@@ -112,6 +113,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             default is `signal.SIGTERM`
         :param int sig_kill: signal used to kill process run by the executor.
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
+        :param int exp_sig: expected exit code.
+            default is None as it will fall back to the stop signal
         :param dict envvars: Additional environment variables
         :param int stdin: file descriptor for stdin
         :param int stdout: file descriptor for stdout
@@ -146,6 +149,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._sleep = sleep
         self._sig_stop = sig_stop
         self._sig_kill = sig_kill
+        self._exp_sig = exp_sig
         self._envvars = envvars or {}
 
         self._stdin = stdin
@@ -322,6 +326,9 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         if sig is None:
             sig = self._sig_stop
+
+        if exp_sig is None:
+            exp_sig = self._exp_sig
 
         try:
             os.killpg(self.process.pid, sig)
