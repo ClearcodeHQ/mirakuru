@@ -45,7 +45,6 @@ from mirakuru.compat import SIGKILL
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-
 ENV_UUID = 'mirakuru_uuid'
 """
 Name of the environment variable used by mirakuru to mark its subprocesses.
@@ -94,6 +93,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             sleep: float = 0.1,
             sig_stop: int = signal.SIGTERM,
             sig_kill: int = SIGKILL,
+            exp_sig: int = None,
             envvars: Optional[Dict[str, str]] = None,
             stdin: Union[None, int, IO[Any]] = subprocess.PIPE,
             stdout: Union[None, int, IO[Any]] = subprocess.PIPE,
@@ -113,6 +113,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             default is `signal.SIGTERM`
         :param int sig_kill: signal used to kill process run by the executor.
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
+        :param int exp_sig: expected exit code.
+            default is None as it will fall back to the stop signal
         :param dict envvars: Additional environment variables
         :param int stdin: file descriptor for stdin
         :param int stdout: file descriptor for stdout
@@ -147,6 +149,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._sleep = sleep
         self._sig_stop = sig_stop
         self._sig_kill = sig_kill
+        self._exp_sig = exp_sig
         self._envvars = envvars or {}
 
         self._stdin = stdin
@@ -296,13 +299,19 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             log.debug("Killed process %d.", pid)
         return pids
 
-    def stop(self: SimpleExecutorType, sig: int = None) -> SimpleExecutorType:
+    def stop(
+            self: SimpleExecutorType,
+            sig: int = None,
+            exp_sig: int = None
+    ) -> SimpleExecutorType:
         """
         Stop process running.
 
         Wait 10 seconds for the process to end, then just kill it.
 
         :param int sig: signal used to stop process run by executor.
+            None for default.
+        :param int exp_sig: expected exit code.
             None for default.
         :returns: itself
         :rtype: SimpleExecutor
@@ -317,6 +326,9 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         if sig is None:
             sig = self._sig_stop
+
+        if exp_sig is None:
+            exp_sig = self._exp_sig
 
         try:
             os.killpg(self.process.pid, sig)
@@ -349,7 +361,11 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         # that it has terminated due to signal `sig`, which is intended. So
         # don't treat that as an error.
         # pylint: disable=invalid-unary-operand-type
-        if exit_code and exit_code != -sig:
+        expected_exit_code = -sig
+        if exp_sig is not None:
+            expected_exit_code = -exp_sig
+
+        if exit_code and exit_code != expected_exit_code:
             raise ProcessFinishedWithError(self, exit_code)
 
         return self

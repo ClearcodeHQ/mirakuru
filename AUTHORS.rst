@@ -12,5 +12,6 @@ mirakuru along its history.
 * Daniel O'Connell
 * Michał Pawłowski
 * Grégoire Détrez
+* Lars Gohr
 
 Great thanks to `Mateusz Lenik <http://mlen.pl>`_ for original package!
