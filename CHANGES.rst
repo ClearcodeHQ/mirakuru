@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+- [enhancement] Ability to set up expected exit code for executor. In Java exit codes 1- 127 have 
+  special meaning, and the regular exit codes are offset by those of special meaning.
+
 2.2.0
 ----------
 
