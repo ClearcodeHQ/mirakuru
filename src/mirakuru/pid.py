@@ -55,7 +55,7 @@ class PidExecutor(Executor):
         :raises: ValueError
 
         """
-        super(PidExecutor, self).__init__(command, **kwargs)
+        super().__init__(command, **kwargs)
         if not filename:
             raise ValueError("filename must be defined")
         self.filename = filename

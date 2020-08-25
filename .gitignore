@@ -4,6 +4,7 @@ dist
 build
 *.pyc
 .coverage
+venv/*
 
 .idea/
 atlassian-ide-plugin.xml

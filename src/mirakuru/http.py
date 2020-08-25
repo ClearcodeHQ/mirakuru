@@ -90,7 +90,7 @@ class HTTPExecutor(TCPExecutor):
         self.payload = payload
         self.headers = headers
 
-        super(HTTPExecutor, self).__init__(
+        super().__init__(
             command, host=self.url.hostname, port=port, **kwargs
         )
 
