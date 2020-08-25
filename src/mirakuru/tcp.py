@@ -52,7 +52,7 @@ class TCPExecutor(Executor):
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
 
         """
-        super(TCPExecutor, self).__init__(command, **kwargs)
+        super().__init__(command, **kwargs)
         self.host = host
         """Host name, process is listening on."""
         self.port = port

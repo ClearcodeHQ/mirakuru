@@ -53,7 +53,7 @@ class OutputExecutor(SimpleExecutor):
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
 
         """
-        super(OutputExecutor, self).__init__(command, **kwargs)
+        super().__init__(command, **kwargs)
         self._banner = re.compile(banner)
         if not any((self._stdout, self._stderr)):
             raise TypeError(
@@ -72,7 +72,7 @@ class OutputExecutor(SimpleExecutor):
             Process will be considered started, when defined banner will appear
             in process output.
         """
-        super(OutputExecutor, self).start()
+        super().start()
 
         if not IS_DARWIN:
             polls: List[Tuple[select.poll, IO[Any]]] = []

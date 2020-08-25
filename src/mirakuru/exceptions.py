@@ -16,7 +16,7 @@ class ExecutorError(Exception):
         :param mirakuru.base.SimpleExecutor executor: for which exception
             occurred
         """
-        super(ExecutorError, self).__init__(self)
+        super().__init__(self)
         self.executor = executor
 
 
@@ -33,7 +33,7 @@ class TimeoutExpired(ExecutorError):
             occurred
         :param int timeout: timeout for which exception occurred
         """
-        super(TimeoutExpired, self).__init__(executor)
+        super().__init__(executor)
         self.timeout = timeout
 
     def __str__(self) -> str:
@@ -89,7 +89,7 @@ class ProcessExitedWithError(ExecutorError):
             occurred
         :param int exit_code: code the subprocess exited with
         """
-        super(ProcessExitedWithError, self).__init__(executor)
+        super().__init__(executor)
         self.exit_code = exit_code
 
     def __str__(self) -> str:

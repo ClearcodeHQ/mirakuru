@@ -513,7 +513,7 @@ class Executor(SimpleExecutor):
             # Some other executor (or process) is running with same config:
             raise AlreadyRunning(self)
 
-        super(Executor, self).start()
+        super().start()
 
         self.wait_for(self.check_subprocess)
         return self
