@@ -11,7 +11,7 @@ FILENAME = f"pid-test-tmp{os.getpid()}"
 SLEEP = f'bash -c "sleep 1 && touch {FILENAME} && sleep 1"'
 
 
-@pytest.yield_fixture(autouse=True)
+@pytest.fixture(autouse=True)
 def run_around_tests():
     """
     Make sure the **FILENAME** file is not present.
