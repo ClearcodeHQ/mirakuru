@@ -248,10 +248,12 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             if not self._shell:
                 command = self.command_parts
 
+            # pylint:disable=consider-using-with
             self.process = subprocess.Popen(
                 command,
                 **self._popen_kwargs
             )
+            # pylint:enable=consider-using-with
 
         self._set_timeout()
         return self
