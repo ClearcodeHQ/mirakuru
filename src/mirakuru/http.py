@@ -36,14 +36,14 @@ class HTTPExecutor(TCPExecutor):
     """Default TCP port for the HTTP protocol."""
 
     def __init__(
-            self,
-            command: Union[str, List[str], Tuple[str, ...]],
-            url: str,
-            status: str = r'^2\d\d$',
-            method: str = 'HEAD',
-            payload: Optional[Dict[str, str]] = None,
-            headers: Optional[Dict[str, str]] = None,
-            **kwargs: Any
+        self,
+        command: Union[str, List[str], Tuple[str, ...]],
+        url: str,
+        status: str = r"^2\d\d$",
+        method: str = "HEAD",
+        payload: Optional[Dict[str, str]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        **kwargs: Any,
     ) -> None:
         """
         Initialize HTTPExecutor executor.
@@ -90,9 +90,7 @@ class HTTPExecutor(TCPExecutor):
         self.payload = payload
         self.headers = headers
 
-        super().__init__(
-            command, host=self.url.hostname, port=port, **kwargs
-        )
+        super().__init__(command, host=self.url.hostname, port=port, **kwargs)
 
     def after_start_check(self) -> bool:
         """Check if defined URL returns expected status to a check request."""
@@ -117,7 +115,6 @@ class HTTPExecutor(TCPExecutor):
 
         except (HTTPException, socket.timeout, socket.error) as ex:
             LOG.debug(
-                "Encounter %s while trying to check if service has started.",
-                ex
+                "Encounter %s while trying to check if service has started.", ex
             )
             return False

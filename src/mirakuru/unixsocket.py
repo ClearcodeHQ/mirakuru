@@ -34,10 +34,10 @@ class UnixSocketExecutor(Executor):
     """
 
     def __init__(
-            self,
-            command: Union[str, List[str], Tuple[str, ...]],
-            socket_name: str,
-            **kwargs: Any
+        self,
+        command: Union[str, List[str], Tuple[str, ...]],
+        socket_name: str,
+        **kwargs: Any,
     ) -> None:
         """
         Initialize UnixSocketExecutor executor.
@@ -70,7 +70,7 @@ class UnixSocketExecutor(Executor):
             exec_sock.connect(self.socket)
             return True
         except socket.error as msg:
-            LOG.debug('Can not connect to socket: %s', msg)
+            LOG.debug("Can not connect to socket: %s", msg)
             return False
         finally:
             # close socket manually for sake of PyPy

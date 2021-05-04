@@ -23,6 +23,7 @@ sys.path.append(os.getcwd())  # noqa
 
 # pylint:disable=wrong-import-position
 from tests.signals import block_signals
+
 # pylint:enable=wrong-import-position
 
 
@@ -37,7 +38,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(b'Hi. I am very slow.')
+        self.wfile.write(b"Hi. I am very slow.")
 
     def do_HEAD(self):  # pylint:disable=invalid-name
         """
@@ -72,7 +73,7 @@ class SlowGetServerHandler(SlowServerHandler):
         self.timeout_status()
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(b'Hi. I am very slow.')
+        self.wfile.write(b"Hi. I am very slow.")
 
     def do_HEAD(self):  # pylint:disable=invalid-name
         "Serve HEAD request."
@@ -87,7 +88,7 @@ class SlowPostServerHandler(SlowServerHandler):
         "Serve POST request."
         self.timeout_status()
         self.end_headers()
-        self.wfile.write(b'Hi. I am very slow.')
+        self.wfile.write(b"Hi. I am very slow.")
 
     def do_HEAD(self):  # pylint:disable=invalid-name
         "Serve HEAD request."
@@ -100,15 +101,15 @@ class SlowPostKeyServerHandler(SlowServerHandler):
 
     def do_POST(self):  # pylint:disable=invalid-name
         "Serve POST request."
-        content_len = int(self.headers.get('Content-Length'))
+        content_len = int(self.headers.get("Content-Length"))
         post_body = self.rfile.read(content_len)
         form = parse_qs(post_body)
-        if form.get(b'key') == [b'hole']:
+        if form.get(b"key") == [b"hole"]:
             self.timeout_status()
         else:
             self.send_response(500)
         self.end_headers()
-        self.wfile.write(b'Hi. I am very slow.')
+        self.wfile.write(b"Hi. I am very slow.")
 
     def do_HEAD(self):  # pylint:disable=invalid-name
         "Serve HEAD request."
@@ -117,15 +118,15 @@ class SlowPostKeyServerHandler(SlowServerHandler):
 
 
 HANDLERS = {
-    'HEAD': SlowServerHandler,
-    'GET': SlowGetServerHandler,
-    'POST': SlowPostServerHandler,
-    'Key': SlowPostKeyServerHandler,
+    "HEAD": SlowServerHandler,
+    "GET": SlowGetServerHandler,
+    "POST": SlowPostServerHandler,
+    "Key": SlowPostKeyServerHandler,
 }
 
 if __name__ == "__main__":
 
-    HOST, PORT, IMMORTAL, METHOD = "127.0.0.1", "8000", "False", 'HEAD'
+    HOST, PORT, IMMORTAL, METHOD = "127.0.0.1", "8000", "False", "HEAD"
     if len(sys.argv) >= 2:
         HOST, PORT = sys.argv[1].split(":")
 
@@ -138,8 +139,8 @@ if __name__ == "__main__":
     if ast.literal_eval(IMMORTAL):
         block_signals()
 
-    server = HTTPServer(  # pylint: disable=invalid-name
+    server = HTTPServer(
         (HOST, int(PORT)), HANDLERS[METHOD]
-    )
+    )  # pylint: disable=invalid-name
     print(f"Starting slow server on {HOST}:{PORT}...")
     server.serve_forever()

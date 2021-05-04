@@ -30,8 +30,18 @@ import errno
 import platform
 from types import TracebackType
 from typing import (
-    Union, IO, Any, List, Tuple, Optional, Dict, TypeVar, Type, Set, Iterator,
-    Callable
+    Union,
+    IO,
+    Any,
+    List,
+    Tuple,
+    Optional,
+    Dict,
+    TypeVar,
+    Type,
+    Set,
+    Iterator,
+    Callable,
 )
 
 from mirakuru.base_env import processes_with_env
@@ -45,13 +55,13 @@ from mirakuru.compat import SIGKILL
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-ENV_UUID = 'mirakuru_uuid'
+ENV_UUID = "mirakuru_uuid"
 """
 Name of the environment variable used by mirakuru to mark its subprocesses.
 """
 
 IGNORED_ERROR_CODES = [errno.ESRCH]
-if platform.system() == 'Darwin':
+if platform.system() == "Darwin":
     IGNORED_ERROR_CODES = [errno.ESRCH, errno.EPERM]
 
 # Type variables used for self in functions returning self, so it's correctly
@@ -70,6 +80,7 @@ def cleanup_subprocesses() -> None:
     import errno
     from mirakuru.base_env import processes_with_env
     from mirakuru.compat import SIGKILL
+
     # pylint: enable=redefined-outer-name, reimported, import-outside-toplevel
 
     pids = processes_with_env(ENV_UUID, str(os.getpid()))
@@ -85,19 +96,19 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
     """Simple subprocess executor with start/stop/kill functionality."""
 
     def __init__(  # pylint:disable=too-many-arguments
-            self,
-            command: Union[str, List[str], Tuple[str, ...]],
-            cwd: Optional[str] = None,
-            shell: bool = False,
-            timeout: Union[int, float] = 3600,
-            sleep: float = 0.1,
-            sig_stop: int = signal.SIGTERM,
-            sig_kill: int = SIGKILL,
-            exp_sig: int = None,
-            envvars: Optional[Dict[str, str]] = None,
-            stdin: Union[None, int, IO[Any]] = subprocess.PIPE,
-            stdout: Union[None, int, IO[Any]] = subprocess.PIPE,
-            stderr: Union[None, int, IO[Any]] = None
+        self,
+        command: Union[str, List[str], Tuple[str, ...]],
+        cwd: Optional[str] = None,
+        shell: bool = False,
+        timeout: Union[int, float] = 3600,
+        sleep: float = 0.1,
+        sig_stop: int = signal.SIGTERM,
+        sig_kill: int = SIGKILL,
+        exp_sig: int = None,
+        envvars: Optional[Dict[str, str]] = None,
+        stdin: Union[None, int, IO[Any]] = subprocess.PIPE,
+        stdout: Union[None, int, IO[Any]] = subprocess.PIPE,
+        stderr: Union[None, int, IO[Any]] = None,
     ) -> None:
         """
         Initialize executor.
@@ -133,7 +144,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         """
         if isinstance(command, (list, tuple)):
-            self.command = ' '.join((shlex.quote(c) for c in command))
+            self.command = " ".join((shlex.quote(c) for c in command))
             """Command that the executor runs."""
             self.command_parts = command
         else:
@@ -142,7 +153,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         self._cwd = cwd
         self._shell = True
-        if platform.system() != 'Windows':
+        if platform.system() != "Windows":
             self._shell = shell
 
         self._timeout = timeout
@@ -160,7 +171,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self.process: Optional[subprocess.Popen] = None
         """A :class:`subprocess.Popen` instance once process is started."""
 
-        self._uuid = f'{os.getpid()}:{uuid.uuid4()}'
+        self._uuid = f"{os.getpid()}:{uuid.uuid4()}"
 
     def __enter__(self: SimpleExecutorType) -> SimpleExecutorType:
         """
@@ -171,10 +182,12 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """
         return self.start()
 
-    def __exit__(self,
-                 exc_type: Optional[Type[BaseException]],
-                 exc_value: Optional[BaseException],
-                 traceback: Optional[TracebackType]) -> None:
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> None:
         """Exit context manager stopping the subprocess."""
         self.stop()
 
@@ -204,14 +217,14 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         kwargs: Dict[str, Any] = {}
 
         if self._stdin:
-            kwargs['stdin'] = self._stdin
+            kwargs["stdin"] = self._stdin
         if self._stdout:
-            kwargs['stdout'] = self._stdout
+            kwargs["stdout"] = self._stdout
         if self._stderr:
-            kwargs['stderr'] = self._stderr
-        kwargs['universal_newlines'] = True
+            kwargs["stderr"] = self._stderr
+        kwargs["universal_newlines"] = True
 
-        kwargs['shell'] = self._shell
+        kwargs["shell"] = self._shell
 
         env = os.environ.copy()
         env.update(self._envvars)
@@ -226,11 +239,11 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         # There may be a situation when some subprocess will abandon
         # original envs from parents and then it won't be later found.
         env[ENV_UUID] = self._uuid
-        kwargs['env'] = env
+        kwargs["env"] = env
 
-        kwargs['cwd'] = self._cwd
-        if platform.system() != 'Windows':
-            kwargs['preexec_fn'] = os.setsid
+        kwargs["cwd"] = self._cwd
+        if platform.system() != "Windows":
+            kwargs["preexec_fn"] = os.setsid
 
         return kwargs
 
@@ -249,10 +262,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
                 command = self.command_parts
 
             # pylint:disable=consider-using-with
-            self.process = subprocess.Popen(
-                command,
-                **self._popen_kwargs
-            )
+            self.process = subprocess.Popen(command, **self._popen_kwargs)
             # pylint:enable=consider-using-with
 
         self._set_timeout()
@@ -302,9 +312,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         return pids
 
     def stop(
-            self: SimpleExecutorType,
-            sig: int = None,
-            exp_sig: int = None
+        self: SimpleExecutorType, sig: int = None, exp_sig: int = None
     ) -> SimpleExecutorType:
         """
         Stop process running.
@@ -388,9 +396,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             self.start()
 
     def kill(
-            self: SimpleExecutorType,
-            wait: bool = True,
-            sig: Optional[int] = None) -> SimpleExecutorType:
+        self: SimpleExecutorType, wait: bool = True, sig: Optional[int] = None
+    ) -> SimpleExecutorType:
         """
         Kill the process if running.
 
@@ -425,8 +432,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         return None  # pragma: no cover
 
     def wait_for(
-            self: SimpleExecutorType,
-            wait_for: Callable[[], bool]) -> SimpleExecutorType:
+        self: SimpleExecutorType, wait_for: Callable[[], bool]
+    ) -> SimpleExecutorType:
         """
         Wait for callback to return True.
 
@@ -467,8 +474,10 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
                 self.kill()
         except Exception:  # pragma: no cover
             print("*" * 80)
-            print("Exception while deleting Executor. '"
-                  "It is strongly suggested that you use")
+            print(
+                "Exception while deleting Executor. '"
+                "It is strongly suggested that you use"
+            )
             print("it as a context manager instead.")
             print("*" * 80)
             raise
@@ -477,7 +486,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """Return unambiguous executor representation."""
         command = self.command
         if len(command) > 10:
-            command = command[:10] + '...'
+            command = command[:10] + "..."
         module = self.__class__.__module__
         executor = self.__class__.__name__
         return f'<{module}.{executor}: "{command}" {hex(id(self))}>'

@@ -15,21 +15,21 @@ from tests import TEST_SERVER_PATH, HTTP_SERVER_CMD
 HOST = "127.0.0.1"
 PORT = 7987
 
-HTTP_NORMAL_CMD = f'{HTTP_SERVER_CMD} {PORT}'
-HTTP_SLOW_CMD = f'{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT}'
+HTTP_NORMAL_CMD = f"{HTTP_SERVER_CMD} {PORT}"
+HTTP_SLOW_CMD = f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT}"
 
 
 slow_server_executor = partial(  # pylint: disable=invalid-name
     HTTPExecutor,
     HTTP_SLOW_CMD,
-    f'http://{HOST}:{PORT}/',
+    f"http://{HOST}:{PORT}/",
 )
 
 
 def connect_to_server():
     """Connect to http server and assert 200 response."""
     conn = HTTPConnection(HOST, PORT)
-    conn.request('GET', '/')
+    conn.request("GET", "/")
     assert conn.getresponse().status == OK
     conn.close()
 
@@ -38,11 +38,7 @@ def test_executor_starts_and_waits():
     """Test if process awaits for HEAD request to be completed."""
     command = f'bash -c "sleep 3 && {HTTP_NORMAL_CMD}"'
 
-    executor = HTTPExecutor(
-        command,
-        f'http://{HOST}:{PORT}/',
-        timeout=20
-    )
+    executor = HTTPExecutor(command, f"http://{HOST}:{PORT}/", timeout=20)
     executor.start()
     assert executor.running() is True
 
@@ -51,17 +47,14 @@ def test_executor_starts_and_waits():
     executor.stop()
 
     # check proper __str__ and __repr__ rendering:
-    assert 'HTTPExecutor' in repr(executor)
+    assert "HTTPExecutor" in repr(executor)
     assert command in str(executor)
 
 
 def test_shell_started_server_stops():
     """Test if executor terminates properly executor with shell=True."""
     executor = HTTPExecutor(
-        HTTP_NORMAL_CMD,
-        f'http://{HOST}:{PORT}/',
-        timeout=20,
-        shell=True
+        HTTP_NORMAL_CMD, f"http://{HOST}:{PORT}/", timeout=20, shell=True
     )
 
     with pytest.raises(socket.error):
@@ -77,9 +70,7 @@ def test_shell_started_server_stops():
         connect_to_server()
 
 
-@pytest.mark.parametrize('method', (
-    'HEAD', 'GET', 'POST'
-))
+@pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_starting(method):
     """
     Test whether or not executor awaits for slow starting servers.
@@ -89,11 +80,13 @@ def test_slow_method_server_starting(method):
     """
 
     http_method_slow_cmd = (
-        f'{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}'
+        f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
     )
     with HTTPExecutor(
-            http_method_slow_cmd,
-            f'http://{HOST}:{PORT}/', method=method, timeout=30
+        http_method_slow_cmd,
+        f"http://{HOST}:{PORT}/",
+        method=method,
+        timeout=30,
     ) as executor:
         assert executor.running() is True
         connect_to_server()
@@ -108,47 +101,46 @@ def test_slow_post_payload_server_starting():
     """
 
     http_method_slow_cmd = (
-        f'{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False Key'
+        f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False Key"
     )
     with HTTPExecutor(
-            http_method_slow_cmd,
-            f'http://{HOST}:{PORT}/',
-            method='POST',
-            timeout=30,
-            payload={'key': 'hole'}
+        http_method_slow_cmd,
+        f"http://{HOST}:{PORT}/",
+        method="POST",
+        timeout=30,
+        payload={"key": "hole"},
     ) as executor:
         assert executor.running() is True
         connect_to_server()
 
 
-@pytest.mark.parametrize('method', (
-    'HEAD', 'GET', 'POST'
-))
+@pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_timed_out(method):
     """Check if timeout properly expires."""
 
     http_method_slow_cmd = (
-        f'{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}'
+        f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
     )
     executor = HTTPExecutor(
-        http_method_slow_cmd,
-        f'http://{HOST}:{PORT}/', method=method, timeout=1
+        http_method_slow_cmd, f"http://{HOST}:{PORT}/", method=method, timeout=1
     )
 
     with pytest.raises(TimeoutExpired) as exc:
         executor.start()
 
     assert executor.running() is False
-    assert 'timed out after' in str(exc.value)
+    assert "timed out after" in str(exc.value)
 
 
 def test_fail_if_other_running():
     """Test raising AlreadyRunning exception when port is blocked."""
     executor = HTTPExecutor(
-        HTTP_NORMAL_CMD, f'http://{HOST}:{PORT}/',
+        HTTP_NORMAL_CMD,
+        f"http://{HOST}:{PORT}/",
     )
     executor2 = HTTPExecutor(
-        HTTP_NORMAL_CMD, f'http://{HOST}:{PORT}/',
+        HTTP_NORMAL_CMD,
+        f"http://{HOST}:{PORT}/",
     )
 
     with executor:
@@ -161,10 +153,10 @@ def test_fail_if_other_running():
         with pytest.raises(AlreadyRunning) as exc:
             with executor2:
                 pass
-        assert 'seems to be already running' in str(exc.value)
+        assert "seems to be already running" in str(exc.value)
 
 
-@patch.object(HTTPExecutor, 'DEFAULT_PORT', PORT)
+@patch.object(HTTPExecutor, "DEFAULT_PORT", PORT)
 def test_default_port():
     """
     Test default port for the base TCP check.
@@ -172,7 +164,7 @@ def test_default_port():
     Check if HTTP executor fills in the default port for the TCP check
     from the base class if no port is provided in the URL.
     """
-    executor = HTTPExecutor(HTTP_NORMAL_CMD, f'http://{HOST}/')
+    executor = HTTPExecutor(HTTP_NORMAL_CMD, f"http://{HOST}/")
 
     assert executor.url.port is None
     assert executor.port == PORT
@@ -183,18 +175,21 @@ def test_default_port():
     executor.stop()
 
 
-@pytest.mark.parametrize('accepted_status, expected_timeout', (
-    # default behaviour - only 2XX HTTP status codes are accepted
-    (None, True),
-    # one explicit integer status code
-    (200, True),
-    # one explicit status code as a string
-    ('404', False),
-    # status codes as a regular expression
-    (r'(2|4)\d\d', False),
-    # status codes as a regular expression
-    ('(200|404)', False),
-))
+@pytest.mark.parametrize(
+    "accepted_status, expected_timeout",
+    (
+        # default behaviour - only 2XX HTTP status codes are accepted
+        (None, True),
+        # one explicit integer status code
+        (200, True),
+        # one explicit status code as a string
+        ("404", False),
+        # status codes as a regular expression
+        (r"(2|4)\d\d", False),
+        # status codes as a regular expression
+        ("(200|404)", False),
+    ),
+)
 def test_http_status_codes(accepted_status, expected_timeout):
     """
     Test how 'status' argument influences executor start.
@@ -203,12 +198,12 @@ def test_http_status_codes(accepted_status, expected_timeout):
     :param bool expected_timeout: if Executor raises TimeoutExpired or not
     """
     kwargs: Dict[str, Any] = {
-        'command': HTTP_NORMAL_CMD,
-        'url': f'http://{HOST}:{PORT}/badpath',
-        'timeout': 2
+        "command": HTTP_NORMAL_CMD,
+        "url": f"http://{HOST}:{PORT}/badpath",
+        "timeout": 2,
     }
     if accepted_status:
-        kwargs['status'] = accepted_status
+        kwargs["status"] = accepted_status
     executor = HTTPExecutor(**kwargs)
 
     if not expected_timeout:

@@ -24,7 +24,7 @@ from typing import Union, List, Any, TypeVar, Tuple, IO, Optional
 from mirakuru.base import SimpleExecutor
 
 
-IS_DARWIN = platform.system() == 'Darwin'
+IS_DARWIN = platform.system() == "Darwin"
 
 
 OutputExecutorType = TypeVar("OutputExecutorType", bound="OutputExecutor")
@@ -33,10 +33,12 @@ OutputExecutorType = TypeVar("OutputExecutorType", bound="OutputExecutor")
 class OutputExecutor(SimpleExecutor):
     """Executor that awaits for string output being present in output."""
 
-    def __init__(self,
-                 command: Union[str, List[str], Tuple[str, ...]],
-                 banner: str,
-                 **kwargs: Any) -> None:
+    def __init__(
+        self,
+        command: Union[str, List[str], Tuple[str, ...]],
+        banner: str,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize OutputExecutor executor.
 
@@ -57,7 +59,7 @@ class OutputExecutor(SimpleExecutor):
         self._banner = re.compile(banner)
         if not any((self._stdout, self._stderr)):
             raise TypeError(
-                'At least one of stdout or stderr has to be initialized'
+                "At least one of stdout or stderr has to be initialized"
             )
 
     def start(self: OutputExecutorType) -> OutputExecutorType:
@@ -77,8 +79,8 @@ class OutputExecutor(SimpleExecutor):
         if not IS_DARWIN:
             polls: List[Tuple[select.poll, IO[Any]]] = []
             for output_handle, output_method in (
-                    (self._stdout, self.output),
-                    (self._stderr, self.err_output)
+                (self._stdout, self.output),
+                (self._stderr, self.err_output),
             ):
                 if output_handle is not None:
                     # get a polling object
@@ -96,6 +98,7 @@ class OutputExecutor(SimpleExecutor):
                     polls.append((std_poll, output_file))
 
             try:
+
                 def await_for_output() -> bool:
                     return self._wait_for_output(*polls)
 
@@ -111,8 +114,8 @@ class OutputExecutor(SimpleExecutor):
         else:
             outputs = []
             for output_handle, output_method in (
-                    (self._stdout, self.output),
-                    (self._stderr, self.err_output)
+                (self._stdout, self.output),
+                (self._stderr, self.err_output),
             ):
                 if output_handle is not None:
                     outputs.append(output_method())
@@ -133,7 +136,7 @@ class OutputExecutor(SimpleExecutor):
                 return True
         return False
 
-    def _wait_for_output(self, *polls: Tuple['select.poll', IO[Any]]) -> bool:
+    def _wait_for_output(self, *polls: Tuple["select.poll", IO[Any]]) -> bool:
         """
         Check if output matches banner.
 

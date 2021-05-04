@@ -32,7 +32,7 @@ except ImportError:
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
-PS_XE_PID_MATCH = re.compile(r'^.*?(\d+).+$')
+PS_XE_PID_MATCH = re.compile(r"^.*?(\d+).+$")
 """_sre.SRE_Pattern matching PIDs in result from `$ ps xe -o pid,cmd`."""
 
 
@@ -52,14 +52,14 @@ def processes_with_env_psutil(env_name: str, env_value: str) -> Set[int]:
 
     for proc in psutil.process_iter():
         try:
-            pinfo = proc.as_dict(attrs=['pid', 'environ'])
+            pinfo = proc.as_dict(attrs=["pid", "environ"])
         except (psutil.NoSuchProcess, IOError):
             # can't do much if psutil is not able to get this process details
             pass
         else:
-            penv = pinfo.get('environ')
-            if penv and env_value in penv.get(env_name, ''):
-                pids.add(pinfo['pid'])
+            penv = pinfo.get("environ")
+            if penv and env_value in penv.get(env_name, ""):
+                pids.add(pinfo["pid"])
 
     return pids
 
@@ -81,19 +81,21 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
     pids: Set[int] = set()
     ps_xe: List[bytes] = []
     try:
-        cmd = 'ps', 'xe', '-o', 'pid,cmd'
+        cmd = "ps", "xe", "-o", "pid,cmd"
         ps_xe = subprocess.check_output(cmd).splitlines()
     except OSError as err:
         if err.errno == errno.ENOENT:
-            log.error("`$ ps xe -o pid,cmd` command was called but it is not "
-                      "available on this operating system. Mirakuru will not "
-                      "be able to list the process tree and find if there are "
-                      "any leftovers of the Executor.")
+            log.error(
+                "`$ ps xe -o pid,cmd` command was called but it is not "
+                "available on this operating system. Mirakuru will not "
+                "be able to list the process tree and find if there are "
+                "any leftovers of the Executor."
+            )
             return pids
     except subprocess.CalledProcessError:
         log.error("`$ ps xe -o pid,cmd` command exited with non-zero code.")
 
-    env = f'{env_name}={env_value}'
+    env = f"{env_name}={env_value}"
 
     for line in ps_xe:
         sline = str(line)

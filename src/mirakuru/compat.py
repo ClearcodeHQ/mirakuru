@@ -19,9 +19,7 @@
 import signal
 
 # Windows does not have SIGKILL, fall back to SIGTERM.
-SIGKILL = getattr(signal, 'SIGKILL', signal.SIGTERM)
+SIGKILL = getattr(signal, "SIGKILL", signal.SIGTERM)
 
 
-__all__ = (
-    'SIGKILL',
-)
+__all__ = ("SIGKILL",)

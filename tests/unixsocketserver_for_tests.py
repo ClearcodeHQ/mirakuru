@@ -27,7 +27,7 @@ import sys
 import os
 from time import sleep
 
-SOCKET_ADDRESS = './uds_socket'
+SOCKET_ADDRESS = "./uds_socket"
 
 SLEEP = 0
 
@@ -48,7 +48,7 @@ except OSError:
 SOCK = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 
 # Bind the socket to the address
-print(f'starting up on {SOCKET_ADDRESS}')
+print(f"starting up on {SOCKET_ADDRESS}")
 SOCK.bind(SOCKET_ADDRESS)
 sleep(SLEEP)
 
@@ -57,20 +57,20 @@ SOCK.listen(1)
 
 while True:
     # Wait for a connection
-    print('waiting for a connection')
+    print("waiting for a connection")
     CONNECTION, CLIENT_ADDRESS = SOCK.accept()
     try:
-        print('connection from', CLIENT_ADDRESS)
+        print("connection from", CLIENT_ADDRESS)
 
         # Receive the data in small chunks and retransmit it
         while True:
             RECEIVED_DATA = CONNECTION.recv(16)
-            print(f'received {RECEIVED_DATA!r}')
+            print(f"received {RECEIVED_DATA!r}")
             if RECEIVED_DATA:
-                print('sending data back to the client')
+                print("sending data back to the client")
                 CONNECTION.sendall(RECEIVED_DATA)
             else:
-                print('no data from', CLIENT_ADDRESS)
+                print("no data from", CLIENT_ADDRESS)
                 break
 
     finally:

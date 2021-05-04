@@ -23,9 +23,9 @@ class ExecutorError(Exception):
 class TimeoutExpired(ExecutorError):
     """Is raised when the timeout expires while starting an executor."""
 
-    def __init__(self,
-                 executor: "SimpleExecutor",
-                 timeout: Union[int, float]) -> None:
+    def __init__(
+        self, executor: "SimpleExecutor", timeout: Union[int, float]
+    ) -> None:
         """
         Exception initialization with an extra ``timeout`` argument.
 
@@ -44,7 +44,7 @@ class TimeoutExpired(ExecutorError):
         :rtype: str
         """
         return (
-            f'Executor {self.executor} timed out after {self.timeout} seconds'
+            f"Executor {self.executor} timed out after {self.timeout} seconds"
         )
 
 
@@ -63,13 +63,18 @@ class AlreadyRunning(ExecutorError):
         :returns: string representation
         :rtype: str
         """
-        port = getattr(self.executor, 'port')
-        return (f"Executor {self.executor} seems to be already running. "
-                f"It looks like the previous executor process hasn't been "
-                f"terminated or killed."
-                + ("" if port is None else
-                   f" Also there might be some completely "
-                   f"different service listening on {port} port."))
+        port = getattr(self.executor, "port")
+        return (
+            f"Executor {self.executor} seems to be already running. "
+            f"It looks like the previous executor process hasn't been "
+            f"terminated or killed."
+            + (
+                ""
+                if port is None
+                else f" Also there might be some completely "
+                f"different service listening on {port} port."
+            )
+        )
 
 
 class ProcessExitedWithError(ExecutorError):
@@ -99,8 +104,10 @@ class ProcessExitedWithError(ExecutorError):
         :returns: string representation
         :rtype: str
         """
-        return (f"The process invoked by the {self.executor} executor has "
-                f"exited with a non-zero code: {self.exit_code}.")
+        return (
+            f"The process invoked by the {self.executor} executor has "
+            f"exited with a non-zero code: {self.exit_code}."
+        )
 
 
 class ProcessFinishedWithError(ProcessExitedWithError):

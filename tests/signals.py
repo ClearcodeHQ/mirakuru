@@ -10,9 +10,10 @@ def block_signals():
     Reject their default behaviour. The process is actually mortal but the
     only way to kill is to send SIGKILL signal (kill -9).
     """
+
     def sighandler(signum, _):
         """Signal handling function."""
-        print(f'Tried to kill with signal {signum}.')
+        print(f"Tried to kill with signal {signum}.")
 
     for sgn in [x for x in dir(signal) if x.startswith("SIG")]:
         try:
