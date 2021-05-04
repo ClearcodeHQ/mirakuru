@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+Misc
+++++
+
+- Moved CI to Github Actions
+
 2.3.0
 ----------
 

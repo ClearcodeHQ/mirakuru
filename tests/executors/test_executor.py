@@ -14,6 +14,7 @@ from mirakuru.base import SimpleExecutor
 from mirakuru.exceptions import ProcessExitedWithError, TimeoutExpired
 
 from tests import SAMPLE_DAEMON_PATH, ps_aux
+from tests.retry import retry
 
 SLEEP_300 = 'sleep 300'
 
@@ -64,7 +65,7 @@ def test_stop_custom_exit_signal_stop():
     executor = SimpleExecutor('false', shell=True)
     executor.start()
     # false exits instant, so there should not be a process to stop
-    executor.stop(sig=signal.SIGQUIT, exp_sig=3)
+    retry(lambda: executor.stop(sig=signal.SIGQUIT, exp_sig=3))
     assert executor.running() is False
 
 
