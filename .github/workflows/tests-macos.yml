@@ -1,0 +1,47 @@
+name: Run tests on macos
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '**.py'
+      - .github/workflows/tests-macos.yml
+      - requirements-tests.txt
+  pull_request:
+    branches: [ master ]
+    paths:
+      - '**.py'
+      - .github/workflows/tests-macos.yml
+      - requirements-tests.txt
+
+jobs:
+  macostests:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: [3.7, 3.8, 3.9, pypy-3.7-v7.3.3]
+    env:
+      OS: macos-latest
+      PYTHON: ${{ matrix.python-version }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-test.txt
+    - name: Run test
+      run: |
+        py.test --cov-report=xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+        flags: macos
+        env_vars: OS, PYTHON, POSTGRES
+        fail_ci_if_error: true
