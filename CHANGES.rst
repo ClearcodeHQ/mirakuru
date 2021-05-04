@@ -8,6 +8,7 @@ Misc
 ++++
 
 - Moved CI to Github Actions
+- Blackified codebase
 
 2.3.0
 ----------

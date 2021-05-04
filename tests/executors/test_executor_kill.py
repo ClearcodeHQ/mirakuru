@@ -17,7 +17,7 @@ from mirakuru.exceptions import ProcessFinishedWithError
 
 from tests import SAMPLE_DAEMON_PATH, ps_aux, TEST_SERVER_PATH
 
-SLEEP_300 = 'sleep 300'
+SLEEP_300 = "sleep 300"
 
 
 def test_custom_signal_kill():
@@ -41,13 +41,14 @@ def test_kill_custom_signal_kill():
 def test_already_closed():
     """Check that the executor cleans after itself after it exited earlier."""
     with pytest.raises(ProcessFinishedWithError) as excinfo:
-        with SimpleExecutor('python') as executor:
+        with SimpleExecutor("python") as executor:
             assert executor.running()
             os.killpg(executor.process.pid, SIGKILL)
 
             def process_stopped():
                 """Return True only only when self.process is not running."""
                 return executor.running() is False
+
             executor.wait_for(process_stopped)
             assert executor.process
     assert excinfo.value.exit_code == -9
@@ -62,11 +63,12 @@ def test_daemons_killing():
     change the process group ID. This test verifies that daemon process
     is killed after executor's kill().
     """
-    executor = SimpleExecutor(('python', SAMPLE_DAEMON_PATH), shell=True)
+    executor = SimpleExecutor(("python", SAMPLE_DAEMON_PATH), shell=True)
     executor.start()
     time.sleep(2)
-    assert executor.running() is not True, \
-        "Executor should not have subprocess running as it started a daemon."
+    assert (
+        executor.running() is not True
+    ), "Executor should not have subprocess running as it started a daemon."
 
     assert SAMPLE_DAEMON_PATH in ps_aux()
     executor.kill()
@@ -81,8 +83,8 @@ def test_stopping_brutally():
     by executor with SIGKILL automatically.
     """
     host_port = "127.0.0.1:8000"
-    cmd = f'{sys.executable} {TEST_SERVER_PATH} {host_port} True'
-    executor = HTTPExecutor(cmd, f'http://{host_port!s}/', timeout=20)
+    cmd = f"{sys.executable} {TEST_SERVER_PATH} {host_port} True"
+    executor = HTTPExecutor(cmd, f"http://{host_port!s}/", timeout=20)
     executor.start()
     assert executor.running() is True
 
@@ -116,7 +118,7 @@ def test_stopping_children_of_stopped_process():
         return [1]
 
     with patch(
-            'mirakuru.base.processes_with_env', new=processes_with_env_mock
-    ), patch('os.kill', new=raise_os_error):
+        "mirakuru.base.processes_with_env", new=processes_with_env_mock
+    ), patch("os.kill", new=raise_os_error):
         executor = SimpleExecutor(SLEEP_300)
         executor._kill_all_kids(executor._sig_stop)

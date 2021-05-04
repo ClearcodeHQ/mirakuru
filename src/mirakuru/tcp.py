@@ -31,11 +31,13 @@ class TCPExecutor(Executor):
     TCP connections.
     """
 
-    def __init__(self,
-                 command: Union[str, List[str], Tuple[str, ...]],
-                 host: str,
-                 port: int,
-                 **kwargs: Any) -> None:
+    def __init__(
+        self,
+        command: Union[str, List[str], Tuple[str, ...]],
+        host: str,
+        port: int,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize TCPExecutor executor.
 

@@ -12,7 +12,7 @@ from mirakuru import TimeoutExpired
 from mirakuru.unixsocket import UnixSocketExecutor
 from tests import TEST_SOCKET_SERVER_PATH
 
-SOCKET_PATH = '/tmp/mirakuru.sock'
+SOCKET_PATH = "/tmp/mirakuru.sock"
 
 SOCKET_SERVER_CMD = f"{sys.executable} {TEST_SOCKET_SERVER_PATH} {SOCKET_PATH}"
 

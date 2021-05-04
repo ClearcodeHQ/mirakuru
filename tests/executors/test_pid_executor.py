@@ -39,11 +39,11 @@ def test_start_and_wait():
         assert executor.running() is True
 
     # check proper __str__ and __repr__ rendering:
-    assert 'PidExecutor' in repr(executor)
+    assert "PidExecutor" in repr(executor)
     assert process in str(executor)
 
 
-@pytest.mark.parametrize('pid_file', (None, ""))
+@pytest.mark.parametrize("pid_file", (None, ""))
 def test_empty_filename(pid_file):
     """Check whether an exception is raised if an empty FILENAME is given."""
     with pytest.raises(ValueError):

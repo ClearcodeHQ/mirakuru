@@ -31,27 +31,29 @@ import os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.viewcode',
-              'sphinx.ext.intersphinx']
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.intersphinx",
+]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = u'mirakuru'
-basename = ''.join(project.split('.'))
-author = u'The A Room @ Clearcode'
-copyright = u'2014, ' + author
+project = "mirakuru"
+basename = "".join(project.split("."))
+author = "The A Room @ Clearcode"
+copyright = "2014, " + author
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -93,7 +95,7 @@ exclude_patterns = []
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -103,7 +105,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = "default"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -132,7 +134,7 @@ html_theme = 'default'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -176,7 +178,7 @@ html_static_path = ['_static']
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = basename + 'doc'
+htmlhelp_basename = basename + "doc"
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -184,10 +186,8 @@ htmlhelp_basename = basename + 'doc'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #'preamble': '',
 }
@@ -195,8 +195,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ('index', basename + '.tex', project + ' Documentation',
-     author, 'manual'),
+    ("index", basename + ".tex", project + " Documentation", author, "manual"),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -224,10 +223,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', basename, project + u' Documentation',
-     [author], 1)
-]
+man_pages = [("index", basename, project + " Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -239,9 +235,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', basename, project + u' Documentation',
-     author, basename, 'One line description of project.',
-     'Miscellaneous'),
+    (
+        "index",
+        basename,
+        project + " Documentation",
+        author,
+        basename,
+        "One line description of project.",
+        "Miscellaneous",
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -260,7 +262,7 @@ texinfo_documents = [
 epub_title = project
 epub_author = author
 epub_publisher = author
-epub_copyright = u'2014, ' + author
+epub_copyright = "2014, " + author
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
@@ -298,8 +300,8 @@ epub_copyright = u'2014, ' + author
 
 # Autodoc configuration:
 
-autoclass_content = 'both'
-autodoc_default_flags = ['members', 'show-inheritance']
+autoclass_content = "both"
+autodoc_default_flags = ["members", "show-inheritance"]
 
 # Intersphinx configuration
-intersphinx_mapping = {'python': ('http://docs.python.org/', None)}
+intersphinx_mapping = {"python": ("http://docs.python.org/", None)}

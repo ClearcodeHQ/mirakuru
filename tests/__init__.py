@@ -12,7 +12,7 @@ from subprocess import check_output
 TEST_PATH = path.abspath(path.dirname(__file__))
 
 TEST_SERVER_PATH = path.join(TEST_PATH, "server_for_tests.py")
-TEST_SOCKET_SERVER_PATH = path.join(TEST_PATH, 'unixsocketserver_for_tests.py')
+TEST_SOCKET_SERVER_PATH = path.join(TEST_PATH, "unixsocketserver_for_tests.py")
 SAMPLE_DAEMON_PATH = path.join(TEST_PATH, "sample_daemon.py")
 
 HTTP_SERVER_CMD = f"{sys.executable} -m http.server"
@@ -24,4 +24,4 @@ def ps_aux():
 
     :rtype str
     """
-    return str(check_output(('ps', 'aux', '-w')))
+    return str(check_output(("ps", "aux", "-w")))

@@ -32,10 +32,12 @@ class PidExecutor(Executor):
     created.
     """
 
-    def __init__(self,
-                 command: Union[str, List[str], Tuple[str, ...]],
-                 filename: str,
-                 **kwargs: Any) -> None:
+    def __init__(
+        self,
+        command: Union[str, List[str], Tuple[str, ...]],
+        filename: str,
+        **kwargs: Any,
+    ) -> None:
         """
         Initialize the PidExecutor executor.
 

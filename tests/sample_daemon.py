@@ -22,5 +22,5 @@ from tests.signals import block_signals  # pylint:disable=wrong-import-position
 with daemon.DaemonContext(initgroups=False):
     block_signals()
     while True:
-        print('Sleeping mirakuru daemon...')
+        print("Sleeping mirakuru daemon...")
         time.sleep(1)
