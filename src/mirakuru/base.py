@@ -182,7 +182,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """
         Check if executor is running.
 
-        :returns: SimpleExecutorTyperue if process is running, False otherwise
+        :returns: True if process is running, False otherwise
         :rtype: bool
         """
         if self.process is None:

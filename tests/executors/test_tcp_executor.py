@@ -22,7 +22,7 @@ def test_start_and_wait():
     executor = TCPExecutor(command, 'localhost', port=3000, timeout=5)
     executor.start()
 
-    assert executor.running() is True
+    assert executor.running() is True, executor.err_output()
     executor.stop()
 
     # check proper __str__ and __repr__ rendering:
