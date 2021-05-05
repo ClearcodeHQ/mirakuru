@@ -4,7 +4,11 @@ TCPExecutor tests.
 Some of these tests run ``nc``: when running Debian, make sure the
 ``netcat-openbsd`` package is used, not ``netcat-traditional``.
 """
+import logging
+
 import pytest
+from _pytest.logging import LogCaptureFixture
+
 from mirakuru import TCPExecutor
 from mirakuru import TimeoutExpired, AlreadyRunning
 
@@ -16,13 +20,14 @@ PORT = 7986
 HTTP_SERVER = f"{HTTP_SERVER_CMD} {PORT}"
 
 
-def test_start_and_wait():
+def test_start_and_wait(caplog: LogCaptureFixture):
     """Test if executor await for process to accept connections."""
+    caplog.set_level(logging.DEBUG)
     command = 'bash -c "sleep 2 && nc -l 3000"'
     executor = TCPExecutor(command, "localhost", port=3000, timeout=5)
     executor.start()
 
-    assert executor.running() is True, executor.err_output()
+    assert executor.running() is True
     executor.stop()
 
     # check proper __str__ and __repr__ rendering:
