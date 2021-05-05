@@ -9,10 +9,6 @@ on:
       - requirements-testtxt
   pull_request:
     branches: [ master ]
-    paths:
-      - '**.py'
-      - .github/workflows/tests.yml
-      - requirements-test.txt
 
 jobs:
   tests:
