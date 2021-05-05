@@ -29,7 +29,7 @@ except ImportError:
     psutil = None
 
 
-log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+LOG = logging.getLogger(__name__)
 
 
 PS_XE_PID_MATCH = re.compile(r"^.*?(\d+).+$")
@@ -70,7 +70,7 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
 
     It uses `$ ps xe -o pid,cmd` command so it works only on systems
     having such command available (Linux, MacOS). If not available function
-    will just log error.
+    will just LOG error.
 
     :param str env_name: name of environment variable to be found
     :param str env_value: environment variable value prefix
@@ -85,7 +85,7 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
         ps_xe = subprocess.check_output(cmd).splitlines()
     except OSError as err:
         if err.errno == errno.ENOENT:
-            log.error(
+            LOG.error(
                 "`$ ps xe -o pid,cmd` command was called but it is not "
                 "available on this operating system. Mirakuru will not "
                 "be able to list the process tree and find if there are "
@@ -93,7 +93,7 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
             )
             return pids
     except subprocess.CalledProcessError:
-        log.error("`$ ps xe -o pid,cmd` command exited with non-zero code.")
+        LOG.error("`$ ps xe -o pid,cmd` command exited with non-zero code.")
 
     env = f"{env_name}={env_value}"
 
@@ -109,7 +109,6 @@ def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
     return pids
 
 
-# pylint: disable=invalid-name
 if psutil:
     processes_with_env = processes_with_env_psutil
 else:

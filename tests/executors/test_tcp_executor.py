@@ -18,26 +18,29 @@ from tests import HTTP_SERVER_CMD
 PORT = 7986
 
 HTTP_SERVER = f"{HTTP_SERVER_CMD} {PORT}"
+NC_COMMAND = 'bash -c "sleep 2 && nc -lk 3000"'
 
 
 def test_start_and_wait(caplog: LogCaptureFixture):
     """Test if executor await for process to accept connections."""
-    caplog.set_level(logging.DEBUG)
-    command = 'bash -c "sleep 2 && nc -l 3000"'
-    executor = TCPExecutor(command, "localhost", port=3000, timeout=5)
+    caplog.set_level(logging.DEBUG, logger="mirakuru")
+    executor = TCPExecutor(NC_COMMAND, "localhost", port=3000, timeout=5)
     executor.start()
-
     assert executor.running() is True
     executor.stop()
 
+
+def test_repr_and_str():
+    """Check the proper str and repr conversion."""
+    executor = TCPExecutor(NC_COMMAND, "localhost", port=3000, timeout=5)
     # check proper __str__ and __repr__ rendering:
     assert "TCPExecutor" in repr(executor)
-    assert command in str(executor)
+    assert NC_COMMAND in str(executor)
 
 
 def test_it_raises_error_on_timeout():
     """Check if TimeoutExpired gets raised correctly."""
-    command = 'bash -c "sleep 10 && nc -l 3000"'
+    command = 'bash -c "sleep 10 && nc -lk 3000"'
     executor = TCPExecutor(command, host="localhost", port=3000, timeout=2)
 
     with pytest.raises(TimeoutExpired):

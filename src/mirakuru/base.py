@@ -53,7 +53,7 @@ from mirakuru.exceptions import (
 )
 from mirakuru.compat import SIGKILL
 
-log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+LOG = logging.getLogger(__name__)
 
 ENV_UUID = "mirakuru_uuid"
 """
@@ -73,15 +73,12 @@ ExecutorType = TypeVar("ExecutorType", bound="Executor")
 @atexit.register
 def cleanup_subprocesses() -> None:
     """On python exit: find possibly running subprocesses and kill them."""
-    # pylint: disable=redefined-outer-name, reimported, import-outside-toplevel
     # atexit functions tends to loose global imports sometimes so reimport
     # everything what is needed again here:
     import os
     import errno
     from mirakuru.base_env import processes_with_env
     from mirakuru.compat import SIGKILL
-
-    # pylint: enable=redefined-outer-name, reimported, import-outside-toplevel
 
     pids = processes_with_env(ENV_UUID, str(os.getpid()))
     for pid in pids:
@@ -199,6 +196,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         :rtype: bool
         """
         if self.process is None:
+            LOG.debug("There is no process running!")
             return False
         return self.process.poll() is None
 
@@ -260,10 +258,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             command: Union[str, List[str], Tuple[str, ...]] = self.command
             if not self._shell:
                 command = self.command_parts
-
-            # pylint:disable=consider-using-with
+            LOG.debug("Starting process: %s", command)
             self.process = subprocess.Popen(command, **self._popen_kwargs)
-            # pylint:enable=consider-using-with
 
         self._set_timeout()
         return self
@@ -299,7 +295,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """
         pids = processes_with_env(ENV_UUID, self._uuid)
         for pid in pids:
-            log.debug("Killing process %d ...", pid)
+            LOG.debug("Killing process %d ...", pid)
             try:
                 os.kill(pid, sig)
             except OSError as err:
@@ -308,7 +304,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
                     pass
                 else:
                     raise
-            log.debug("Killed process %d.", pid)
+            LOG.debug("Killed process %d.", pid)
         return pids
 
     def stop(
@@ -370,7 +366,6 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         # Did the process shut down cleanly? A an exit code of `-sig` means
         # that it has terminated due to signal `sig`, which is intended. So
         # don't treat that as an error.
-        # pylint: disable=invalid-unary-operand-type
         expected_exit_code = -sig
         if exp_sig is not None:
             expected_exit_code = -exp_sig
