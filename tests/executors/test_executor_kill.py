@@ -9,11 +9,13 @@ import errno
 import os
 from unittest.mock import patch
 
+import psutil
 import pytest
 
 from mirakuru import SimpleExecutor, HTTPExecutor
 from mirakuru.compat import SIGKILL
 from mirakuru.exceptions import ProcessFinishedWithError
+from mirakuru.kill import killpg
 
 from tests import SAMPLE_DAEMON_PATH, ps_aux, TEST_SERVER_PATH
 
@@ -43,7 +45,7 @@ def test_already_closed():
     with pytest.raises(ProcessFinishedWithError) as excinfo:
         with SimpleExecutor("python") as executor:
             assert executor.running()
-            os.killpg(executor.process.pid, SIGKILL)
+            killpg(executor.process.pid, SIGKILL)
 
             def process_stopped():
                 """Return True only only when self.process is not running."""
