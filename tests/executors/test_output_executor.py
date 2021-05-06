@@ -8,6 +8,10 @@ from mirakuru import OutputExecutor
 from mirakuru.exceptions import TimeoutExpired
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="select has no attribute poll",
+)
 def test_executor_waits_for_process_output():
     """Check if executor waits for specified output."""
     command = 'bash -c "sleep 2 && echo foo && echo bar && sleep 100"'
@@ -23,6 +27,10 @@ def test_executor_waits_for_process_output():
     assert "foo" in str(executor)
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="select has no attribute poll",
+)
 def test_executor_waits_for_process_err_output():
     """Check if executor waits for specified error output."""
     command = 'bash -c "sleep 2 && >&2 echo foo && >&2 echo bar && sleep 100"'
@@ -40,6 +48,10 @@ def test_executor_waits_for_process_err_output():
     assert "foo" in str(executor)
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="select has no attribute poll",
+)
 def test_executor_dont_start():
     """Executor should not start."""
     command = 'bash -c "sleep 2 && echo foo && echo bar && sleep 100"'

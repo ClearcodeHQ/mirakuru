@@ -52,6 +52,7 @@ from mirakuru.exceptions import (
     TimeoutExpired,
 )
 from mirakuru.compat import SIGKILL
+from mirakuru.kill import killpg
 
 LOG = logging.getLogger(__name__)
 
@@ -337,7 +338,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             stop_signal = self._stop_signal
 
         try:
-            os.killpg(self.process.pid, stop_signal)
+            killpg(self.process.pid, stop_signal)
         except OSError as err:
             if err.errno in IGNORED_ERROR_CODES:
                 pass
@@ -407,7 +408,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         if sig is None:
             sig = self._kill_signal
         if self.process and self.running():
-            os.killpg(self.process.pid, sig)
+            killpg(self.process.pid, sig)
             if wait:
                 self.process.wait()
 
