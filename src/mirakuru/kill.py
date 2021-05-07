@@ -11,7 +11,7 @@ killpg = getattr(os, "killpg", None)
 if not killpg:
     if psutil:
 
-        def killpg(pid, sig):
+        def killpg(pid: int, sig: int) -> None:
             process = psutil.Process(pid)
             children: List[psutil.Process] = process.children(recursive=True)
             for child in children:

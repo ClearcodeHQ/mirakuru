@@ -154,8 +154,9 @@ ECHO_FOOBAR = 'echo "foobar"'
             marks=pytest.mark.skipif(
                 "platform.system() == 'Windows'",
                 reason=(
-                    "No such process when stopping. It's Echo, so at the moment "
-                    "of psutil.Process creation to kill it, it's already stopped."
+                    "No such process when stopping. It's Echo, "
+                    "so at the moment of psutil.Process creation "
+                    "to kill it, it's already stopped."
                 ),
             ),
         ),
@@ -185,8 +186,9 @@ def test_process_output(command):
             marks=pytest.mark.skipif(
                 "platform.system() == 'Windows'",
                 reason=(
-                    "No such process when stopping. It's Echo, so at the moment "
-                    "of psutil.Process creation to kill it, it's already stopped."
+                    "No such process when stopping. It's Echo, "
+                    "so at the moment of psutil.Process creation "
+                    "to kill it, it's already stopped."
                 ),
             ),
         ),
