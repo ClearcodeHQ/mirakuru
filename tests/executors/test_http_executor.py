@@ -34,6 +34,10 @@ def connect_to_server():
     conn.close()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="Can't start http.server on python3",
+)
 def test_executor_starts_and_waits():
     """Test if process awaits for HEAD request to be completed."""
     command = f'bash -c "sleep 3 && {HTTP_NORMAL_CMD}"'
@@ -51,6 +55,10 @@ def test_executor_starts_and_waits():
     assert command in str(executor)
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="Expects signal -15 gets 15 at the last stop",
+)
 def test_shell_started_server_stops():
     """Test if executor terminates properly executor with shell=True."""
     executor = HTTPExecutor(
@@ -70,6 +78,10 @@ def test_shell_started_server_stops():
         connect_to_server()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="Expects signal -15 gets 15 at the last stop",
+)
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_starting(method):
     """
@@ -92,6 +104,10 @@ def test_slow_method_server_starting(method):
         connect_to_server()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="Expects signal -15 gets 15 at the last stop",
+)
 def test_slow_post_payload_server_starting():
     """
     Test whether or not executor awaits for slow starting servers.
@@ -114,6 +130,9 @@ def test_slow_post_payload_server_starting():
         connect_to_server()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No such process when stopping."
+)
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_timed_out(method):
     """Check if timeout properly expires."""
@@ -132,6 +151,9 @@ def test_slow_method_server_timed_out(method):
     assert "timed out after" in str(exc.value)
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No such process when stopping."
+)
 def test_fail_if_other_running():
     """Test raising AlreadyRunning exception when port is blocked."""
     executor = HTTPExecutor(
@@ -156,6 +178,9 @@ def test_fail_if_other_running():
         assert "seems to be already running" in str(exc.value)
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No such process when stopping."
+)
 @patch.object(HTTPExecutor, "DEFAULT_PORT", PORT)
 def test_default_port():
     """
@@ -175,6 +200,9 @@ def test_default_port():
     executor.stop()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No such process when stopping."
+)
 @pytest.mark.parametrize(
     "accepted_status, expected_timeout",
     (

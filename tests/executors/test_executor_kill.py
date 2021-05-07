@@ -22,6 +22,9 @@ from tests import SAMPLE_DAEMON_PATH, ps_aux, TEST_SERVER_PATH
 SLEEP_300 = "sleep 300"
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_custom_signal_kill():
     """Start process and shuts it down using signal SIGQUIT."""
     executor = SimpleExecutor(SLEEP_300, sig_kill=signal.SIGQUIT)
@@ -31,6 +34,9 @@ def test_custom_signal_kill():
     assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_kill_custom_signal_kill():
     """Start process and shuts it down using signal SIGQUIT passed to kill."""
     executor = SimpleExecutor(SLEEP_300)
@@ -40,6 +46,13 @@ def test_kill_custom_signal_kill():
     assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason=(
+        "No such process when stopping. It's Echo, so at the moment "
+        "of psutil.Process creation to kill it, it's already stopped."
+    ),
+)
 def test_already_closed():
     """Check that the executor cleans after itself after it exited earlier."""
     with pytest.raises(ProcessFinishedWithError) as excinfo:
@@ -57,6 +70,7 @@ def test_already_closed():
     assert not executor.process
 
 
+@pytest.mark.skipif("platform.system() == 'Windows'", reason="No ps_uax")
 def test_daemons_killing():
     """
     Test if all subprocesses of SimpleExecutor can be killed.
@@ -77,6 +91,10 @@ def test_daemons_killing():
     assert SAMPLE_DAEMON_PATH not in ps_aux()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="Expects signal -15 gets 15 at the last stop",
+)
 def test_stopping_brutally():
     """
     Test if SimpleExecutor is stopping insubordinate process.
