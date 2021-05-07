@@ -18,7 +18,8 @@ SOCKET_SERVER_CMD = f"{sys.executable} {TEST_SOCKET_SERVER_PATH} {SOCKET_PATH}"
 
 
 @pytest.mark.skipif(
-    "platform.system() == 'Windows'", reason="SIGQUIT not available on Windows"
+    "platform.system() == 'Windows'",
+    reason="Python does not support socket.AF_UNIX on windows",
 )
 def test_start_and_wait():
     """Test if executor await for process to accept connections."""
@@ -30,7 +31,8 @@ def test_start_and_wait():
 
 
 @pytest.mark.skipif(
-    "platform.system() == 'Windows'", reason="SIGQUIT not available on Windows"
+    "platform.system() == 'Windows'",
+    reason="Python does not support socket.AF_UNIX on windows",
 )
 def test_start_and_timeout():
     """Test if executor will properly times out."""
