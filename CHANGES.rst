@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+2.3.1
 ----------
 
 Misc
