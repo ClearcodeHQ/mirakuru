@@ -15,10 +15,6 @@ This is where you should consider using **mirakuru** to add superpowers to your 
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Latest PyPI version
 
-.. image:: https://readthedocs.org/projects/mirakuru/badge/?version=v2.3.0
-    :target: http://mirakuru.readthedocs.io/en/v2.3.0/
-    :alt: Documentation Status
-
 .. image:: https://img.shields.io/pypi/wheel/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: Wheel Status
@@ -30,17 +26,6 @@ This is where you should consider using **mirakuru** to add superpowers to your 
 .. image:: https://img.shields.io/pypi/l/mirakuru.svg
     :target: https://pypi.python.org/pypi/mirakuru/
     :alt: License
-
-Package status
---------------
-
-.. image:: https://travis-ci.org/ClearcodeHQ/mirakuru.svg?branch=v2.3.0
-    :target: https://travis-ci.org/ClearcodeHQ/mirakuru
-    :alt: Tests
-
-.. image:: https://coveralls.io/repos/ClearcodeHQ/mirakuru/badge.png?branch=v2.3.0
-    :target: https://coveralls.io/r/ClearcodeHQ/mirakuru?branch=v2.3.0
-    :alt: Coverage Status
 
 
 Usage
