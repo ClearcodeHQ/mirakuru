@@ -9,6 +9,7 @@ Misc
 
 - Moved CI to Github Actions
 - Blackified codebase
+- Compacted Documentation into readme (was pretty small anyway)
 
 2.3.0
 ----------
