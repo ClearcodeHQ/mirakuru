@@ -44,7 +44,7 @@ def test_command(command):
 
 def test_custom_signal_stop():
     """Start process and shuts it down using signal SIGQUIT."""
-    executor = SimpleExecutor(SLEEP_300, sig_stop=signal.SIGQUIT)
+    executor = SimpleExecutor(SLEEP_300, stop_signal=signal.SIGQUIT)
     executor.start()
     assert executor.running() is True
     executor.stop()
@@ -56,7 +56,7 @@ def test_stop_custom_signal_stop():
     executor = SimpleExecutor(SLEEP_300)
     executor.start()
     assert executor.running() is True
-    executor.stop(sig=signal.SIGQUIT)
+    executor.stop(stop_signal=signal.SIGQUIT)
     assert executor.running() is False
 
 
@@ -65,14 +65,14 @@ def test_stop_custom_exit_signal_stop():
     executor = SimpleExecutor("false", shell=True)
     executor.start()
     # false exits instant, so there should not be a process to stop
-    retry(lambda: executor.stop(sig=signal.SIGQUIT, exp_sig=3))
+    retry(lambda: executor.stop(stop_signal=signal.SIGQUIT, expected_signal=3))
     assert executor.running() is False
 
 
 def test_stop_custom_exit_signal_context():
     """Start process and expect custom exit signal in context manager."""
     with SimpleExecutor("false", exp_sig=3, shell=True) as executor:
-        executor.stop(sig=signal.SIGQUIT)
+        executor.stop(stop_signal=signal.SIGQUIT)
         assert executor.running() is False
 
 
