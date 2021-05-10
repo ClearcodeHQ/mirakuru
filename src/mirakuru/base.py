@@ -99,8 +99,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         shell: bool = False,
         timeout: Union[int, float] = 3600,
         sleep: float = 0.1,
-        sig_stop: int = signal.SIGTERM,
-        sig_kill: int = SIGKILL,
+        stop_signal: int = signal.SIGTERM,
+        kill_signal: int = SIGKILL,
         exp_sig: int = None,
         envvars: Optional[Dict[str, str]] = None,
         stdin: Union[None, int, IO[Any]] = subprocess.PIPE,
@@ -117,9 +117,9 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         :param int timeout: number of seconds to wait for the process to start
             or stop.
         :param float sleep: how often to check for start/stop condition
-        :param int sig_stop: signal used to stop process run by the executor.
+        :param int stop_signal: signal used to stop process run by the executor.
             default is `signal.SIGTERM`
-        :param int sig_kill: signal used to kill process run by the executor.
+        :param int kill_signal: signal used to kill process run by the executor.
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
         :param int exp_sig: expected exit code.
             default is None as it will fall back to the stop signal
@@ -155,9 +155,9 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
         self._timeout = timeout
         self._sleep = sleep
-        self._sig_stop = sig_stop
-        self._sig_kill = sig_kill
-        self._exp_sig = exp_sig
+        self._stop_signal = stop_signal
+        self._kill_signal = kill_signal
+        self._expected_signal = exp_sig
         self._envvars = envvars or {}
 
         self._stdin = stdin
@@ -308,16 +308,18 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         return pids
 
     def stop(
-        self: SimpleExecutorType, sig: int = None, exp_sig: int = None
+        self: SimpleExecutorType,
+        stop_signal: int = None,
+        expected_signal: int = None,
     ) -> SimpleExecutorType:
         """
         Stop process running.
 
         Wait 10 seconds for the process to end, then just kill it.
 
-        :param int sig: signal used to stop process run by executor.
+        :param int stop_signal: signal used to stop process run by executor.
             None for default.
-        :param int exp_sig: expected exit code.
+        :param int expected_signal: expected exit code.
             None for default.
         :returns: itself
         :rtype: SimpleExecutor
@@ -330,14 +332,14 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         if self.process is None:
             return self
 
-        if sig is None:
-            sig = self._sig_stop
+        if stop_signal is None:
+            stop_signal = self._stop_signal
 
-        if exp_sig is None:
-            exp_sig = self._exp_sig
+        if expected_signal is None:
+            expected_signal = self._expected_signal
 
         try:
-            os.killpg(self.process.pid, sig)
+            os.killpg(self.process.pid, stop_signal)
         except OSError as err:
             if err.errno in IGNORED_ERROR_CODES:
                 pass
@@ -359,16 +361,17 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             # the process has already been force killed and cleaned up by the
             # `wait_for` above.
             return self
-        self._kill_all_kids(sig)
+        self._kill_all_kids(stop_signal)
         exit_code = self.process.wait()
         self._clear_process()
 
-        # Did the process shut down cleanly? A an exit code of `-sig` means
-        # that it has terminated due to signal `sig`, which is intended. So
-        # don't treat that as an error.
-        expected_exit_code = -sig
-        if exp_sig is not None:
-            expected_exit_code = -exp_sig
+        # Did the process shut down cleanly? A an exit code of `-stop_signal`
+        # means that it has terminated due to signal `stop_signal`,
+        # which is intended. So don't treat that as an error.
+        # https://docs.python.org/3/library/subprocess.html#subprocess.Popen.returncode
+        expected_exit_code = -stop_signal
+        if expected_signal is not None:
+            expected_exit_code = -expected_signal
 
         if exit_code and exit_code != expected_exit_code:
             raise ProcessFinishedWithError(self, exit_code)
@@ -404,7 +407,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         :rtype: SimpleExecutor
         """
         if sig is None:
-            sig = self._sig_kill
+            sig = self._kill_signal
         if self.process and self.running():
             os.killpg(self.process.pid, sig)
             if wait:
@@ -540,7 +543,7 @@ class Executor(SimpleExecutor):
         if exit_code is not None and exit_code != 0:
             # The main process exited with an error. Clean up the children
             # if any.
-            self._kill_all_kids(self._sig_kill)
+            self._kill_all_kids(self._kill_signal)
             self._clear_process()
             raise ProcessExitedWithError(self, exit_code)
 

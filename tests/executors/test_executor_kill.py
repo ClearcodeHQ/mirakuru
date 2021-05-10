@@ -22,7 +22,7 @@ SLEEP_300 = "sleep 300"
 
 def test_custom_signal_kill():
     """Start process and shuts it down using signal SIGQUIT."""
-    executor = SimpleExecutor(SLEEP_300, sig_kill=signal.SIGQUIT)
+    executor = SimpleExecutor(SLEEP_300, kill_signal=signal.SIGQUIT)
     executor.start()
     assert executor.running() is True
     executor.kill()
@@ -121,4 +121,4 @@ def test_stopping_children_of_stopped_process():
         "mirakuru.base.processes_with_env", new=processes_with_env_mock
     ), patch("os.kill", new=raise_os_error):
         executor = SimpleExecutor(SLEEP_300)
-        executor._kill_all_kids(executor._sig_stop)
+        executor._kill_all_kids(executor._stop_signal)
