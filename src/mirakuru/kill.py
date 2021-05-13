@@ -1,3 +1,4 @@
+import errno
 import os
 from typing import List
 
@@ -12,10 +13,16 @@ if not killpg:
     if psutil:
 
         def killpg(pid: int, sig: int) -> None:
-            process = psutil.Process(pid)
-            children: List[psutil.Process] = process.children(recursive=True)
-            for child in children:
-                child.send_signal(sig)
-            psutil.wait_procs(children, timeout=30)
-            process.send_signal(sig)
-            process.wait(timeout=30)
+            """Custom killpg implementation for Windows."""
+            try:
+                process = psutil.Process(pid)
+                children: List[psutil.Process] = process.children(
+                    recursive=True
+                )
+                for child in children:
+                    child.send_signal(sig)
+                psutil.wait_procs(children, timeout=30)
+                process.send_signal(sig)
+                process.wait(timeout=30)
+            except psutil.NoSuchProcess as exc:
+                raise OSError(errno.ESRCH, exc.msg) from exc

@@ -151,14 +151,6 @@ ECHO_FOOBAR = 'echo "foobar"'
         ),
         pytest.param(
             shlex.split(ECHO_FOOBAR),
-            marks=pytest.mark.skipif(
-                "platform.system() == 'Windows'",
-                reason=(
-                    "psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists. It's Echo, "
-                    "so at the moment of psutil.Process creation "
-                    "to kill it, it's already stopped."
-                ),
-            ),
         ),
     ),
 )
@@ -183,14 +175,6 @@ def test_process_output(command):
         ),
         pytest.param(
             shlex.split(ECHO_FOOBAR),
-            marks=pytest.mark.skipif(
-                "platform.system() == 'Windows'",
-                reason=(
-                    "psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists. It's Echo, "
-                    "so at the moment of psutil.Process creation "
-                    "to kill it, it's already stopped."
-                ),
-            ),
         ),
     ),
 )

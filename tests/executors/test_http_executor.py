@@ -55,10 +55,6 @@ def test_executor_starts_and_waits():
     assert command in str(executor)
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'",
-    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
-)
 def test_shell_started_server_stops():
     """Test if executor terminates properly executor with shell=True."""
     executor = HTTPExecutor(
@@ -78,10 +74,6 @@ def test_shell_started_server_stops():
         connect_to_server()
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'",
-    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
-)
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_starting(method):
     """
@@ -104,10 +96,6 @@ def test_slow_method_server_starting(method):
         connect_to_server()
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'",
-    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
-)
 def test_slow_post_payload_server_starting():
     """
     Test whether or not executor awaits for slow starting servers.
@@ -132,7 +120,7 @@ def test_slow_post_payload_server_starting():
 
 @pytest.mark.skipif(
     "platform.system() == 'Windows'",
-    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
+    reason=("ProcessLookupError: [Errno 3] process no longer exists."),
 )
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_timed_out(method):
@@ -152,10 +140,6 @@ def test_slow_method_server_timed_out(method):
     assert "timed out after" in str(exc.value)
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'",
-    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
-)
 def test_fail_if_other_running():
     """Test raising AlreadyRunning exception when port is blocked."""
     executor = HTTPExecutor(
@@ -180,10 +164,6 @@ def test_fail_if_other_running():
         assert "seems to be already running" in str(exc.value)
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'",
-    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
-)
 @patch.object(HTTPExecutor, "DEFAULT_PORT", PORT)
 def test_default_port():
     """
@@ -203,17 +183,31 @@ def test_default_port():
     executor.stop()
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'",
-    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
-)
 @pytest.mark.parametrize(
     "accepted_status, expected_timeout",
     (
         # default behaviour - only 2XX HTTP status codes are accepted
-        (None, True),
+        pytest.param(
+            None,
+            True,
+            marks=pytest.mark.skipif(
+                "platform.system() == 'Windows'",
+                reason=(
+                    "ProcessLookupError: [Errno 3] process no longer exists."
+                ),
+            ),
+        ),
         # one explicit integer status code
-        (200, True),
+        pytest.param(
+            200,
+            True,
+            marks=pytest.mark.skipif(
+                "platform.system() == 'Windows'",
+                reason=(
+                    "ProcessLookupError: [Errno 3] process no longer exists."
+                ),
+            ),
+        ),
         # one explicit status code as a string
         ("404", False),
         # status codes as a regular expression

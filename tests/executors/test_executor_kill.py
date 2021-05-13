@@ -49,8 +49,8 @@ def test_kill_custom_signal_kill():
 @pytest.mark.skipif(
     "platform.system() == 'Windows'",
     reason=(
-        "psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists. It's Echo, so at the moment "
-        "of psutil.Process creation to kill it, it's already stopped."
+        "Failed: DID NOT RAISE "
+        "<class 'mirakuru.exceptions.ProcessFinishedWithError'>"
     ),
 )
 def test_already_closed():
