@@ -4,7 +4,7 @@ CHANGELOG
 unreleased
 ----------
 
-Feauters
+Features
 --------
 
 - Replace `exp_sig` executor parameter with `expected_returncode`.
