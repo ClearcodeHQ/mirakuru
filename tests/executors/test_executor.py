@@ -65,13 +65,19 @@ def test_stop_custom_exit_signal_stop():
     executor = SimpleExecutor("false", shell=True)
     executor.start()
     # false exits instant, so there should not be a process to stop
-    retry(lambda: executor.stop(stop_signal=signal.SIGQUIT, expected_signal=3))
+    retry(
+        lambda: executor.stop(
+            stop_signal=signal.SIGQUIT, expected_returncode=-3
+        )
+    )
     assert executor.running() is False
 
 
 def test_stop_custom_exit_signal_context():
     """Start process and expect custom exit signal in context manager."""
-    with SimpleExecutor("false", exp_sig=3, shell=True) as executor:
+    with SimpleExecutor(
+        "false", expected_returncode=-3, shell=True
+    ) as executor:
         executor.stop(stop_signal=signal.SIGQUIT)
         assert executor.running() is False
 
