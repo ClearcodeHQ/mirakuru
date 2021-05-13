@@ -154,7 +154,7 @@ ECHO_FOOBAR = 'echo "foobar"'
             marks=pytest.mark.skipif(
                 "platform.system() == 'Windows'",
                 reason=(
-                    "No such process when stopping. It's Echo, "
+                    "psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists. It's Echo, "
                     "so at the moment of psutil.Process creation "
                     "to kill it, it's already stopped."
                 ),
@@ -186,7 +186,7 @@ def test_process_output(command):
             marks=pytest.mark.skipif(
                 "platform.system() == 'Windows'",
                 reason=(
-                    "No such process when stopping. It's Echo, "
+                    "psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists. It's Echo, "
                     "so at the moment of psutil.Process creation "
                     "to kill it, it's already stopped."
                 ),
@@ -212,10 +212,6 @@ def test_start_check_executor():
         executor.after_start_check()
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'",
-    reason="Expects signal -15 gets 15 at the last stop",
-)
 def test_stopping_not_yet_running_executor():
     """
     Test if SimpleExecutor can be stopped even it was never running.
@@ -312,10 +308,6 @@ def test_executor_ignores_processes_exiting_with_0():
     assert executor.after_start_check.called is True  # type: ignore
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'",
-    reason="Expects signal -15 gets 15 at the last stop",
-)
 def test_executor_methods_returning_self():
     """Test if SimpleExecutor lets to chain start, stop and kill methods."""
     executor = SimpleExecutor(SLEEP_300).start().stop().kill().stop()

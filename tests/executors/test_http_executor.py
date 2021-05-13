@@ -57,7 +57,7 @@ def test_executor_starts_and_waits():
 
 @pytest.mark.skipif(
     "platform.system() == 'Windows'",
-    reason="Expects signal -15 gets 15 at the last stop",
+    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
 )
 def test_shell_started_server_stops():
     """Test if executor terminates properly executor with shell=True."""
@@ -80,7 +80,7 @@ def test_shell_started_server_stops():
 
 @pytest.mark.skipif(
     "platform.system() == 'Windows'",
-    reason="Expects signal -15 gets 15 at the last stop",
+    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
 )
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_starting(method):
@@ -106,7 +106,7 @@ def test_slow_method_server_starting(method):
 
 @pytest.mark.skipif(
     "platform.system() == 'Windows'",
-    reason="Expects signal -15 gets 15 at the last stop",
+    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
 )
 def test_slow_post_payload_server_starting():
     """
@@ -131,7 +131,8 @@ def test_slow_post_payload_server_starting():
 
 
 @pytest.mark.skipif(
-    "platform.system() == 'Windows'", reason="No such process when stopping."
+    "platform.system() == 'Windows'",
+    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
 )
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_timed_out(method):
@@ -152,7 +153,8 @@ def test_slow_method_server_timed_out(method):
 
 
 @pytest.mark.skipif(
-    "platform.system() == 'Windows'", reason="No such process when stopping."
+    "platform.system() == 'Windows'",
+    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
 )
 def test_fail_if_other_running():
     """Test raising AlreadyRunning exception when port is blocked."""
@@ -179,7 +181,8 @@ def test_fail_if_other_running():
 
 
 @pytest.mark.skipif(
-    "platform.system() == 'Windows'", reason="No such process when stopping."
+    "platform.system() == 'Windows'",
+    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
 )
 @patch.object(HTTPExecutor, "DEFAULT_PORT", PORT)
 def test_default_port():
@@ -201,7 +204,8 @@ def test_default_port():
 
 
 @pytest.mark.skipif(
-    "platform.system() == 'Windows'", reason="No such process when stopping."
+    "platform.system() == 'Windows'",
+    reason="psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists.",
 )
 @pytest.mark.parametrize(
     "accepted_status, expected_timeout",

@@ -65,6 +65,9 @@ IGNORED_ERROR_CODES = [errno.ESRCH]
 if platform.system() == "Darwin":
     IGNORED_ERROR_CODES = [errno.ESRCH, errno.EPERM]
 
+IS_WINDOWS = platform.system() == "Windows"
+
+
 # Type variables used for self in functions returning self, so it's correctly
 # typed in derived classes.
 SimpleExecutorType = TypeVar("SimpleExecutorType", bound="SimpleExecutor")
@@ -367,10 +370,14 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         if expected_returncode is None:
             expected_returncode = self._expected_returncode
         if expected_returncode is None:
-            # Assume a POSIX approach where sending a SIGNAL means
-            # that the process should exist with -SIGNAL exit code.
-            # https://docs.python.org/3/library/subprocess.html#subprocess.Popen.returncode
-            expected_returncode = -stop_signal
+            if IS_WINDOWS:
+                # Windows is not POSIX compatible
+                expected_returncode = stop_signal
+            else:
+                # Assume a POSIX approach where sending a SIGNAL means
+                # that the process should exist with -SIGNAL exit code.
+                # https://docs.python.org/3/library/subprocess.html#subprocess.Popen.returncode
+                expected_returncode = -stop_signal
 
         if exit_code and exit_code != expected_returncode:
             raise ProcessFinishedWithError(self, exit_code)

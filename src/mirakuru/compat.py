@@ -16,10 +16,20 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
 """Mirakuru compatibility module."""
+import platform
 import signal
+
+IS_WINDOWS = platform.system() == "Windows"
 
 # Windows does not have SIGKILL, fall back to SIGTERM.
 SIGKILL = getattr(signal, "SIGKILL", signal.SIGTERM)
+
+
+def returncode_from_signal(signal: int) -> int:
+    """Calculates expected exit code based on signal. Used as a default behaviour in"""
+    if IS_WINDOWS:
+        return signal
+    return -signal
 
 
 __all__ = ("SIGKILL",)

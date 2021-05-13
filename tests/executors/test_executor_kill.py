@@ -49,7 +49,7 @@ def test_kill_custom_signal_kill():
 @pytest.mark.skipif(
     "platform.system() == 'Windows'",
     reason=(
-        "No such process when stopping. It's Echo, so at the moment "
+        "psutil.NoSuchProcess: psutil.NoSuchProcess process no longer exists. It's Echo, so at the moment "
         "of psutil.Process creation to kill it, it's already stopped."
     ),
 )
