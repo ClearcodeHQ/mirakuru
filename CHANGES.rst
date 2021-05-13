@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+Feauters
+--------
+
+- Replace `exp_sig` executor parameter with `expected_returncode`.
+  Parameter description already assumed that, however handing it assumed full
+  POSIX compatibility on the process side. Now the POSIX is only assumed if no
+  `expected_returncode` is passed to the executor, and returncode is simply that,
+  a returncode, nothing more
+
 2.3.1
 ----------
 
