@@ -91,7 +91,10 @@ def test_daemons_killing():
 
 @pytest.mark.skipif(
     "platform.system() == 'Windows'",
-    reason="Expects signal -15 gets 15 at the last stop",
+    reason=(
+        "Subprocess killed earlier than in 10 secs. "
+        "Blocking signals probably doesn't work."
+    ),
 )
 def test_stopping_brutally():
     """

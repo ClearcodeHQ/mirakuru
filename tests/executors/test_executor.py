@@ -19,9 +19,6 @@ from tests.retry import retry
 SLEEP_300 = "sleep 300"
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'", reason="Expects signal -15 gets 15"
-)
 @pytest.mark.parametrize("command", (SLEEP_300, SLEEP_300.split()))
 def test_running_process(command):
     """Start process and shuts it down."""
@@ -36,9 +33,6 @@ def test_running_process(command):
     assert SLEEP_300 in str(executor)
 
 
-@pytest.mark.skipif(
-    "platform.system() == 'Windows'", reason="Expects signal -15 gets 15"
-)
 @pytest.mark.parametrize("command", (SLEEP_300, SLEEP_300.split()))
 def test_command(command):
     """Check that the command and command parts are equivalent."""
