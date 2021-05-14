@@ -25,9 +25,8 @@ NC_COMMAND = 'bash -c "sleep 2 && nc -lk 3000"'
     "platform.system() == 'Windows'",
     reason="select has no attribute poll",
 )
-def test_start_and_wait(caplog: LogCaptureFixture):
+def test_start_and_wait():
     """Test if executor await for process to accept connections."""
-    caplog.set_level(logging.DEBUG, logger="mirakuru")
     executor = TCPExecutor(NC_COMMAND, "localhost", port=3000, timeout=5)
     executor.start()
     assert executor.running() is True
