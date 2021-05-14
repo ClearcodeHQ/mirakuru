@@ -478,7 +478,10 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self.__delete = True
         try:
             if self.process:
-                self.kill()
+                try:
+                    self.kill()
+                except OSError:
+                    self._clear_process()
         except Exception:  # pragma: no cover
             print("*" * 80)
             print(
