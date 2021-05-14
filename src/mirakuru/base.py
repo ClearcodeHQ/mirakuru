@@ -145,6 +145,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             is a good practice to set this.
 
         """
+        self.__delete = False
         if isinstance(command, (list, tuple)):
             self.command = " ".join((shlex.quote(c) for c in command))
             """Command that the executor runs."""
@@ -201,7 +202,6 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         :rtype: bool
         """
         if self.process is None:
-            LOG.debug("There is no process running!")
             return False
         return self.process.poll() is None
 
@@ -300,7 +300,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """
         pids = processes_with_env(ENV_UUID, self._uuid)
         for pid in pids:
-            LOG.debug("Killing process %d ...", pid)
+            if not self.__delete:
+                LOG.debug("Killing process %d ...", pid)
             try:
                 os.kill(pid, sig)
             except OSError as err:
@@ -309,7 +310,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
                     pass
                 else:
                     raise
-            LOG.debug("Killed process %d.", pid)
+            if not self.__delete:
+                LOG.debug("Killed process %d.", pid)
         return pids
 
     def stop(
@@ -473,6 +475,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
     def __del__(self) -> None:
         """Cleanup subprocesses created during Executor lifetime."""
+        self.__delete = True
         try:
             if self.process:
                 self.kill()

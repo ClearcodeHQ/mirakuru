@@ -6,10 +6,8 @@ import sys
 
 import errno
 
-import os
 from unittest.mock import patch
 
-import psutil
 import pytest
 
 from mirakuru import SimpleExecutor, HTTPExecutor

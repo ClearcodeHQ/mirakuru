@@ -20,7 +20,11 @@ if not killpg:
                     recursive=True
                 )
                 for child in children:
-                    child.send_signal(sig)
+                    try:
+                        child.send_signal(sig)
+                    except psutil.NoSuchProcess:
+                        # Already killed
+                        pass
                 psutil.wait_procs(children, timeout=30)
                 process.send_signal(sig)
                 process.wait(timeout=30)
