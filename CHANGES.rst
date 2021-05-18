@@ -5,7 +5,7 @@ unreleased
 ----------
 
 Features
---------
+++++++++
 
 - Replace `exp_sig` executor parameter with `expected_returncode`.
   Parameter description already assumed that, however handing it assumed full
