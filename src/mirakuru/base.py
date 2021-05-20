@@ -52,6 +52,7 @@ from mirakuru.exceptions import (
     TimeoutExpired,
 )
 from mirakuru.compat import SIGKILL
+from mirakuru.kill import killpg
 
 LOG = logging.getLogger(__name__)
 
@@ -63,6 +64,9 @@ Name of the environment variable used by mirakuru to mark its subprocesses.
 IGNORED_ERROR_CODES = [errno.ESRCH]
 if platform.system() == "Darwin":
     IGNORED_ERROR_CODES = [errno.ESRCH, errno.EPERM]
+
+IS_WINDOWS = platform.system() == "Windows"
+
 
 # Type variables used for self in functions returning self, so it's correctly
 # typed in derived classes.
@@ -141,6 +145,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             is a good practice to set this.
 
         """
+        self.__delete = False
         if isinstance(command, (list, tuple)):
             self.command = " ".join((shlex.quote(c) for c in command))
             """Command that the executor runs."""
@@ -197,7 +202,6 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         :rtype: bool
         """
         if self.process is None:
-            LOG.debug("There is no process running!")
             return False
         return self.process.poll() is None
 
@@ -296,7 +300,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         """
         pids = processes_with_env(ENV_UUID, self._uuid)
         for pid in pids:
-            LOG.debug("Killing process %d ...", pid)
+            if not self.__delete:
+                LOG.debug("Killing process %d ...", pid)
             try:
                 os.kill(pid, sig)
             except OSError as err:
@@ -305,7 +310,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
                     pass
                 else:
                     raise
-            LOG.debug("Killed process %d.", pid)
+            if not self.__delete:
+                LOG.debug("Killed process %d.", pid)
         return pids
 
     def stop(
@@ -337,7 +343,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             stop_signal = self._stop_signal
 
         try:
-            os.killpg(self.process.pid, stop_signal)
+            killpg(self.process.pid, stop_signal)
         except OSError as err:
             if err.errno in IGNORED_ERROR_CODES:
                 pass
@@ -366,10 +372,14 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         if expected_returncode is None:
             expected_returncode = self._expected_returncode
         if expected_returncode is None:
-            # Assume a POSIX approach where sending a SIGNAL means
-            # that the process should exist with -SIGNAL exit code.
-            # https://docs.python.org/3/library/subprocess.html#subprocess.Popen.returncode
-            expected_returncode = -stop_signal
+            if IS_WINDOWS:
+                # Windows is not POSIX compatible
+                expected_returncode = stop_signal
+            else:
+                # Assume a POSIX approach where sending a SIGNAL means
+                # that the process should exist with -SIGNAL exit code.
+                # https://docs.python.org/3/library/subprocess.html#subprocess.Popen.returncode
+                expected_returncode = -stop_signal
 
         if exit_code and exit_code != expected_returncode:
             raise ProcessFinishedWithError(self, exit_code)
@@ -407,7 +417,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         if sig is None:
             sig = self._kill_signal
         if self.process and self.running():
-            os.killpg(self.process.pid, sig)
+            killpg(self.process.pid, sig)
             if wait:
                 self.process.wait()
 
@@ -465,9 +475,13 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
     def __del__(self) -> None:
         """Cleanup subprocesses created during Executor lifetime."""
+        self.__delete = True
         try:
             if self.process:
-                self.kill()
+                try:
+                    self.kill()
+                except OSError:
+                    self._clear_process()
         except Exception:  # pragma: no cover
             print("*" * 80)
             print(

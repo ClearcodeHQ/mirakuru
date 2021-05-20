@@ -42,6 +42,9 @@ def test_command(command):
     assert executor.command_parts == SLEEP_300.split()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_custom_signal_stop():
     """Start process and shuts it down using signal SIGQUIT."""
     executor = SimpleExecutor(SLEEP_300, stop_signal=signal.SIGQUIT)
@@ -51,6 +54,9 @@ def test_custom_signal_stop():
     assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_stop_custom_signal_stop():
     """Start process and shuts it down using signal SIGQUIT passed to stop."""
     executor = SimpleExecutor(SLEEP_300)
@@ -60,6 +66,9 @@ def test_stop_custom_signal_stop():
     assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_stop_custom_exit_signal_stop():
     """Start process and expect it to finish with custom signal."""
     executor = SimpleExecutor("false", shell=True)
@@ -73,6 +82,9 @@ def test_stop_custom_exit_signal_stop():
     assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_stop_custom_exit_signal_context():
     """Start process and expect custom exit signal in context manager."""
     with SimpleExecutor(
@@ -82,6 +94,9 @@ def test_stop_custom_exit_signal_context():
         assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_running_context():
     """Start process and shuts it down."""
     executor = SimpleExecutor(SLEEP_300)
@@ -91,12 +106,18 @@ def test_running_context():
     assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_executor_in_context_only():
     """Start process and shuts it down only in context."""
     with SimpleExecutor(SLEEP_300) as executor:
         assert executor.running() is True
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_context_stopped():
     """Start for context, and shuts it for nested context."""
     executor = SimpleExecutor(SLEEP_300)
@@ -112,7 +133,21 @@ def test_context_stopped():
 ECHO_FOOBAR = 'echo "foobar"'
 
 
-@pytest.mark.parametrize("command", (ECHO_FOOBAR, shlex.split(ECHO_FOOBAR)))
+@pytest.mark.parametrize(
+    "command",
+    (
+        pytest.param(
+            ECHO_FOOBAR,
+            marks=pytest.mark.skipif(
+                "platform.system() == 'Windows'",
+                reason="Windows leaves apostrophes in output.",
+            ),
+        ),
+        pytest.param(
+            shlex.split(ECHO_FOOBAR),
+        ),
+    ),
+)
 def test_process_output(command):
     """Start process, check output and shut it down."""
     executor = SimpleExecutor(command)
@@ -122,7 +157,21 @@ def test_process_output(command):
     executor.stop()
 
 
-@pytest.mark.parametrize("command", (ECHO_FOOBAR, shlex.split(ECHO_FOOBAR)))
+@pytest.mark.parametrize(
+    "command",
+    (
+        pytest.param(
+            ECHO_FOOBAR,
+            marks=pytest.mark.skipif(
+                "platform.system() == 'Windows'",
+                reason="Windows leaves apostrophes in output.",
+            ),
+        ),
+        pytest.param(
+            shlex.split(ECHO_FOOBAR),
+        ),
+    ),
+)
 def test_process_output_shell(command):
     """Start process, check output and shut it down with shell set to True."""
     executor = SimpleExecutor(command, shell=True)
@@ -155,6 +204,7 @@ def test_stopping_not_yet_running_executor():
     executor.stop()
 
 
+@pytest.mark.skipif("platform.system() == 'Windows'", reason="No ps_uax")
 def test_forgotten_stop():
     """
     Test if SimpleExecutor subprocess is killed after an instance is deleted.
@@ -251,6 +301,7 @@ def test_executor_methods_returning_self():
     assert SimpleExecutor(SLEEP_300).start().stop().output
 
 
+@pytest.mark.skipif("platform.system() == 'Windows'", reason="No ps_uax")
 def test_mirakuru_cleanup():
     """Test if cleanup_subprocesses is fired correctly on python exit."""
     cmd = f"""
