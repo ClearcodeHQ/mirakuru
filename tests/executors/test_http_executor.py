@@ -3,7 +3,7 @@ import sys
 import socket
 from functools import partial
 from http.client import HTTPConnection, OK
-from typing import Dict, Any
+from typing import Dict, Any, Union
 from unittest.mock import patch
 
 import pytest
@@ -26,7 +26,7 @@ slow_server_executor = partial(  # pylint: disable=invalid-name
 )
 
 
-def connect_to_server():
+def connect_to_server() -> None:
     """Connect to http server and assert 200 response."""
     conn = HTTPConnection(HOST, PORT)
     conn.request("GET", "/")
@@ -34,7 +34,7 @@ def connect_to_server():
     conn.close()
 
 
-def test_executor_starts_and_waits():
+def test_executor_starts_and_waits() -> None:
     """Test if process awaits for HEAD request to be completed."""
     command = f'bash -c "sleep 3 && {HTTP_NORMAL_CMD}"'
 
@@ -51,7 +51,7 @@ def test_executor_starts_and_waits():
     assert command in str(executor)
 
 
-def test_shell_started_server_stops():
+def test_shell_started_server_stops() -> None:
     """Test if executor terminates properly executor with shell=True."""
     executor = HTTPExecutor(
         HTTP_NORMAL_CMD, f"http://{HOST}:{PORT}/", timeout=20, shell=True
@@ -71,7 +71,7 @@ def test_shell_started_server_stops():
 
 
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
-def test_slow_method_server_starting(method):
+def test_slow_method_server_starting(method: str) -> None:
     """
     Test whether or not executor awaits for slow starting servers.
 
@@ -92,7 +92,7 @@ def test_slow_method_server_starting(method):
         connect_to_server()
 
 
-def test_slow_post_payload_server_starting():
+def test_slow_post_payload_server_starting() -> None:
     """
     Test whether or not executor awaits for slow starting servers.
 
@@ -115,7 +115,7 @@ def test_slow_post_payload_server_starting():
 
 
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
-def test_slow_method_server_timed_out(method):
+def test_slow_method_server_timed_out(method: str) -> None:
     """Check if timeout properly expires."""
 
     http_method_slow_cmd = (
@@ -132,7 +132,7 @@ def test_slow_method_server_timed_out(method):
     assert "timed out after" in str(exc.value)
 
 
-def test_fail_if_other_running():
+def test_fail_if_other_running() -> None:
     """Test raising AlreadyRunning exception when port is blocked."""
     executor = HTTPExecutor(
         HTTP_NORMAL_CMD,
@@ -157,7 +157,7 @@ def test_fail_if_other_running():
 
 
 @patch.object(HTTPExecutor, "DEFAULT_PORT", PORT)
-def test_default_port():
+def test_default_port() -> None:
     """
     Test default port for the base TCP check.
 
@@ -190,7 +190,9 @@ def test_default_port():
         ("(200|404)", False),
     ),
 )
-def test_http_status_codes(accepted_status, expected_timeout):
+def test_http_status_codes(
+    accepted_status: Union[None, int, str], expected_timeout: bool
+) -> None:
     """
     Test how 'status' argument influences executor start.
 

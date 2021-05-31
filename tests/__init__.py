@@ -18,7 +18,7 @@ SAMPLE_DAEMON_PATH = path.join(TEST_PATH, "sample_daemon.py")
 HTTP_SERVER_CMD = f"{sys.executable} -m http.server"
 
 
-def ps_aux():
+def ps_aux() -> str:
     """
     Return output of systems `ps aux -w` call.
 

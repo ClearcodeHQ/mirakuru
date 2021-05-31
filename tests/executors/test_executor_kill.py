@@ -3,6 +3,7 @@
 import signal
 import time
 import sys
+from typing import NoReturn, Set
 
 import errno
 
@@ -20,7 +21,7 @@ from tests import SAMPLE_DAEMON_PATH, ps_aux, TEST_SERVER_PATH
 SLEEP_300 = "sleep 300"
 
 
-def test_custom_signal_kill():
+def test_custom_signal_kill() -> None:
     """Start process and shuts it down using signal SIGQUIT."""
     executor = SimpleExecutor(SLEEP_300, kill_signal=signal.SIGQUIT)
     executor.start()
@@ -29,7 +30,7 @@ def test_custom_signal_kill():
     assert executor.running() is False
 
 
-def test_kill_custom_signal_kill():
+def test_kill_custom_signal_kill() -> None:
     """Start process and shuts it down using signal SIGQUIT passed to kill."""
     executor = SimpleExecutor(SLEEP_300)
     executor.start()
@@ -38,14 +39,14 @@ def test_kill_custom_signal_kill():
     assert executor.running() is False
 
 
-def test_already_closed():
+def test_already_closed() -> None:
     """Check that the executor cleans after itself after it exited earlier."""
     with pytest.raises(ProcessFinishedWithError) as excinfo:
         with SimpleExecutor("python") as executor:
             assert executor.running()
             os.killpg(executor.process.pid, SIGKILL)
 
-            def process_stopped():
+            def process_stopped() -> bool:
                 """Return True only only when self.process is not running."""
                 return executor.running() is False
 
@@ -55,7 +56,7 @@ def test_already_closed():
     assert not executor.process
 
 
-def test_daemons_killing():
+def test_daemons_killing() -> None:
     """
     Test if all subprocesses of SimpleExecutor can be killed.
 
@@ -75,7 +76,7 @@ def test_daemons_killing():
     assert SAMPLE_DAEMON_PATH not in ps_aux()
 
 
-def test_stopping_brutally():
+def test_stopping_brutally() -> None:
     """
     Test if SimpleExecutor is stopping insubordinate process.
 
@@ -94,7 +95,7 @@ def test_stopping_brutally():
     assert stop_at <= time.time(), "Subprocess killed earlier than in 10 secs"
 
 
-def test_stopping_children_of_stopped_process():
+def test_stopping_children_of_stopped_process() -> None:
     """
     Check that children exiting between listing and killing are ignored.
 
@@ -108,14 +109,14 @@ def test_stopping_children_of_stopped_process():
         We ignore and skip OsError indicates there's no such process.
     """
     # pylint: disable=protected-access, missing-docstring
-    def raise_os_error(*_, **__):
+    def raise_os_error(*_: int, **__: int) -> NoReturn:
 
         os_error = OSError()
         os_error.errno = errno.ESRCH
         raise os_error
 
-    def processes_with_env_mock(*_, **__):
-        return [1]
+    def processes_with_env_mock(*_: str, **__: str) -> Set[int]:
+        return {1}
 
     with patch(
         "mirakuru.base.processes_with_env", new=processes_with_env_mock

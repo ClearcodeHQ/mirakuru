@@ -2,11 +2,19 @@
 
 from datetime import datetime, timedelta
 from time import sleep
+from typing import TypeVar, Callable, Type
 
 from mirakuru import ExecutorError
 
 
-def retry(func, timeout: int = 60, possible_exception=ExecutorError):
+T = TypeVar("T")
+
+
+def retry(
+    func: Callable[[], T],
+    timeout: int = 60,
+    possible_exception: Type[Exception] = ExecutorError,
+) -> T:
     """
     Attempt to retry the function for timeout time.
     """
@@ -21,7 +29,6 @@ def retry(func, timeout: int = 60, possible_exception=ExecutorError):
         except possible_exception as e:
             if time + timeout_diff < datetime.utcnow():
                 raise TimeoutError(
-                    "Faile after {i} attempts".format(i=i)
+                    "Failed after {i} attempts".format(i=i)
                 ) from e
             sleep(1)
-            pass

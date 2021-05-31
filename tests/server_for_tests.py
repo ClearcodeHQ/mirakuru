@@ -33,14 +33,14 @@ class SlowServerHandler(BaseHTTPRequestHandler):
     timeout = 2
     endtime = None
 
-    def do_GET(self):  # pylint:disable=invalid-name
+    def do_GET(self) -> None:  # pylint:disable=invalid-name
         """Serve GET request."""
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
         self.wfile.write(b"Hi. I am very slow.")
 
-    def do_HEAD(self):  # pylint:disable=invalid-name
+    def do_HEAD(self) -> None:  # pylint:disable=invalid-name
         """
         Serve HEAD request.
 
@@ -51,14 +51,14 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         self.timeout_status()
         self.end_headers()
 
-    def timeout_status(self):
+    def timeout_status(self) -> None:
         """Set proper response status based on timeout."""
         if self.count_timeout():
             self.send_response(200)
         else:
             self.send_response(500)
 
-    def count_timeout(self):  # pylint: disable=no-self-use
+    def count_timeout(self) -> bool:  # pylint: disable=no-self-use
         """Count down the timeout time."""
         if SlowServerHandler.endtime is None:
             SlowServerHandler.endtime = time.time() + SlowServerHandler.timeout
@@ -68,14 +68,14 @@ class SlowServerHandler(BaseHTTPRequestHandler):
 class SlowGetServerHandler(SlowServerHandler):
     """Responds only on GET after a while."""
 
-    def do_GET(self):  # pylint:disable=invalid-name
+    def do_GET(self) -> None:  # pylint:disable=invalid-name
         "Serve GET request."
         self.timeout_status()
         self.send_header("Content-type", "text/html")
         self.end_headers()
         self.wfile.write(b"Hi. I am very slow.")
 
-    def do_HEAD(self):  # pylint:disable=invalid-name
+    def do_HEAD(self) -> None:  # pylint:disable=invalid-name
         "Serve HEAD request."
         self.send_response(500)
         self.end_headers()
@@ -84,13 +84,13 @@ class SlowGetServerHandler(SlowServerHandler):
 class SlowPostServerHandler(SlowServerHandler):
     """Responds only on POST after a while."""
 
-    def do_POST(self):  # pylint:disable=invalid-name
+    def do_POST(self) -> None:  # pylint:disable=invalid-name
         "Serve POST request."
         self.timeout_status()
         self.end_headers()
         self.wfile.write(b"Hi. I am very slow.")
 
-    def do_HEAD(self):  # pylint:disable=invalid-name
+    def do_HEAD(self) -> None:  # pylint:disable=invalid-name
         "Serve HEAD request."
         self.send_response(500)
         self.end_headers()
@@ -99,7 +99,7 @@ class SlowPostServerHandler(SlowServerHandler):
 class SlowPostKeyServerHandler(SlowServerHandler):
     """Responds only on POST after a while."""
 
-    def do_POST(self):  # pylint:disable=invalid-name
+    def do_POST(self) -> None:  # pylint:disable=invalid-name
         "Serve POST request."
         content_len = int(self.headers.get("Content-Length"))
         post_body = self.rfile.read(content_len)
@@ -111,7 +111,7 @@ class SlowPostKeyServerHandler(SlowServerHandler):
         self.end_headers()
         self.wfile.write(b"Hi. I am very slow.")
 
-    def do_HEAD(self):  # pylint:disable=invalid-name
+    def do_HEAD(self) -> None:  # pylint:disable=invalid-name
         "Serve HEAD request."
         self.send_response(500)
         self.end_headers()
