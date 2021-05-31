@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+Misc
+++++
+
+- Use strictier mypy checks
+
 2.4.0
 ----------
 
