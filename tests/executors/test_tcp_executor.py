@@ -21,7 +21,7 @@ HTTP_SERVER = f"{HTTP_SERVER_CMD} {PORT}"
 NC_COMMAND = 'bash -c "sleep 2 && nc -lk 3000"'
 
 
-def test_start_and_wait(caplog: LogCaptureFixture):
+def test_start_and_wait(caplog: LogCaptureFixture) -> None:
     """Test if executor await for process to accept connections."""
     caplog.set_level(logging.DEBUG, logger="mirakuru")
     executor = TCPExecutor(NC_COMMAND, "localhost", port=3000, timeout=5)
@@ -30,7 +30,7 @@ def test_start_and_wait(caplog: LogCaptureFixture):
     executor.stop()
 
 
-def test_repr_and_str():
+def test_repr_and_str() -> None:
     """Check the proper str and repr conversion."""
     executor = TCPExecutor(NC_COMMAND, "localhost", port=3000, timeout=5)
     # check proper __str__ and __repr__ rendering:
@@ -38,7 +38,7 @@ def test_repr_and_str():
     assert NC_COMMAND in str(executor)
 
 
-def test_it_raises_error_on_timeout():
+def test_it_raises_error_on_timeout() -> None:
     """Check if TimeoutExpired gets raised correctly."""
     command = 'bash -c "sleep 10 && nc -lk 3000"'
     executor = TCPExecutor(command, host="localhost", port=3000, timeout=2)
@@ -49,7 +49,7 @@ def test_it_raises_error_on_timeout():
     assert executor.running() is False
 
 
-def test_fail_if_other_executor_running():
+def test_fail_if_other_executor_running() -> None:
     """Test raising AlreadyRunning exception."""
     executor = TCPExecutor(HTTP_SERVER, host="localhost", port=PORT)
     executor2 = TCPExecutor(HTTP_SERVER, host="localhost", port=PORT)

@@ -39,7 +39,7 @@ class HTTPExecutor(TCPExecutor):
         self,
         command: Union[str, List[str], Tuple[str, ...]],
         url: str,
-        status: str = r"^2\d\d$",
+        status: Union[str, int] = r"^2\d\d$",
         method: str = "HEAD",
         payload: Optional[Dict[str, str]] = None,
         headers: Optional[Dict[str, str]] = None,

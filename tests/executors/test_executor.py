@@ -6,6 +6,7 @@ import signal
 from subprocess import check_output
 import uuid
 from unittest import mock
+from typing import Union, List
 
 import pytest
 
@@ -20,7 +21,7 @@ SLEEP_300 = "sleep 300"
 
 
 @pytest.mark.parametrize("command", (SLEEP_300, SLEEP_300.split()))
-def test_running_process(command):
+def test_running_process(command: Union[str, List[str]]) -> None:
     """Start process and shuts it down."""
     executor = SimpleExecutor(command)
     executor.start()
@@ -34,7 +35,7 @@ def test_running_process(command):
 
 
 @pytest.mark.parametrize("command", (SLEEP_300, SLEEP_300.split()))
-def test_command(command):
+def test_command(command: Union[str, List[str]]) -> None:
     """Check that the command and command parts are equivalent."""
 
     executor = SimpleExecutor(command)
@@ -42,7 +43,7 @@ def test_command(command):
     assert executor.command_parts == SLEEP_300.split()
 
 
-def test_custom_signal_stop():
+def test_custom_signal_stop() -> None:
     """Start process and shuts it down using signal SIGQUIT."""
     executor = SimpleExecutor(SLEEP_300, stop_signal=signal.SIGQUIT)
     executor.start()
@@ -51,7 +52,7 @@ def test_custom_signal_stop():
     assert executor.running() is False
 
 
-def test_stop_custom_signal_stop():
+def test_stop_custom_signal_stop() -> None:
     """Start process and shuts it down using signal SIGQUIT passed to stop."""
     executor = SimpleExecutor(SLEEP_300)
     executor.start()
@@ -60,7 +61,7 @@ def test_stop_custom_signal_stop():
     assert executor.running() is False
 
 
-def test_stop_custom_exit_signal_stop():
+def test_stop_custom_exit_signal_stop() -> None:
     """Start process and expect it to finish with custom signal."""
     executor = SimpleExecutor("false", shell=True)
     executor.start()
@@ -73,7 +74,7 @@ def test_stop_custom_exit_signal_stop():
     assert executor.running() is False
 
 
-def test_stop_custom_exit_signal_context():
+def test_stop_custom_exit_signal_context() -> None:
     """Start process and expect custom exit signal in context manager."""
     with SimpleExecutor(
         "false", expected_returncode=-3, shell=True
@@ -82,7 +83,7 @@ def test_stop_custom_exit_signal_context():
         assert executor.running() is False
 
 
-def test_running_context():
+def test_running_context() -> None:
     """Start process and shuts it down."""
     executor = SimpleExecutor(SLEEP_300)
     with executor:
@@ -91,13 +92,13 @@ def test_running_context():
     assert executor.running() is False
 
 
-def test_executor_in_context_only():
+def test_executor_in_context_only() -> None:
     """Start process and shuts it down only in context."""
     with SimpleExecutor(SLEEP_300) as executor:
         assert executor.running() is True
 
 
-def test_context_stopped():
+def test_context_stopped() -> None:
     """Start for context, and shuts it for nested context."""
     executor = SimpleExecutor(SLEEP_300)
     with executor:
@@ -113,7 +114,7 @@ ECHO_FOOBAR = 'echo "foobar"'
 
 
 @pytest.mark.parametrize("command", (ECHO_FOOBAR, shlex.split(ECHO_FOOBAR)))
-def test_process_output(command):
+def test_process_output(command: Union[str, List[str]]) -> None:
     """Start process, check output and shut it down."""
     executor = SimpleExecutor(command)
     executor.start()
@@ -123,7 +124,7 @@ def test_process_output(command):
 
 
 @pytest.mark.parametrize("command", (ECHO_FOOBAR, shlex.split(ECHO_FOOBAR)))
-def test_process_output_shell(command):
+def test_process_output_shell(command: Union[str, List[str]]) -> None:
     """Start process, check output and shut it down with shell set to True."""
     executor = SimpleExecutor(command, shell=True)
     executor.start()
@@ -132,7 +133,7 @@ def test_process_output_shell(command):
     executor.stop()
 
 
-def test_start_check_executor():
+def test_start_check_executor() -> None:
     """Validate Executor base class having NotImplemented methods."""
     executor = Executor(SLEEP_300)
     with pytest.raises(NotImplementedError):
@@ -141,7 +142,7 @@ def test_start_check_executor():
         executor.after_start_check()
 
 
-def test_stopping_not_yet_running_executor():
+def test_stopping_not_yet_running_executor() -> None:
     """
     Test if SimpleExecutor can be stopped even it was never running.
 
@@ -155,7 +156,7 @@ def test_stopping_not_yet_running_executor():
     executor.stop()
 
 
-def test_forgotten_stop():
+def test_forgotten_stop() -> None:
     """
     Test if SimpleExecutor subprocess is killed after an instance is deleted.
 
@@ -183,7 +184,7 @@ def test_forgotten_stop():
     ), "The test process should not be running at this point."
 
 
-def test_executor_raises_if_process_exits_with_error():
+def test_executor_raises_if_process_exits_with_error() -> None:
     """
     Test process exit detection.
 
@@ -211,10 +212,10 @@ def test_executor_raises_if_process_exits_with_error():
 
     # Pre-start check should have been called - after-start check might or
     # might not have been called - depending on the timing.
-    assert failing_executor.pre_start_check.called is True  # type: ignore
+    assert failing_executor.pre_start_check.called is True
 
 
-def test_executor_ignores_processes_exiting_with_0():
+def test_executor_ignores_processes_exiting_with_0() -> None:
     """
     Test process exit detection.
 
@@ -232,11 +233,11 @@ def test_executor_ignores_processes_exiting_with_0():
         executor.start()
 
     # Both checks should have been called.
-    assert executor.pre_start_check.called is True  # type: ignore
-    assert executor.after_start_check.called is True  # type: ignore
+    assert executor.pre_start_check.called is True
+    assert executor.after_start_check.called is True
 
 
-def test_executor_methods_returning_self():
+def test_executor_methods_returning_self() -> None:
     """Test if SimpleExecutor lets to chain start, stop and kill methods."""
     executor = SimpleExecutor(SLEEP_300).start().stop().kill().stop()
     assert not executor.running()
@@ -251,7 +252,7 @@ def test_executor_methods_returning_self():
     assert SimpleExecutor(SLEEP_300).start().stop().output
 
 
-def test_mirakuru_cleanup():
+def test_mirakuru_cleanup() -> None:
     """Test if cleanup_subprocesses is fired correctly on python exit."""
     cmd = f"""
         python -c 'from mirakuru import SimpleExecutor;

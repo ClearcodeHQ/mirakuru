@@ -101,7 +101,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         sleep: float = 0.1,
         stop_signal: int = signal.SIGTERM,
         kill_signal: int = SIGKILL,
-        expected_returncode: int = None,
+        expected_returncode: Optional[int] = None,
         envvars: Optional[Dict[str, str]] = None,
         stdin: Union[None, int, IO[Any]] = subprocess.PIPE,
         stdout: Union[None, int, IO[Any]] = subprocess.PIPE,
@@ -310,8 +310,8 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
     def stop(
         self: SimpleExecutorType,
-        stop_signal: int = None,
-        expected_returncode: int = None,
+        stop_signal: Optional[int] = None,
+        expected_returncode: Optional[int] = None,
     ) -> SimpleExecutorType:
         """
         Stop process running.
@@ -358,7 +358,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         if self.process is None:
             # the process has already been force killed and cleaned up by the
             # `wait_for` above.
-            return self
+            return self  # type: ignore[unreachable]
         self._kill_all_kids(stop_signal)
         exit_code = self.process.wait()
         self._clear_process()
