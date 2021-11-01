@@ -2,7 +2,7 @@
 psutil==5.8.0
 pytest==6.2.5  # tests framework used
 pytest-cov==3.0.0  # coverage reports to verify tests quality
-coverage==6.0.2 # pytest-cov
+coverage==6.1.1 # pytest-cov
 python-daemon==2.3.0  # used in test for easy creation of daemons
 docutils  # needed for python-daemon
 -e .[tests]
