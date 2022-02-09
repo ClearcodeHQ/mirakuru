@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+Misc
+++++
+
++ Added Python 3.10 to classifiers
+
 2.4.1
 ----------
 
