@@ -3,6 +3,6 @@ pycodestyle==2.8.0
 pydocstyle==6.1.1
 pygments
 restructuredtext-lint==1.4.0
-mypy==0.942
+mypy==0.950
 black==22.3.0
 -r requirements-test.txt
