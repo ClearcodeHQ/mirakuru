@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+.. towncrier release notes start
+
 2.4.2
 ----------
 
