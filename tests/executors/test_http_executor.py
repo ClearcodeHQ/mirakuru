@@ -144,7 +144,6 @@ def test_fail_if_other_running() -> None:
     )
 
     with executor:
-
         assert executor.running() is True
 
         with pytest.raises(AlreadyRunning):

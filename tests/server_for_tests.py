@@ -125,7 +125,6 @@ HANDLERS = {
 }
 
 if __name__ == "__main__":
-
     HOST, PORT, IMMORTAL, METHOD = "127.0.0.1", "8000", "False", "HEAD"
     if len(sys.argv) >= 2:
         HOST, PORT = sys.argv[1].split(":")
