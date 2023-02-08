@@ -12,8 +12,11 @@ on:
 
 jobs:
   macostests:
-    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v1.3.1
+    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v1.6.4
     with:
+      pipenv: true
+      pipenv-install-options: "--skip-lock"
       python-versions: '["3.7", "3.8", "3.9", "3.10", "pypy-3.8"]'
-      cover_package: src/mirakuru
       os: macos-latest
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
