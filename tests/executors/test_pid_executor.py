@@ -76,7 +76,6 @@ def test_fail_if_other_executor_running() -> None:
     executor2 = PidExecutor(process, FILENAME)
 
     with executor:
-
         assert executor.running() is True
 
         with pytest.raises(AlreadyRunning):

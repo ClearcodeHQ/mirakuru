@@ -108,9 +108,9 @@ def test_stopping_children_of_stopped_process() -> None:
     Then:
         We ignore and skip OsError indicates there's no such process.
     """
+
     # pylint: disable=protected-access, missing-docstring
     def raise_os_error(*_: int, **__: int) -> NoReturn:
-
         os_error = OSError()
         os_error.errno = errno.ESRCH
         raise os_error

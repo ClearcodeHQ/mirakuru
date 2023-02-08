@@ -55,7 +55,6 @@ def test_fail_if_other_executor_running() -> None:
     executor2 = TCPExecutor(HTTP_SERVER, host="localhost", port=PORT)
 
     with executor:
-
         assert executor.running() is True
 
         with pytest.raises(AlreadyRunning):
