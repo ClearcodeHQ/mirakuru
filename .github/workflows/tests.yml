@@ -3,10 +3,6 @@ name: Run tests
 on:
   push:
     branches: [ main ]
-    paths:
-      - '**.py'
-      - .github/workflows/tests.yml
-      - requirements-test.txt
   pull_request:
     branches: [ main ]
 
@@ -16,6 +12,16 @@ jobs:
     with:
       pipenv: true
       pipenv-install-options: "--skip-lock"
-      python-versions: '["3.7", "3.8", "3.9", "3.10", "pypy-3.8"]'
+      python-versions: '["3.7", "3.8", "3.9", "3.10", "3.11", "pypy-3.8"]'
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+  macostests:
+    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v1.6.4
+    needs: [tests]
+    with:
+      pipenv: true
+      pipenv-install-options: "--skip-lock"
+      python-versions: '["3.8", "3.9", "3.10", "3.11" , "pypy-3.8"]'
+      os: macos-latest
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
