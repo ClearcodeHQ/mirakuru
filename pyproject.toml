@@ -1,11 +1,53 @@
+[project]
+name = "mirakuru"
+version = "2.4.2"
+description = "Process executor (not only) for tests."
+readme = "README.rst"
+keywords = ["process", "executor", "tests", "orchestration"]
+license = {file = "LICENSE"}
+authors = [
+    {name = "Grzegorz Śliwiński", email = "fizyk+pypi@fizyk.dev"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    # psutil is used to find processes leaked during termination.
+    # It runs on many platforms but not Cygwin:
+    # <https://github.com/giampaolo/psutil/issues/82>.
+    "psutil>=4.0.0; sys_platform != 'cygwin'",
+]
+requires-python = ">= 3.7"
+
+[project.urls]
+"Source" = "https://github.com/ClearcodeHQ/mirakuru"
+"Bug Tracker" = "https://github.com/ClearcodeHQ/mirakuru/issues"
+"Changelog" = "https://github.com/ClearcodeHQ/mirakuru/blob/v2.4.2/CHANGES.rst"
+
 [build-system]
-requires = ["setuptools >= 40.6.0", "wheel"]
+requires = ["setuptools >= 61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.black]
-line-length = 80
-target-version = ['py38']
-include = '.*\.pyi?$'
+[tool.setuptools]
+zip-safe = true
+
+[tool.setuptools.packages.find]
+include = ["mirakuru*"]
+exclude = ["tests*"]
+namespaces = false
 
 [tool.towncrier]
 directory = "newsfragments"
@@ -28,3 +70,15 @@ showcontent = true
 [tool.towncrier.fragment.misc]
 name = "Miscellaneus"
 showcontent = true
+
+[tool.pytest.ini_options]
+filterwarnings = "error"
+xfail_strict = "True"
+
+[tool.pydocstyle]
+ignore = "D203,D212"
+
+[tool.black]
+line-length = 80
+target-version = ['py38']
+include = '.*\.pyi?$'

@@ -1,4 +1,4 @@
-"""Small retry callable in case of specific error occured"""
+"""Small retry callable in case of specific error occurred."""
 
 from datetime import datetime, timedelta
 from time import sleep
@@ -15,9 +15,7 @@ def retry(
     timeout: int = 60,
     possible_exception: Type[Exception] = ExecutorError,
 ) -> T:
-    """
-    Attempt to retry the function for timeout time.
-    """
+    """Attempt to retry the function for timeout time."""
     time: datetime = datetime.utcnow()
     timeout_diff: timedelta = timedelta(seconds=timeout)
     i = 0
