@@ -18,6 +18,7 @@ restructuredtext-lint = "==1.4.0"
 mypy = "==1.0.0"
 black = "==23.1.0"
 pygments = "==2.14"
+tbump = "==6.9.0"
 
 [requires]
 python_version = "3.11"
