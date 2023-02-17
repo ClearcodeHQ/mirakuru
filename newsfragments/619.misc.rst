@@ -1,1 +1,0 @@
-Use shared automerge flow and github app.

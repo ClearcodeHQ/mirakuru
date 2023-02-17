@@ -1,1 +1,0 @@
-Moved Development dependency management to pipfile/pipenv
