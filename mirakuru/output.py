@@ -128,7 +128,7 @@ class OutputExecutor(SimpleExecutor):
         return self
 
     def _wait_for_darwin_output(self, *fds: Optional[IO[Any]]) -> bool:
-        """Select implementation to be used on MacOSX"""
+        """Select implementation to be used on MacOSX."""
         rlist, _, _ = select.select(fds, [], [], 0)
         for output in rlist:
             line = output.readline()
