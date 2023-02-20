@@ -35,7 +35,7 @@ Misc
 =====
 
 Misc
-++++
+----
 
 - Use strictier mypy checks
 
@@ -55,7 +55,7 @@ Features
 =====
 
 Misc
-++++
+----
 
 - Moved CI to Github Actions
 - Blackified codebase
