@@ -10,7 +10,7 @@ psutil = "==5.9.4"
 towncrier = "==22.12"
 pytest = "==7.2.1"
 pytest-cov = "==4.0.0"
-coverage = "==7.2.0"
+coverage = "==7.2.1"
 python-daemon = "==2.3.2"
 pycodestyle = "==2.10.0"
 pydocstyle = {version = "==6.3.0", extras = ["toml"]}
