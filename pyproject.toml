@@ -1,6 +1,6 @@
 [project]
 name = "mirakuru"
-version = "2.5.0"
+version = "2.5.1"
 description = "Process executor (not only) for tests."
 readme = "README.rst"
 keywords = ["process", "executor", "tests", "orchestration"]
@@ -35,7 +35,7 @@ requires-python = ">= 3.7"
 [project.urls]
 "Source" = "https://github.com/ClearcodeHQ/mirakuru"
 "Bug Tracker" = "https://github.com/ClearcodeHQ/mirakuru/issues"
-"Changelog" = "https://github.com/ClearcodeHQ/mirakuru/blob/v2.5.0/CHANGES.rst"
+"Changelog" = "https://github.com/ClearcodeHQ/mirakuru/blob/v2.5.1/CHANGES.rst"
 
 [build-system]
 requires = ["setuptools >= 61.0.0", "wheel"]
@@ -89,7 +89,7 @@ include = '.*\.pyi?$'
 # github_url = "https://github.com/<user or organization>/<project>/"
 
 [tool.tbump.version]
-current = "2.5.0"
+current = "2.5.1"
 
 # Example of a semver regexp.
 # Make sure this matches current_version before

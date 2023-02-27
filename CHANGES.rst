@@ -3,6 +3,15 @@ CHANGELOG
 
 .. towncrier release notes start
 
+2.5.1 (2023-02-27)
+==================
+
+Bugfixes
+--------
+
+- Include py.typed to the package published on pypi (`#633 <https://https://github.com/ClearcodeHQ/mirakuru/issues/633>`_)
+
+
 2.5.0 (2023-02-17)
 ==================
 
