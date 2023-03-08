@@ -101,7 +101,7 @@ class SlowPostKeyServerHandler(SlowServerHandler):
 
     def do_POST(self) -> None:  # pylint:disable=invalid-name
         """Serve POST request."""
-        content_len = int(self.headers.get("Content-Length"))
+        content_len = int(self.headers["Content-Length"])
         post_body = self.rfile.read(content_len)
         form = parse_qs(post_body)
         if form.get(b"key") == [b"hole"]:
