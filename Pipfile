@@ -15,7 +15,7 @@ python-daemon = "==3.0.1"
 pycodestyle = "==2.10.0"
 pydocstyle = {version = "==6.3.0", extras = ["toml"]}
 restructuredtext-lint = "==1.4.0"
-mypy = "==1.1.1"
+mypy = "==1.2.0"
 black = "==23.3.0"
 pygments = "==2.14"
 tbump = "==6.9.0"
