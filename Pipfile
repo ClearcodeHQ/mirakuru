@@ -8,7 +8,7 @@ psutil = "==5.9.4"
 
 [dev-packages]
 towncrier = "==22.12"
-pytest = "==7.2.2"
+pytest = "==7.3.0"
 pytest-cov = "==4.0.0"
 coverage = "==7.2.3"
 python-daemon = "==3.0.1"
