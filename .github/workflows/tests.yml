@@ -8,7 +8,7 @@ on:
 
 jobs:
   tests:
-    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v1.7.1
+    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v2.1.2
     with:
       pipenv: true
       pipenv-install-options: "--skip-lock"
@@ -16,7 +16,7 @@ jobs:
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   macostests:
-    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v1.7.1
+    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v2.1.2
     needs: [tests]
     with:
       pipenv: true
