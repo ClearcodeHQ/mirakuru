@@ -7,7 +7,7 @@ name = "pypi"
 psutil = "==5.9.5"
 
 [dev-packages]
-towncrier = "==22.12"
+towncrier = "==23.6.0"
 pytest = "==7.3.1"
 pytest-cov = "==4.1.0"
 coverage = "==7.2.7"
