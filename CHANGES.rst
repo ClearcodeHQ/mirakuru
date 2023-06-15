@@ -9,7 +9,7 @@ CHANGELOG
 Bugfixes
 --------
 
-- Include py.typed to the package published on pypi (`#633 <https://https://github.com/ClearcodeHQ/mirakuru/issues/633>`_)
+- Include py.typed to the package published on pypi (`#633 <https://github.com/ClearcodeHQ/mirakuru/issues/633>`_)
 
 
 2.5.0 (2023-02-17)
@@ -18,18 +18,18 @@ Bugfixes
 Features
 --------
 
-- Support Python 3.11 (`#617 <https://https://github.com/ClearcodeHQ/mirakuru/issues/617>`_)
+- Support Python 3.11 (`#617 <https://github.com/ClearcodeHQ/mirakuru/issues/617>`_)
 
 
 Miscellaneus
 ------------
 
-- Reformatted code with black 23 (`#613 <https://https://github.com/ClearcodeHQ/mirakuru/issues/613>`_)
-- Introduce towncrier as changelog management too. (`#615 <https://https://github.com/ClearcodeHQ/mirakuru/issues/615>`_)
-- Moved Development dependency management to pipfile/pipenv (`#616 <https://https://github.com/ClearcodeHQ/mirakuru/issues/616>`_)
-- Move package definition into the pyproject.toml file (`#618 <https://https://github.com/ClearcodeHQ/mirakuru/issues/618>`_)
-- Use shared automerge flow and github app. (`#619 <https://https://github.com/ClearcodeHQ/mirakuru/issues/619>`_)
-- Use tbump to manage versioning (`#628 <https://https://github.com/ClearcodeHQ/mirakuru/issues/628>`_)
+- Reformatted code with black 23 (`#613 <https://github.com/ClearcodeHQ/mirakuru/issues/613>`_)
+- Introduce towncrier as changelog management too. (`#615 <https://github.com/ClearcodeHQ/mirakuru/issues/615>`_)
+- Moved Development dependency management to pipfile/pipenv (`#616 <https://github.com/ClearcodeHQ/mirakuru/issues/616>`_)
+- Move package definition into the pyproject.toml file (`#618 <https://github.com/ClearcodeHQ/mirakuru/issues/618>`_)
+- Use shared automerge flow and github app. (`#619 <https://github.com/ClearcodeHQ/mirakuru/issues/619>`_)
+- Use tbump to manage versioning (`#628 <https://github.com/ClearcodeHQ/mirakuru/issues/628>`_)
 
 
 2.4.2
