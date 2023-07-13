@@ -16,9 +16,6 @@ pycodestyle = "==2.10.0"
 pydocstyle = {version = "==6.3.0", extras = ["toml"]}
 restructuredtext-lint = "==1.4.0"
 mypy = "==1.4.1"
-black = "==23.7.0"
+black = {version = "==23.7.0", markers="python_version >= '3.8'"}
 pygments = "==2.15.1"
 tbump = "==6.10.0"
-
-[requires]
-python_version = "3.11"
