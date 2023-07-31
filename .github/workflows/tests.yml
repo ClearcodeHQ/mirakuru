@@ -11,7 +11,7 @@ jobs:
     uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v2.2.1
     with:
       pipenv-install-options: "--skip-lock"
-      python-versions: '["3.7", "3.8", "3.9", "3.10", "3.11", "pypy-3.8"]'
+      python-versions: '["3.8", "3.9", "3.10", "3.11", "pypy-3.8"]'
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   macostests:
