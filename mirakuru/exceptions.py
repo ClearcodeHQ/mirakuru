@@ -1,6 +1,6 @@
 """Mirakuru exceptions."""
 
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:  # pragma: no cover
     from mirakuru.base import SimpleExecutor  # pylint:disable=cyclic-import
@@ -10,8 +10,7 @@ class ExecutorError(Exception):
     """Base exception for executor failures."""
 
     def __init__(self, executor: "SimpleExecutor") -> None:
-        """
-        Exception initialization.
+        """Exception initialization.
 
         :param mirakuru.base.SimpleExecutor executor: for which exception
             occurred
@@ -26,8 +25,7 @@ class TimeoutExpired(ExecutorError):
     def __init__(
         self, executor: "SimpleExecutor", timeout: Union[int, float]
     ) -> None:
-        """
-        Exception initialization with an extra ``timeout`` argument.
+        """Exception initialization with an extra ``timeout`` argument.
 
         :param mirakuru.base.SimpleExecutor executor: for which exception
             occurred
@@ -37,8 +35,7 @@ class TimeoutExpired(ExecutorError):
         self.timeout = timeout
 
     def __str__(self) -> str:
-        """
-        Return Exception's string representation.
+        """Return Exception's string representation.
 
         :returns: string representation
         :rtype: str
@@ -49,16 +46,14 @@ class TimeoutExpired(ExecutorError):
 
 
 class AlreadyRunning(ExecutorError):
-    """
-    Is raised when the executor seems to be already running.
+    """Is raised when the executor seems to be already running.
 
     When some other process (not necessary executor) seems to be started with
     same configuration we can't bind to same port.
     """
 
     def __str__(self) -> str:
-        """
-        Return Exception's string representation.
+        """Return Exception's string representation.
 
         :returns: string representation
         :rtype: str
@@ -78,8 +73,7 @@ class AlreadyRunning(ExecutorError):
 
 
 class ProcessExitedWithError(ExecutorError):
-    """
-    Raised when the process invoked by the executor returns a non-zero code.
+    """Raised when the process invoked by the executor returns a non-zero code.
 
     We allow the process to exit with zero because we support daemonizing
     subprocesses. We assume that when double-forking, the parent process will
@@ -87,8 +81,7 @@ class ProcessExitedWithError(ExecutorError):
     """
 
     def __init__(self, executor: "SimpleExecutor", exit_code: int) -> None:
-        """
-        Exception initialization with an extra ``exit_code`` argument.
+        """Exception initialization with an extra ``exit_code`` argument.
 
         :param mirakuru.base.SimpleExecutor executor: for which exception
             occurred
@@ -98,8 +91,7 @@ class ProcessExitedWithError(ExecutorError):
         self.exit_code = exit_code
 
     def __str__(self) -> str:
-        """
-        Return Exception's string representation.
+        """Return Exception's string representation.
 
         :returns: string representation
         :rtype: str
@@ -111,8 +103,7 @@ class ProcessExitedWithError(ExecutorError):
 
 
 class ProcessFinishedWithError(ProcessExitedWithError):
-    """
-    Raised when the process invoked by the executor fails when stopping.
+    """Raised when the process invoked by the executor fails when stopping.
 
     When a process is stopped, it should shut down cleanly and return zero as
     exit code. When is returns a non-zero exit code, this exception is raised.

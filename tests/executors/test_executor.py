@@ -3,17 +3,16 @@
 import gc
 import shlex
 import signal
-from subprocess import check_output
 import uuid
+from subprocess import check_output
+from typing import List, Union
 from unittest import mock
-from typing import Union, List
 
 import pytest
 
 from mirakuru import Executor
 from mirakuru.base import SimpleExecutor
 from mirakuru.exceptions import ProcessExitedWithError, TimeoutExpired
-
 from tests import SAMPLE_DAEMON_PATH, ps_aux
 from tests.retry import retry
 
@@ -37,7 +36,6 @@ def test_running_process(command: Union[str, List[str]]) -> None:
 @pytest.mark.parametrize("command", (SLEEP_300, SLEEP_300.split()))
 def test_command(command: Union[str, List[str]]) -> None:
     """Check that the command and command parts are equivalent."""
-
     executor = SimpleExecutor(command)
     assert executor.command == SLEEP_300
     assert executor.command_parts == SLEEP_300.split()
@@ -143,8 +141,7 @@ def test_start_check_executor() -> None:
 
 
 def test_stopping_not_yet_running_executor() -> None:
-    """
-    Test if SimpleExecutor can be stopped even it was never running.
+    """Test if SimpleExecutor can be stopped even it was never running.
 
     We must make sure that it's possible to call .stop() and SimpleExecutor
     will not raise any exception and .start() can be called afterwards.
@@ -157,8 +154,7 @@ def test_stopping_not_yet_running_executor() -> None:
 
 
 def test_forgotten_stop() -> None:
-    """
-    Test if SimpleExecutor subprocess is killed after an instance is deleted.
+    """Test if SimpleExecutor subprocess is killed after an instance is deleted.
 
     Existence can end because of context scope end or by calling 'del'.
     If someone forgot to stop() or kill() subprocess it should be killed
@@ -185,8 +181,7 @@ def test_forgotten_stop() -> None:
 
 
 def test_executor_raises_if_process_exits_with_error() -> None:
-    """
-    Test process exit detection.
+    """Test process exit detection.
 
     If the process exits with an error while checks are being polled, executor
     should raise an exception.
@@ -216,8 +211,7 @@ def test_executor_raises_if_process_exits_with_error() -> None:
 
 
 def test_executor_ignores_processes_exiting_with_0() -> None:
-    """
-    Test process exit detection.
+    """Test process exit detection.
 
     Subprocess exiting with zero should be tolerated in order to support
     double-forking applications.

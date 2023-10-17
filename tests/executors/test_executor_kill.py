@@ -1,22 +1,19 @@
 # mypy: no-strict-optional
 """Tests that check various kill behaviours."""
-import signal
-import time
-import sys
-from typing import NoReturn, Set
-
 import errno
-
 import os
+import signal
+import sys
+import time
+from typing import NoReturn, Set
 from unittest.mock import patch
 
 import pytest
 
-from mirakuru import SimpleExecutor, HTTPExecutor
+from mirakuru import HTTPExecutor, SimpleExecutor
 from mirakuru.compat import SIGKILL
 from mirakuru.exceptions import ProcessFinishedWithError
-
-from tests import SAMPLE_DAEMON_PATH, ps_aux, TEST_SERVER_PATH
+from tests import SAMPLE_DAEMON_PATH, TEST_SERVER_PATH, ps_aux
 
 SLEEP_300 = "sleep 300"
 
@@ -57,8 +54,7 @@ def test_already_closed() -> None:
 
 
 def test_daemons_killing() -> None:
-    """
-    Test if all subprocesses of SimpleExecutor can be killed.
+    """Test if all subprocesses of SimpleExecutor can be killed.
 
     The most problematic subprocesses are daemons or other services that
     change the process group ID. This test verifies that daemon process
@@ -77,8 +73,7 @@ def test_daemons_killing() -> None:
 
 
 def test_stopping_brutally() -> None:
-    """
-    Test if SimpleExecutor is stopping insubordinate process.
+    """Test if SimpleExecutor is stopping insubordinate process.
 
     Check if the process that doesn't react to SIGTERM signal will be killed
     by executor with SIGKILL automatically.
@@ -96,8 +91,7 @@ def test_stopping_brutally() -> None:
 
 
 def test_stopping_children_of_stopped_process() -> None:
-    """
-    Check that children exiting between listing and killing are ignored.
+    """Check that children exiting between listing and killing are ignored.
 
     Given:
         Executor is running and it's process spawn children,

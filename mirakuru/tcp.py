@@ -18,14 +18,13 @@
 """TCP executor definition."""
 
 import socket
-from typing import Union, List, Tuple, Any
+from typing import Any, List, Tuple, Union
 
 from mirakuru.base import Executor
 
 
 class TCPExecutor(Executor):
-    """
-    TCP-listening process executor.
+    """TCP-listening process executor.
 
     Used to start (and wait to actually be running) processes that can accept
     TCP connections.
@@ -38,8 +37,7 @@ class TCPExecutor(Executor):
         port: int,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize TCPExecutor executor.
+        """Initialize TCPExecutor executor.
 
         :param (str, list) command: command to be run by the subprocess
         :param str host: host under which process is accessible
@@ -61,8 +59,7 @@ class TCPExecutor(Executor):
         """Port number, process is listening on."""
 
     def pre_start_check(self) -> bool:
-        """
-        Check if process accepts connections.
+        """Check if process accepts connections.
 
         .. note::
 
@@ -80,8 +77,7 @@ class TCPExecutor(Executor):
             sock.close()
 
     def after_start_check(self) -> bool:
-        """
-        Check if process accepts connections.
+        """Check if process accepts connections.
 
         .. note::
 

@@ -18,40 +18,40 @@
 """Executor with the core functionality."""
 
 import atexit
-from contextlib import contextmanager
+import errno
 import logging
 import os
+import platform
 import shlex
 import signal
 import subprocess
 import time
 import uuid
-import errno
-import platform
+from contextlib import contextmanager
 from types import TracebackType
 from typing import (
-    Union,
     IO,
     Any,
-    List,
-    Tuple,
-    Optional,
-    Dict,
-    TypeVar,
-    Type,
-    Set,
-    Iterator,
     Callable,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
 )
 
 from mirakuru.base_env import processes_with_env
+from mirakuru.compat import SIGKILL
 from mirakuru.exceptions import (
     AlreadyRunning,
     ProcessExitedWithError,
     ProcessFinishedWithError,
     TimeoutExpired,
 )
-from mirakuru.compat import SIGKILL
 
 LOG = logging.getLogger(__name__)
 
@@ -75,8 +75,9 @@ def cleanup_subprocesses() -> None:
     """On python exit: find possibly running subprocesses and kill them."""
     # atexit functions tends to loose global imports sometimes so reimport
     # everything what is needed again here:
-    import os
     import errno
+    import os
+
     from mirakuru.base_env import processes_with_env
     from mirakuru.compat import SIGKILL
 
@@ -107,8 +108,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         stdout: Union[None, int, IO[Any]] = subprocess.PIPE,
         stderr: Union[None, int, IO[Any]] = None,
     ) -> None:
-        """
-        Initialize executor.
+        """Initialize executor.
 
         :param (str, list) command: command to be run by the subprocess
         :param str cwd: current working directory to be set for executor
@@ -172,8 +172,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._uuid = f"{os.getpid()}:{uuid.uuid4()}"
 
     def __enter__(self: SimpleExecutorType) -> SimpleExecutorType:
-        """
-        Enter context manager starting the subprocess.
+        """Enter context manager starting the subprocess.
 
         :returns: itself
         :rtype: SimpleExecutor
@@ -190,8 +189,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self.stop()
 
     def running(self) -> bool:
-        """
-        Check if executor is running.
+        """Check if executor is running.
 
         :returns: True if process is running, False otherwise
         :rtype: bool
@@ -203,8 +201,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
     @property
     def _popen_kwargs(self) -> Dict[str, Any]:
-        """
-        Get kwargs for the process instance.
+        """Get kwargs for the process instance.
 
         .. note::
             We want to open ``stdin``, ``stdout`` and ``stderr`` as text
@@ -247,8 +244,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         return kwargs
 
     def start(self: SimpleExecutorType) -> SimpleExecutorType:
-        """
-        Start defined process.
+        """Start defined process.
 
         After process gets started, timeout countdown begins as well.
 
@@ -270,8 +266,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._endtime = time.time() + self._timeout
 
     def _clear_process(self) -> None:
-        """
-        Close stdin/stdout of subprocess.
+        """Close stdin/stdout of subprocess.
 
         It is required because of ResourceWarning in Python 3.
         """
@@ -282,8 +277,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         self._endtime = None
 
     def _kill_all_kids(self, sig: int) -> Set[int]:
-        """
-        Kill all subprocesses (and its subprocesses) that executor started.
+        """Kill all subprocesses (and its subprocesses) that executor started.
 
         This function tries to kill all leftovers in process tree that current
         executor may have left. It uses environment variable to recognise if
@@ -313,8 +307,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         stop_signal: Optional[int] = None,
         expected_returncode: Optional[int] = None,
     ) -> SimpleExecutorType:
-        """
-        Stop process running.
+        """Stop process running.
 
         Wait 10 seconds for the process to end, then just kill it.
 
@@ -378,8 +371,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
 
     @contextmanager
     def stopped(self: SimpleExecutorType) -> Iterator[SimpleExecutorType]:
-        """
-        Stop process for given context and starts it afterwards.
+        """Stop process for given context and starts it afterwards.
 
         Allows for easier writing resistance integration tests whenever one of
         the service fails.
@@ -394,8 +386,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
     def kill(
         self: SimpleExecutorType, wait: bool = True, sig: Optional[int] = None
     ) -> SimpleExecutorType:
-        """
-        Kill the process if running.
+        """Kill the process if running.
 
         :param bool wait: set to `True` to wait for the process to end,
             or False, to simply proceed after sending signal.
@@ -430,8 +421,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
     def wait_for(
         self: SimpleExecutorType, wait_for: Callable[[], bool]
     ) -> SimpleExecutorType:
-        """
-        Wait for callback to return True.
+        """Wait for callback to return True.
 
         Simply returns if wait_for condition has been met,
         raises TimeoutExpired otherwise and kills the process.
@@ -450,8 +440,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         raise TimeoutExpired(self, timeout=self._timeout)
 
     def check_timeout(self) -> bool:
-        """
-        Check if timeout has expired.
+        """Check if timeout has expired.
 
         Returns True if there is no timeout set or the timeout has not expired.
         Kills the process and raises TimeoutExpired exception otherwise.
@@ -498,8 +487,7 @@ class Executor(SimpleExecutor):
     """Base class for executors with a pre- and after-start checks."""
 
     def pre_start_check(self) -> bool:
-        """
-        Check process before the start of executor.
+        """Check process before the start of executor.
 
         Should be overridden in order to return True when some other
         executor (or process) has already started with the same configuration.
@@ -508,8 +496,7 @@ class Executor(SimpleExecutor):
         raise NotImplementedError
 
     def start(self: ExecutorType) -> ExecutorType:
-        """
-        Start executor with additional checks.
+        """Start executor with additional checks.
 
         Checks if previous executor isn't running then start process
         (executor) and wait until it's started.
@@ -526,8 +513,7 @@ class Executor(SimpleExecutor):
         return self
 
     def check_subprocess(self) -> bool:
-        """
-        Make sure the process didn't exit with an error and run the checks.
+        """Make sure the process didn't exit with an error and run the checks.
 
         :rtype: bool
         :return: the actual check status or False before starting the process
@@ -548,8 +534,7 @@ class Executor(SimpleExecutor):
         return self.after_start_check()
 
     def after_start_check(self) -> bool:
-        """
-        Check process after the start of executor.
+        """Check process after the start of executor.
 
         Should be overridden in order to return boolean value if executor
         can be treated as started.

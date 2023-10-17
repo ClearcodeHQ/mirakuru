@@ -4,9 +4,7 @@ from typing import Iterator, Optional
 
 import pytest
 
-from mirakuru import PidExecutor
-from mirakuru import TimeoutExpired, AlreadyRunning
-
+from mirakuru import AlreadyRunning, PidExecutor, TimeoutExpired
 
 FILENAME = f"pid-test-tmp{os.getpid()}"
 SLEEP = f'bash -c "sleep 1 && touch {FILENAME} && sleep 1"'
@@ -14,8 +12,7 @@ SLEEP = f'bash -c "sleep 1 && touch {FILENAME} && sleep 1"'
 
 @pytest.fixture(autouse=True)
 def run_around_tests() -> Iterator[None]:
-    """
-    Make sure the **FILENAME** file is not present.
+    """Make sure the **FILENAME** file is not present.
 
     This executor actually removes FILENAME as process used to test
     PidExecutor only creates it.

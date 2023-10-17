@@ -21,7 +21,7 @@ import errno
 import logging
 import re
 import subprocess
-from typing import Set, List
+from typing import List, Set
 
 try:
     import psutil
@@ -37,8 +37,7 @@ PS_XE_PID_MATCH = re.compile(r"^.*?(\d+).+$")
 
 
 def processes_with_env_psutil(env_name: str, env_value: str) -> Set[int]:
-    """
-    Find PIDs of processes having environment variable matching given one.
+    """Find PIDs of processes having environment variable matching given one.
 
     Internally it uses `psutil` library.
 
@@ -65,8 +64,7 @@ def processes_with_env_psutil(env_name: str, env_value: str) -> Set[int]:
 
 
 def processes_with_env_ps(env_name: str, env_value: str) -> Set[int]:
-    """
-    Find PIDs of processes having environment variable matching given one.
+    """Find PIDs of processes having environment variable matching given one.
 
     It uses `$ ps xe -o pid,cmd` command so it works only on systems
     having such command available (Linux, MacOS). If not available function
