@@ -3,6 +3,27 @@ CHANGELOG
 
 .. towncrier release notes start
 
+2.5.2 (2023-10-17)
+==================
+
+Breaking changes
+----------------
+
+- Drop support for Python 3.7 (`#667 <https://github.com/ClearcodeHQ/mirakuru/issues/667>`_)
+
+
+Features
+--------
+
+- Support Python 3.12 (`#685 <https://github.com/ClearcodeHQ/mirakuru/issues/685>`_)
+
+
+Miscellaneus
+------------
+
+- `#639 <https://github.com/ClearcodeHQ/mirakuru/issues/639>`_, `#653 <https://github.com/ClearcodeHQ/mirakuru/issues/653>`_, `#655 <https://github.com/ClearcodeHQ/mirakuru/issues/655>`_, `#664 <https://github.com/ClearcodeHQ/mirakuru/issues/664>`_, `#686 <https://github.com/ClearcodeHQ/mirakuru/issues/686>`_
+
+
 2.5.1 (2023-02-27)
 ==================
 
