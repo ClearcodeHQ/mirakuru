@@ -1,6 +1,6 @@
 """Small retry callable in case of specific error occurred."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from time import sleep
 from typing import TypeVar, Callable, Type
 
@@ -16,7 +16,7 @@ def retry(
     possible_exception: Type[Exception] = ExecutorError,
 ) -> T:
     """Attempt to retry the function for timeout time."""
-    time: datetime = datetime.utcnow()
+    time: datetime = datetime.now(timezone.utc)
     timeout_diff: timedelta = timedelta(seconds=timeout)
     i = 0
     while True:
@@ -25,7 +25,7 @@ def retry(
             res = func()
             return res
         except possible_exception as e:
-            if time + timeout_diff < datetime.utcnow():
+            if time + timeout_diff < datetime.now(timezone.utc):
                 raise TimeoutError(
                     "Failed after {i} attempts".format(i=i)
                 ) from e
