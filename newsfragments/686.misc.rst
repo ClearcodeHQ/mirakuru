@@ -1,0 +1,1 @@
+Drop Pipfile.lock from repository. Rely on cached/artifacted one for CI test reproducibility.
