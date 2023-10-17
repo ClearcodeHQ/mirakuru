@@ -19,10 +19,10 @@
 
 import re
 import socket
-from logging import getLogger
-from urllib.parse import urlparse, urlencode
 from http.client import HTTPConnection, HTTPException
-from typing import Union, List, Tuple, Optional, Dict, Any
+from logging import getLogger
+from typing import Any, Dict, List, Optional, Tuple, Union
+from urllib.parse import urlencode, urlparse
 
 from mirakuru.tcp import TCPExecutor
 
@@ -45,8 +45,7 @@ class HTTPExecutor(TCPExecutor):
         headers: Optional[Dict[str, str]] = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize HTTPExecutor executor.
+        """Initialize HTTPExecutor executor.
 
         :param (str, list) command: command to be run by the subprocess
         :param str url: URL that executor checks to verify

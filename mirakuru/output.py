@@ -19,10 +19,9 @@
 import platform
 import re
 import select
-from typing import Union, List, Any, TypeVar, Tuple, IO, Optional
+from typing import IO, Any, List, Optional, Tuple, TypeVar, Union
 
 from mirakuru.base import SimpleExecutor
-
 
 IS_DARWIN = platform.system() == "Darwin"
 
@@ -39,8 +38,7 @@ class OutputExecutor(SimpleExecutor):
         banner: str,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize OutputExecutor executor.
+        """Initialize OutputExecutor executor.
 
         :param (str, list) command: command to be run by the subprocess
         :param str banner: string that has to appear in process output -
@@ -63,8 +61,7 @@ class OutputExecutor(SimpleExecutor):
             )
 
     def start(self: OutputExecutorType) -> OutputExecutorType:
-        """
-        Start process.
+        """Start process.
 
         :returns: itself
         :rtype: OutputExecutor
@@ -137,8 +134,7 @@ class OutputExecutor(SimpleExecutor):
         return False
 
     def _wait_for_output(self, *polls: Tuple["select.poll", IO[Any]]) -> bool:
-        """
-        Check if output matches banner.
+        """Check if output matches banner.
 
         .. warning::
             Waiting for I/O completion. It does not work on Windows. Sorry.

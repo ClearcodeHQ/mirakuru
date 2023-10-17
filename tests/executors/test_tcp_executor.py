@@ -1,5 +1,4 @@
-"""
-TCPExecutor tests.
+"""TCPExecutor tests.
 
 Some of these tests run ``nc``: when running Debian, make sure the
 ``netcat-openbsd`` package is used, not ``netcat-traditional``.
@@ -9,11 +8,8 @@ import logging
 import pytest
 from _pytest.logging import LogCaptureFixture
 
-from mirakuru import TCPExecutor
-from mirakuru import TimeoutExpired, AlreadyRunning
-
+from mirakuru import AlreadyRunning, TCPExecutor, TimeoutExpired
 from tests import HTTP_SERVER_CMD
-
 
 PORT = 7986
 

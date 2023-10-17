@@ -1,5 +1,4 @@
-"""
-Package of tests for mirakuru.
+"""Package of tests for mirakuru.
 
 Tests are written using py.test framework which dictates patterns that should
 be followed in test cases.
@@ -7,7 +6,6 @@ be followed in test cases.
 import sys
 from os import path
 from subprocess import check_output
-
 
 TEST_PATH = path.abspath(path.dirname(__file__))
 
@@ -19,8 +17,7 @@ HTTP_SERVER_CMD = f"{sys.executable} -m http.server"
 
 
 def ps_aux() -> str:
-    """
-    Return output of systems `ps aux -w` call.
+    """Return output of systems `ps aux -w` call.
 
     :rtype str
     """

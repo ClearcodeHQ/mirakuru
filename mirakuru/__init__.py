@@ -21,17 +21,16 @@
 import logging
 
 from mirakuru.base import Executor, SimpleExecutor
-from mirakuru.output import OutputExecutor
-from mirakuru.tcp import TCPExecutor
-from mirakuru.http import HTTPExecutor
-from mirakuru.pid import PidExecutor
-
 from mirakuru.exceptions import (
-    ExecutorError,
-    TimeoutExpired,
     AlreadyRunning,
+    ExecutorError,
     ProcessExitedWithError,
+    TimeoutExpired,
 )
+from mirakuru.http import HTTPExecutor
+from mirakuru.output import OutputExecutor
+from mirakuru.pid import PidExecutor
+from mirakuru.tcp import TCPExecutor
 
 __version__ = "2.5.1"
 

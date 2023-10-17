@@ -22,9 +22,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 """Sample unixsocket server with small modifications."""
 
+import os
 import socket
 import sys
-import os
 from time import sleep
 
 SOCKET_ADDRESS = "./uds_socket"

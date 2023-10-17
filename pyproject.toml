@@ -84,14 +84,19 @@ showcontent = false
 filterwarnings = "error"
 xfail_strict = "True"
 
-[tool.pydocstyle]
-ignore = "D203,D212"
-
 [tool.black]
 line-length = 80
 target-version = ['py38']
 include = '.*\.pyi?$'
 
+[tool.ruff]
+line-length = 80
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+    "D",   # pydocstyle
+]
 
 [tool.tbump]
 # Uncomment this if your project is hosted on GitHub:

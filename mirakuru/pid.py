@@ -18,14 +18,13 @@
 """Pid executor definition."""
 
 import os.path
-from typing import Union, List, Tuple, Any
+from typing import Any, List, Tuple, Union
 
 from mirakuru.base import Executor
 
 
 class PidExecutor(Executor):
-    """
-    File existence checking process executor.
+    """File existence checking process executor.
 
     Used to start processes that create pid files (or any other for that
     matter). Starts the given process and waits for the given file to be
@@ -38,8 +37,7 @@ class PidExecutor(Executor):
         filename: str,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize the PidExecutor executor.
+        """Initialize the PidExecutor executor.
 
         If the filename is empty, a ValueError is thrown.
 
@@ -64,8 +62,7 @@ class PidExecutor(Executor):
         """the name of the file which the process is to create."""
 
     def pre_start_check(self) -> bool:
-        """
-        Check if the specified file has been created.
+        """Check if the specified file has been created.
 
         .. note::
 
@@ -75,8 +72,7 @@ class PidExecutor(Executor):
         return os.path.isfile(self.filename)
 
     def after_start_check(self) -> bool:
-        """
-        Check if the process has created the specified file.
+        """Check if the process has created the specified file.
 
         .. note::
 

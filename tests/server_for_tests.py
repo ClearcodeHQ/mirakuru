@@ -1,5 +1,4 @@
-"""
-HTTP server that responses with delays used for tests.
+"""HTTP server that responses with delays used for tests.
 
 Example usage:
 
@@ -13,18 +12,15 @@ Example usage:
 
 """
 import ast
-import sys
 import os
+import sys
 import time
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 
-sys.path.append(os.getcwd())  # noqa
+sys.path.append(os.getcwd())
 
-# pylint:disable=wrong-import-position
-from tests.signals import block_signals
-
-# pylint:enable=wrong-import-position
+from tests.signals import block_signals  # noqa: E402
 
 
 class SlowServerHandler(BaseHTTPRequestHandler):
@@ -41,8 +37,7 @@ class SlowServerHandler(BaseHTTPRequestHandler):
         self.wfile.write(b"Hi. I am very slow.")
 
     def do_HEAD(self) -> None:  # pylint:disable=invalid-name
-        """
-        Serve HEAD request.
+        """Serve HEAD request.
 
         but count to wait and return 500 response if wait time not exceeded
         due to the fact that HTTPServer will hang waiting for response

@@ -18,7 +18,7 @@
 """TCP Socket executor definition."""
 import logging
 import socket
-from typing import Union, List, Tuple, Any
+from typing import Any, List, Tuple, Union
 
 from mirakuru import Executor
 
@@ -26,8 +26,7 @@ LOG = logging.getLogger(__name__)
 
 
 class UnixSocketExecutor(Executor):
-    """
-    Unixsocket listening process executor.
+    """Unixsocket listening process executor.
 
     Used to start (and wait to actually be running) processes that can accept
     stream Unix socket connections.
@@ -39,8 +38,7 @@ class UnixSocketExecutor(Executor):
         socket_name: str,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize UnixSocketExecutor executor.
+        """Initialize UnixSocketExecutor executor.
 
         :param (str, list) command: command to be run by the subprocess
         :param str socket_name: unix socket path
@@ -57,8 +55,7 @@ class UnixSocketExecutor(Executor):
         self.socket = socket_name
 
     def pre_start_check(self) -> bool:
-        """
-        Check if process accepts connections.
+        """Check if process accepts connections.
 
         .. note::
 
@@ -77,8 +74,7 @@ class UnixSocketExecutor(Executor):
             exec_sock.close()
 
     def after_start_check(self) -> bool:
-        """
-        Check if process accepts connections.
+        """Check if process accepts connections.
 
         .. note::
 

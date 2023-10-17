@@ -2,10 +2,9 @@
 
 from datetime import datetime, timedelta, timezone
 from time import sleep
-from typing import TypeVar, Callable, Type
+from typing import Callable, Type, TypeVar
 
 from mirakuru import ExecutorError
-
 
 T = TypeVar("T")
 
