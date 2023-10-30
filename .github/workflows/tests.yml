@@ -8,13 +8,13 @@ on:
 
 jobs:
   tests:
-    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v2.4.0
+    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v2.4.2
     with:
       python-versions: '["3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.8"]'
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   macostests:
-    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v2.4.0
+    uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v2.4.2
     needs: [tests]
     with:
       python-versions: '["3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.8"]'
