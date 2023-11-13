@@ -13,7 +13,7 @@ pytest-cov = "==4.1.0"
 coverage = "==7.3.2"
 python-daemon = "==3.0.1"
 restructuredtext-lint = "==1.4.0"
-mypy = "==1.6.1"
+mypy = "==1.7.0"
 black = {version = "==23.11.0", markers="python_version >= '3.8'"}
 pygments = "==2.16.1"
 tbump = "==6.11.0"
