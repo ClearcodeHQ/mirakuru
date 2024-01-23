@@ -17,4 +17,4 @@ mypy = "==1.8.0"
 black = {version = "==23.12.1", markers="python_version >= '3.8'"}
 pygments = "==2.17.2"
 tbump = "==6.11.0"
-ruff = "==0.1.13"
+ruff = "==0.1.14"
