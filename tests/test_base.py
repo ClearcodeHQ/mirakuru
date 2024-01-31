@@ -1,4 +1,5 @@
 """General mirakuru library tests."""
+
 from mirakuru import *  # noqa: F403
 
 

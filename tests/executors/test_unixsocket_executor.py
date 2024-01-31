@@ -3,6 +3,7 @@
 Some of these tests run ``nc``: when running Debian, make sure the
 ``netcat-openbsd`` package is used, not ``netcat-traditional``.
 """
+
 import sys
 
 import pytest
