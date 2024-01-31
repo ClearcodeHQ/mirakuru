@@ -3,6 +3,7 @@
 Tests are written using py.test framework which dictates patterns that should
 be followed in test cases.
 """
+
 import sys
 from os import path
 from subprocess import check_output
