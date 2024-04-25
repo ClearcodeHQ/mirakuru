@@ -10,14 +10,14 @@ jobs:
   tests:
     uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v2.4.4
     with:
-      python-versions: '["3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.9"]'
+      python-versions: '["3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.10"]'
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
   macostests:
     uses: fizyk/actions-reuse/.github/workflows/tests-pytests.yml@v2.4.4
     needs: [tests]
     with:
-      python-versions: '["3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.9"]'
+      python-versions: '["3.10", "3.11", "3.12", "pypy-3.10"]'
       os: macos-latest
     secrets:
       codecov_token: ${{ secrets.CODECOV_TOKEN }}
