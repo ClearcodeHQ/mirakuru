@@ -56,9 +56,7 @@ class OutputExecutor(SimpleExecutor):
         super().__init__(command, **kwargs)
         self._banner = re.compile(banner)
         if not any((self._stdout, self._stderr)):
-            raise TypeError(
-                "At least one of stdout or stderr has to be initialized"
-            )
+            raise TypeError("At least one of stdout or stderr has to be initialized")
 
     def start(self: OutputExecutorType) -> OutputExecutorType:
         """Start process.
@@ -85,10 +83,7 @@ class OutputExecutor(SimpleExecutor):
 
                     output_file = output_method()
                     if output_file is None:
-                        raise ValueError(
-                            "The process is started but "
-                            "the output file is None"
-                        )
+                        raise ValueError("The process is started but the output file is None")
                     # register a file descriptor
                     # POLLIN because we will wait for data to read
                     std_poll.register(output_file, select.POLLIN)

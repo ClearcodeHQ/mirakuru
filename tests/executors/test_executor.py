@@ -64,19 +64,13 @@ def test_stop_custom_exit_signal_stop() -> None:
     executor = SimpleExecutor("false", shell=True)
     executor.start()
     # false exits instant, so there should not be a process to stop
-    retry(
-        lambda: executor.stop(
-            stop_signal=signal.SIGQUIT, expected_returncode=-3
-        )
-    )
+    retry(lambda: executor.stop(stop_signal=signal.SIGQUIT, expected_returncode=-3))
     assert executor.running() is False
 
 
 def test_stop_custom_exit_signal_context() -> None:
     """Start process and expect custom exit signal in context manager."""
-    with SimpleExecutor(
-        "false", expected_returncode=-3, shell=True
-    ) as executor:
+    with SimpleExecutor("false", expected_returncode=-3, shell=True) as executor:
         executor.stop(stop_signal=signal.SIGQUIT)
         assert executor.running() is False
 
@@ -160,7 +154,7 @@ def test_forgotten_stop() -> None:
     If someone forgot to stop() or kill() subprocess it should be killed
     by default on instance cleanup.
     """
-    mark = str(uuid.uuid1())
+    mark = uuid.uuid1().hex
     # We cannot simply do `sleep 300 #<our-uuid>` in a shell because in that
     # case bash (default shell on some systems) does `execve` without cloning
     # itself - that means there will be no process with commandline like:
@@ -168,16 +162,17 @@ def test_forgotten_stop() -> None:
     # get substituted with 'sleep 300' and the marked commandline would be
     # overwritten.
     # Injecting some flow control (`&&`) forces bash to fork properly.
-    marked_command = f"sleep 300 && true #{mark!s}"
+    marked_command = f"sleep 300 && true #{mark}"
     executor = SimpleExecutor(marked_command, shell=True)
     executor.start()
     assert executor.running() is True
-    assert mark in ps_aux(), "The test process should be running."
+    ps_output = ps_aux()
+    assert (
+        mark in ps_output
+    ), f"The test command {marked_command} should be running in \n\n {ps_output}."
     del executor
     gc.collect()  # to force 'del' immediate effect
-    assert (
-        mark not in ps_aux()
-    ), "The test process should not be running at this point."
+    assert mark not in ps_aux(), "The test process should not be running at this point."
 
 
 def test_executor_raises_if_process_exits_with_error() -> None:
@@ -187,16 +182,10 @@ def test_executor_raises_if_process_exits_with_error() -> None:
     should raise an exception.
     """
     error_code = 12
-    failing_executor = Executor(
-        ["bash", "-c", f"exit {error_code!s}"], timeout=5
-    )
-    failing_executor.pre_start_check = mock.Mock(  # type: ignore
-        return_value=False
-    )
+    failing_executor = Executor(["bash", "-c", f"exit {error_code!s}"], timeout=5)
+    failing_executor.pre_start_check = mock.Mock(return_value=False)  # type: ignore
     # After-start check will keep returning False to let the process terminate.
-    failing_executor.after_start_check = mock.Mock(  # type: ignore
-        return_value=False
-    )
+    failing_executor.after_start_check = mock.Mock(return_value=False)  # type: ignore
 
     with pytest.raises(ProcessExitedWithError) as exc:
         failing_executor.start()

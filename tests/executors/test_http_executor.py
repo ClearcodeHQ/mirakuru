@@ -53,9 +53,7 @@ def test_executor_starts_and_waits() -> None:
 
 def test_shell_started_server_stops() -> None:
     """Test if executor terminates properly executor with shell=True."""
-    executor = HTTPExecutor(
-        HTTP_NORMAL_CMD, f"http://{HOST}:{PORT}/", timeout=20, shell=True
-    )
+    executor = HTTPExecutor(HTTP_NORMAL_CMD, f"http://{HOST}:{PORT}/", timeout=20, shell=True)
 
     with pytest.raises(socket.error):
         connect_to_server()
@@ -77,9 +75,7 @@ def test_slow_method_server_starting(method: str) -> None:
     Simple example. You run Gunicorn and it is working but you have to
     wait for worker processes.
     """
-    http_method_slow_cmd = (
-        f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
-    )
+    http_method_slow_cmd = f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
     with HTTPExecutor(
         http_method_slow_cmd,
         f"http://{HOST}:{PORT}/",
@@ -96,9 +92,7 @@ def test_slow_post_payload_server_starting() -> None:
     Simple example. You run Gunicorn and it is working but you have to
     wait for worker processes.
     """
-    http_method_slow_cmd = (
-        f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False Key"
-    )
+    http_method_slow_cmd = f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False Key"
     with HTTPExecutor(
         http_method_slow_cmd,
         f"http://{HOST}:{PORT}/",
@@ -113,9 +107,7 @@ def test_slow_post_payload_server_starting() -> None:
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_timed_out(method: str) -> None:
     """Check if timeout properly expires."""
-    http_method_slow_cmd = (
-        f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
-    )
+    http_method_slow_cmd = f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
     executor = HTTPExecutor(
         http_method_slow_cmd, f"http://{HOST}:{PORT}/", method=method, timeout=1
     )
@@ -183,9 +175,7 @@ def test_default_port() -> None:
         ("(200|404)", False),
     ),
 )
-def test_http_status_codes(
-    accepted_status: Union[None, int, str], expected_timeout: bool
-) -> None:
+def test_http_status_codes(accepted_status: Union[None, int, str], expected_timeout: bool) -> None:
     """Test how 'status' argument influences executor start.
 
     :param int|str accepted_status: Executor 'status' value

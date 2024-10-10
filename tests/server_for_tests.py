@@ -134,8 +134,6 @@ if __name__ == "__main__":
     if ast.literal_eval(IMMORTAL):
         block_signals()
 
-    server = HTTPServer(
-        (HOST, int(PORT)), HANDLERS[METHOD]
-    )  # pylint: disable=invalid-name
+    server = HTTPServer((HOST, int(PORT)), HANDLERS[METHOD])  # pylint: disable=invalid-name
     print(f"Starting slow server on {HOST}:{PORT}...")
     server.serve_forever()
