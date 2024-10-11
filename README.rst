@@ -290,3 +290,13 @@ See:
 Also, With the introduction of `WSL <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`_
 the need for raw Windows support might not be that urgant... If you've got any thoughts or are willing to contribute,
 please start with the issues listed above.
+
+
+Release
+=======
+
+Install pipenv and --dev dependencies first, Then run:
+
+.. code-block::
+
+    pipenv run tbump [NEW_VERSION]

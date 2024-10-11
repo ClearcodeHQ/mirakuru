@@ -1,11 +1,79 @@
 CHANGELOG
 =========
 
-2.4.0
-----------
+.. towncrier release notes start
+
+2.5.2 (2023-10-17)
+==================
+
+Breaking changes
+----------------
+
+- Drop support for Python 3.7 (`#667 <https://github.com/ClearcodeHQ/mirakuru/issues/667>`_)
+
 
 Features
-++++++++
+--------
+
+- Support Python 3.12 (`#685 <https://github.com/ClearcodeHQ/mirakuru/issues/685>`_)
+
+
+Miscellaneus
+------------
+
+- `#639 <https://github.com/ClearcodeHQ/mirakuru/issues/639>`_, `#653 <https://github.com/ClearcodeHQ/mirakuru/issues/653>`_, `#655 <https://github.com/ClearcodeHQ/mirakuru/issues/655>`_, `#664 <https://github.com/ClearcodeHQ/mirakuru/issues/664>`_, `#686 <https://github.com/ClearcodeHQ/mirakuru/issues/686>`_
+
+
+2.5.1 (2023-02-27)
+==================
+
+Bugfixes
+--------
+
+- Include py.typed to the package published on pypi (`#633 <https://github.com/ClearcodeHQ/mirakuru/issues/633>`_)
+
+
+2.5.0 (2023-02-17)
+==================
+
+Features
+--------
+
+- Support Python 3.11 (`#617 <https://github.com/ClearcodeHQ/mirakuru/issues/617>`_)
+
+
+Miscellaneus
+------------
+
+- Reformatted code with black 23 (`#613 <https://github.com/ClearcodeHQ/mirakuru/issues/613>`_)
+- Introduce towncrier as changelog management too. (`#615 <https://github.com/ClearcodeHQ/mirakuru/issues/615>`_)
+- Moved Development dependency management to pipfile/pipenv (`#616 <https://github.com/ClearcodeHQ/mirakuru/issues/616>`_)
+- Move package definition into the pyproject.toml file (`#618 <https://github.com/ClearcodeHQ/mirakuru/issues/618>`_)
+- Use shared automerge flow and github app. (`#619 <https://github.com/ClearcodeHQ/mirakuru/issues/619>`_)
+- Use tbump to manage versioning (`#628 <https://github.com/ClearcodeHQ/mirakuru/issues/628>`_)
+
+
+2.4.2
+=====
+
+Misc
+----
+
++ Added Python 3.10 to classifiers
+
+2.4.1
+=====
+
+Misc
+----
+
+- Use strictier mypy checks
+
+2.4.0
+=====
+
+Features
+--------
 
 - Replace `exp_sig` executor parameter with `expected_returncode`.
   Parameter description already assumed that, however handing it assumed full
@@ -14,34 +82,34 @@ Features
   a returncode, nothing more
 
 2.3.1
-----------
+=====
 
 Misc
-++++
+----
 
 - Moved CI to Github Actions
 - Blackified codebase
 - Compacted Documentation into readme (was pretty small anyway)
 
 2.3.0
-----------
+=====
 
 - [enhancement] Ability to set up expected exit code for executor. In Java exit codes 1- 127 have 
   special meaning, and the regular exit codes are offset by those of special meaning.
 
 2.2.0
-----------
+=====
 
 - [enhancement] If process is being closed and the shutdown won't be clean (won't return exit code 0)
   mirakuru will now rise ProcessFinishedWithError exception with exit_code
 
 2.1.2
-----------
+=====
 
 - [bugfix][macos] Fixed typing issue on macOS
 
 2.1.1
-----------
+=====
 
 - [bug] Always close connection for HTTPExecutor after_start_check
 - [enhancement] Log debug message if execption occured during
@@ -49,7 +117,7 @@ Misc
 - [ehnancement] adjust typing handling in HTTPExecutor
 
 2.1.0
-----------
+=====
 
 - [feature] Drop support for python 3.5. Rely on typing syntax and fstrings that
   is available since python 3.6 only
@@ -60,12 +128,12 @@ Misc
   Should result in similar results when running such command with or without shell.
 
 2.0.1
-----------
+=====
 
 - [repackage] - mark python 3.5 as required. Should disallow installing on python 2
 
 2.0.0
-----------
+=====
 
 - [feature] Add UnixSocketExecutor for executors that communicate with Unix Sockets
 - [feature] Mirakuru is now fully type hinted
@@ -79,7 +147,7 @@ Misc
 - [enhancement] psutil is no longer required on cygwin
 
 1.1.0
-----------
+=====
 
 - [enhancement] Executor's timeout to be set for both executor's start and stop
 - [enhancement] It's no longer possible to hang indefinitely on the start
@@ -88,7 +156,7 @@ Misc
   than `2924712086` centuries.
 
 1.0.0
-----------
+=====
 
 - [enhancement] Do not fail if processes child throw EPERM error
   during clean up phase
@@ -96,7 +164,7 @@ Misc
 - [ehnancement] Do not pass preexec_fn on windows
 
 0.9.0
-----------
+=====
 
 - [enhancement] Fallback to kill through SIGTERM on Windows,
   since SIGKILL is not available
@@ -104,34 +172,34 @@ Misc
   and simply clean up afterwards
 
 0.8.3
-----------
+=====
 
 - [enhancement] when killing the process ignore OsError with errno `no such process` as the process have already died.
 - [enhancement] small context manager code cleanup
 
 
 0.8.2
-----------
+=====
 
 - [bugfix] atexit cleanup_subprocesses() function now reimports needed functions
 
 
 0.8.1
-----------
+=====
 
 - [bugfix] Handle IOErrors from psutil (#112)
 - [bugfix] Pass global vars to atexit cleanup_subprocesses function (#111)
 
 
 0.8.0
-----------
+=====
 
 - [feature] Kill all running mirakuru subprocesses on python exit.
 - [enhancement] Prefer psutil library (>=4.0.0) over calling 'ps xe' command to find leaked subprocesses.
 
 
 0.7.0
-----------
+=====
 
 - [feature] HTTPExecutor enriched with the 'status' argument.
   It allows to define which HTTP status code(s) signify that a HTTP server is running.
@@ -142,14 +210,14 @@ Misc
 - [docs] Added documentation for timeouts.
 
 0.6.1
-----------
+=====
 
 - [refactoring] Moved source to src directory.
 - [fix, feature] Python 3.5 fixes.
 - [fix] Docstring changes for updated pep257.
 
 0.6.0
-----------
+=====
 
 - [fix] Modify MANIFEST to prune tests folder.
 - [feature] HTTPExecutor will now set the default 80 if not present in a URL.
@@ -157,7 +225,7 @@ Misc
 - [fix] Make test_forgotten_stop pass by preventing the shell from optimizing forking out.
 
 0.5.0
-----------
+=====
 
 - [style] Corrected code to conform with W503, D210 and E402 linters errors as reported by pylama `6.3.1`.
 - [feature] Introduced a hack that kills all subprocesses of executor process.
@@ -166,7 +234,7 @@ Misc
   Executor class got renamed into SimpleExecutor and StartCheckExecutor class got renamed into Executor.
 
 0.4.0
--------
+=====
 
 - [feature] Ability to set up custom signal for stopping and killing processes managed by executors.
 - [feature] Replaced explicit parameters with keywords for kwargs handled by basic Executor init method.
@@ -177,14 +245,14 @@ Misc
 - [code quality] Increased Pylint code evaluation.
 
 0.3.0
--------
+=====
 
 - [feature] Introduced PidExecutor that waits for specified file to be created.
 - [feature] Provided PyPy compatibility.
 - [fix] Closing all resources explicitly.
 
 0.2.0
--------
+=====
 
 - [fix] Kill all children processes of Executor started with shell=True.
 - [feature] Executors are now context managers - to start executors for given context.
@@ -195,28 +263,28 @@ Misc
 
 
 0.1.4
--------
+=====
 
 - [fix] Fixed an issue where setting shell to True would execute only part of the command.
 
 0.1.3
--------
+=====
 
 - [fix] Fixed an issue where OutputExecutor would hang, if started process stopped producing output.
 
 0.1.2
--------
+=====
 
 - [fix] Removed leftover sleep from TCPExecutor._wait_for_connection.
 
 0.1.1
--------
+=====
 
 - [fix] Fixed `MANIFEST.in`.
 - Updated packaging options.
 
 0.1.0
--------
+=====
 
 - Exposed process attribute on Executor.
 - Exposed port and host on TCPExecutor.

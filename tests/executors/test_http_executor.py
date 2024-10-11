@@ -1,16 +1,16 @@
 """HTTP Executor tests."""
-import sys
+
 import socket
+import sys
 from functools import partial
-from http.client import HTTPConnection, OK
-from typing import Dict, Any
+from http.client import OK, HTTPConnection
+from typing import Any, Dict, Union
 from unittest.mock import patch
 
 import pytest
 
-from mirakuru import HTTPExecutor, TCPExecutor
-from mirakuru import TimeoutExpired, AlreadyRunning
-from tests import TEST_SERVER_PATH, HTTP_SERVER_CMD
+from mirakuru import AlreadyRunning, HTTPExecutor, TCPExecutor, TimeoutExpired
+from tests import HTTP_SERVER_CMD, TEST_SERVER_PATH
 
 HOST = "127.0.0.1"
 PORT = 7987
@@ -26,7 +26,7 @@ slow_server_executor = partial(  # pylint: disable=invalid-name
 )
 
 
-def connect_to_server():
+def connect_to_server() -> None:
     """Connect to http server and assert 200 response."""
     conn = HTTPConnection(HOST, PORT)
     conn.request("GET", "/")
@@ -38,7 +38,7 @@ def connect_to_server():
     "platform.system() == 'Windows'",
     reason="Can't start http.server on python3",
 )
-def test_executor_starts_and_waits():
+def test_executor_starts_and_waits() -> None:
     """Test if process awaits for HEAD request to be completed."""
     command = f'bash -c "sleep 3 && {HTTP_NORMAL_CMD}"'
 
@@ -55,11 +55,9 @@ def test_executor_starts_and_waits():
     assert command in str(executor)
 
 
-def test_shell_started_server_stops():
+def test_shell_started_server_stops() -> None:
     """Test if executor terminates properly executor with shell=True."""
-    executor = HTTPExecutor(
-        HTTP_NORMAL_CMD, f"http://{HOST}:{PORT}/", timeout=20, shell=True
-    )
+    executor = HTTPExecutor(HTTP_NORMAL_CMD, f"http://{HOST}:{PORT}/", timeout=20, shell=True)
 
     with pytest.raises(socket.error):
         connect_to_server()
@@ -75,17 +73,13 @@ def test_shell_started_server_stops():
 
 
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
-def test_slow_method_server_starting(method):
-    """
-    Test whether or not executor awaits for slow starting servers.
+def test_slow_method_server_starting(method: str) -> None:
+    """Test whether or not executor awaits for slow starting servers.
 
     Simple example. You run Gunicorn and it is working but you have to
     wait for worker processes.
     """
-
-    http_method_slow_cmd = (
-        f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
-    )
+    http_method_slow_cmd = f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
     with HTTPExecutor(
         http_method_slow_cmd,
         f"http://{HOST}:{PORT}/",
@@ -96,17 +90,13 @@ def test_slow_method_server_starting(method):
         connect_to_server()
 
 
-def test_slow_post_payload_server_starting():
-    """
-    Test whether or not executor awaits for slow starting servers.
+def test_slow_post_payload_server_starting() -> None:
+    """Test whether or not executor awaits for slow starting servers.
 
     Simple example. You run Gunicorn and it is working but you have to
     wait for worker processes.
     """
-
-    http_method_slow_cmd = (
-        f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False Key"
-    )
+    http_method_slow_cmd = f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False Key"
     with HTTPExecutor(
         http_method_slow_cmd,
         f"http://{HOST}:{PORT}/",
@@ -123,12 +113,9 @@ def test_slow_post_payload_server_starting():
     reason=("ProcessLookupError: [Errno 3] process no longer exists."),
 )
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
-def test_slow_method_server_timed_out(method):
+def test_slow_method_server_timed_out(method: str) -> None:
     """Check if timeout properly expires."""
-
-    http_method_slow_cmd = (
-        f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
-    )
+    http_method_slow_cmd = f"{sys.executable} {TEST_SERVER_PATH} {HOST}:{PORT} False {method}"
     executor = HTTPExecutor(
         http_method_slow_cmd, f"http://{HOST}:{PORT}/", method=method, timeout=1
     )
@@ -140,7 +127,7 @@ def test_slow_method_server_timed_out(method):
     assert "timed out after" in str(exc.value)
 
 
-def test_fail_if_other_running():
+def test_fail_if_other_running() -> None:
     """Test raising AlreadyRunning exception when port is blocked."""
     executor = HTTPExecutor(
         HTTP_NORMAL_CMD,
@@ -152,7 +139,6 @@ def test_fail_if_other_running():
     )
 
     with executor:
-
         assert executor.running() is True
 
         with pytest.raises(AlreadyRunning):
@@ -165,9 +151,8 @@ def test_fail_if_other_running():
 
 
 @patch.object(HTTPExecutor, "DEFAULT_PORT", PORT)
-def test_default_port():
-    """
-    Test default port for the base TCP check.
+def test_default_port() -> None:
+    """Test default port for the base TCP check.
 
     Check if HTTP executor fills in the default port for the TCP check
     from the base class if no port is provided in the URL.
@@ -216,9 +201,8 @@ def test_default_port():
         ("(200|404)", False),
     ),
 )
-def test_http_status_codes(accepted_status, expected_timeout):
-    """
-    Test how 'status' argument influences executor start.
+def test_http_status_codes(accepted_status: Union[None, int, str], expected_timeout: bool) -> None:
+    """Test how 'status' argument influences executor start.
 
     :param int|str accepted_status: Executor 'status' value
     :param bool expected_timeout: if Executor raises TimeoutExpired or not

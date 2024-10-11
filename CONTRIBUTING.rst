@@ -36,9 +36,13 @@ Commits
 #. If the commit solves part of the issue reported, include *refs #[Issue number]* in a commit message.
 #. If the commit solves whole issue reported, please refer to `Closing issues via commit messages <https://help.github.com/articles/closing-issues-via-commit-messages/>`_ for ways to close issues when commits will be merged.
 
-
 Coding style
 ------------
 
-#. All python coding style are being enforced by `Pylama <https://pypi.python.org/pypi/pylama>`_ and configured in pylama.ini file.
-#. Additional, not always mandatory checks are being performed by `QuantifiedCode <https://www.quantifiedcode.com/app/project/gh:ClearcodeHQ:mirakuru>`_
+#. Coding style is being handled by black and doublechecked by pycodestyle and pydocstyle
+
+Testing
+-------
+
+# Tests are writen using pytest.
+# PR tests run on Github Actions.

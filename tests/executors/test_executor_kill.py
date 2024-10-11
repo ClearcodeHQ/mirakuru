@@ -1,21 +1,21 @@
 # mypy: no-strict-optional
 """Tests that check various kill behaviours."""
-import signal
-import time
-import sys
-
 import errno
-
+import os
+import signal
+import sys
+import time
+from typing import NoReturn, Set
 from unittest.mock import patch
 
 import pytest
 
-from mirakuru import SimpleExecutor, HTTPExecutor
+from mirakuru import HTTPExecutor, SimpleExecutor
 from mirakuru.compat import SIGKILL
 from mirakuru.exceptions import ProcessFinishedWithError
 from mirakuru.kill import killpg
 
-from tests import SAMPLE_DAEMON_PATH, ps_aux, TEST_SERVER_PATH
+from tests import SAMPLE_DAEMON_PATH, TEST_SERVER_PATH, ps_aux
 
 SLEEP_300 = "sleep 300"
 
@@ -23,7 +23,7 @@ SLEEP_300 = "sleep 300"
 @pytest.mark.skipif(
     "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
 )
-def test_custom_signal_kill():
+def test_custom_signal_kill() -> None:
     """Start process and shuts it down using signal SIGQUIT."""
     executor = SimpleExecutor(SLEEP_300, kill_signal=signal.SIGQUIT)
     executor.start()
@@ -35,7 +35,7 @@ def test_custom_signal_kill():
 @pytest.mark.skipif(
     "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
 )
-def test_kill_custom_signal_kill():
+def test_kill_custom_signal_kill() -> None:
     """Start process and shuts it down using signal SIGQUIT passed to kill."""
     executor = SimpleExecutor(SLEEP_300)
     executor.start()
@@ -51,14 +51,14 @@ def test_kill_custom_signal_kill():
         "<class 'mirakuru.exceptions.ProcessFinishedWithError'>"
     ),
 )
-def test_already_closed():
+def test_already_closed() -> None:
     """Check that the executor cleans after itself after it exited earlier."""
     with pytest.raises(ProcessFinishedWithError) as excinfo:
         with SimpleExecutor("python") as executor:
             assert executor.running()
             killpg(executor.process.pid, SIGKILL)
 
-            def process_stopped():
+            def process_stopped() -> bool:
                 """Return True only only when self.process is not running."""
                 return executor.running() is False
 
@@ -69,9 +69,8 @@ def test_already_closed():
 
 
 @pytest.mark.skipif("platform.system() == 'Windows'", reason="No ps_uax")
-def test_daemons_killing():
-    """
-    Test if all subprocesses of SimpleExecutor can be killed.
+def test_daemons_killing() -> None:
+    """Test if all subprocesses of SimpleExecutor can be killed.
 
     The most problematic subprocesses are daemons or other services that
     change the process group ID. This test verifies that daemon process
@@ -96,9 +95,8 @@ def test_daemons_killing():
         "Blocking signals probably doesn't work."
     ),
 )
-def test_stopping_brutally():
-    """
-    Test if SimpleExecutor is stopping insubordinate process.
+def test_stopping_brutally() -> None:
+    """Test if SimpleExecutor is stopping insubordinate process.
 
     Check if the process that doesn't react to SIGTERM signal will be killed
     by executor with SIGKILL automatically.
@@ -115,9 +113,8 @@ def test_stopping_brutally():
     assert stop_at <= time.time(), "Subprocess killed earlier than in 10 secs"
 
 
-def test_stopping_children_of_stopped_process():
-    """
-    Check that children exiting between listing and killing are ignored.
+def test_stopping_children_of_stopped_process() -> None:
+    """Check that children exiting between listing and killing are ignored.
 
     Given:
         Executor is running and it's process spawn children,
@@ -128,18 +125,19 @@ def test_stopping_children_of_stopped_process():
     Then:
         We ignore and skip OsError indicates there's no such process.
     """
-    # pylint: disable=protected-access, missing-docstring
-    def raise_os_error(*_, **__):
 
+    # pylint: disable=protected-access, missing-docstring
+    def raise_os_error(*_: int, **__: int) -> NoReturn:
         os_error = OSError()
         os_error.errno = errno.ESRCH
         raise os_error
 
-    def processes_with_env_mock(*_, **__):
-        return [1]
+    def processes_with_env_mock(*_: str, **__: str) -> Set[int]:
+        return {1}
 
-    with patch(
-        "mirakuru.base.processes_with_env", new=processes_with_env_mock
-    ), patch("os.kill", new=raise_os_error):
+    with (
+        patch("mirakuru.base.processes_with_env", new=processes_with_env_mock),
+        patch("os.kill", new=raise_os_error),
+    ):
         executor = SimpleExecutor(SLEEP_300)
         executor._kill_all_kids(executor._stop_signal)

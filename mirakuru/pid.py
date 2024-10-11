@@ -15,35 +15,34 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
-"""TCP executor definition."""
+"""Pid executor definition."""
 
-import socket
-from typing import Union, List, Tuple, Any
+import os.path
+from typing import Any, List, Tuple, Union
 
 from mirakuru.base import Executor
 
 
-class TCPExecutor(Executor):
-    """
-    TCP-listening process executor.
+class PidExecutor(Executor):
+    """File existence checking process executor.
 
-    Used to start (and wait to actually be running) processes that can accept
-    TCP connections.
+    Used to start processes that create pid files (or any other for that
+    matter). Starts the given process and waits for the given file to be
+    created.
     """
 
     def __init__(
         self,
         command: Union[str, List[str], Tuple[str, ...]],
-        host: str,
-        port: int,
+        filename: str,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize TCPExecutor executor.
+        """Initialize the PidExecutor executor.
+
+        If the filename is empty, a ValueError is thrown.
 
         :param (str, list) command: command to be run by the subprocess
-        :param str host: host under which process is accessible
-        :param int port: port under which process is accessible
+        :param str filename: the file which is to exist
         :param bool shell: same as the `subprocess.Popen` shell definition
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
@@ -53,39 +52,31 @@ class TCPExecutor(Executor):
         :param int sig_kill: signal used to kill process run by the executor.
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
 
+        :raises: ValueError
+
         """
         super().__init__(command, **kwargs)
-        self.host = host
-        """Host name, process is listening on."""
-        self.port = port
-        """Port number, process is listening on."""
+        if not filename:
+            raise ValueError("filename must be defined")
+        self.filename = filename
+        """the name of the file which the process is to create."""
 
     def pre_start_check(self) -> bool:
-        """
-        Check if process accepts connections.
+        """Check if the specified file has been created.
 
         .. note::
 
-            Process will be considered started, when it'll be able to accept
-            TCP connections as defined in initializer.
+            The process will be considered started when it will have created
+            the specified file as defined in the initializer.
         """
-        try:
-            sock = socket.socket()
-            sock.connect((self.host, self.port))
-            return True
-        except (socket.error, socket.timeout):
-            return False
-        finally:
-            # close socket manually for sake of PyPy
-            sock.close()
+        return os.path.isfile(self.filename)
 
     def after_start_check(self) -> bool:
-        """
-        Check if process accepts connections.
+        """Check if the process has created the specified file.
 
         .. note::
 
-            Process will be considered started, when it'll be able to accept
-            TCP connections as defined in initializer.
+            The process will be considered started when it will have created
+            the specified file as defined in the initializer.
         """
         return self.pre_start_check()  # we can reuse logic from `pre_start()`

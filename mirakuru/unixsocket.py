@@ -1,4 +1,4 @@
-# Copyright (C) 2014 by Clearcode <http://clearcode.cc>
+# Copyright (C) 2019 by Clearcode <http://clearcode.cc>
 # and associates (see AUTHORS).
 
 # This file is part of mirakuru.
@@ -15,36 +15,33 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
-"""Pid executor definition."""
+"""TCP Socket executor definition."""
+import logging
+import socket
+from typing import Any, List, Tuple, Union
 
-import os.path
-from typing import Union, List, Tuple, Any
+from mirakuru import Executor
 
-from mirakuru.base import Executor
+LOG = logging.getLogger(__name__)
 
 
-class PidExecutor(Executor):
-    """
-    File existence checking process executor.
+class UnixSocketExecutor(Executor):
+    """Unixsocket listening process executor.
 
-    Used to start processes that create pid files (or any other for that
-    matter). Starts the given process and waits for the given file to be
-    created.
+    Used to start (and wait to actually be running) processes that can accept
+    stream Unix socket connections.
     """
 
     def __init__(
         self,
         command: Union[str, List[str], Tuple[str, ...]],
-        filename: str,
+        socket_name: str,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize the PidExecutor executor.
-
-        If the filename is empty, a ValueError is thrown.
+        """Initialize UnixSocketExecutor executor.
 
         :param (str, list) command: command to be run by the subprocess
-        :param str filename: the file which is to exist
+        :param str socket_name: unix socket path
         :param bool shell: same as the `subprocess.Popen` shell definition
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
@@ -53,34 +50,35 @@ class PidExecutor(Executor):
             default is `signal.SIGTERM`
         :param int sig_kill: signal used to kill process run by the executor.
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
-
-        :raises: ValueError
-
         """
         super().__init__(command, **kwargs)
-        if not filename:
-            raise ValueError("filename must be defined")
-        self.filename = filename
-        """the name of the file which the process is to create."""
+        self.socket = socket_name
 
     def pre_start_check(self) -> bool:
-        """
-        Check if the specified file has been created.
+        """Check if process accepts connections.
 
         .. note::
 
-            The process will be considered started when it will have created
-            the specified file as defined in the initializer.
+            Process will be considered started, when it'll be able to accept
+            Unix Socket connections as defined in initializer.
         """
-        return os.path.isfile(self.filename)
+        exec_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        try:
+            exec_sock.connect(self.socket)
+            return True
+        except socket.error as msg:
+            LOG.debug("Can not connect to socket: %s", msg)
+            return False
+        finally:
+            # close socket manually for sake of PyPy
+            exec_sock.close()
 
     def after_start_check(self) -> bool:
-        """
-        Check if the process has created the specified file.
+        """Check if process accepts connections.
 
         .. note::
 
-            The process will be considered started when it will have created
-            the specified file as defined in the initializer.
+            Process will be considered started, when it'll be able to accept
+            Unix Socket connections as defined in initializer.
         """
         return self.pre_start_check()  # we can reuse logic from `pre_start()`

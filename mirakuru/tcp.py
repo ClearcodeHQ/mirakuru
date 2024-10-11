@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Clearcode <http://clearcode.cc>
+# Copyright (C) 2014 by Clearcode <http://clearcode.cc>
 # and associates (see AUTHORS).
 
 # This file is part of mirakuru.
@@ -15,35 +15,33 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with mirakuru.  If not, see <http://www.gnu.org/licenses/>.
-"""TCP Socket executor definition."""
-import logging
+"""TCP executor definition."""
+
 import socket
-from typing import Union, List, Tuple, Any
+from typing import Any, List, Tuple, Union
 
-from mirakuru import Executor
-
-LOG = logging.getLogger(__name__)
+from mirakuru.base import Executor
 
 
-class UnixSocketExecutor(Executor):
-    """
-    Unixsocket listening process executor.
+class TCPExecutor(Executor):
+    """TCP-listening process executor.
 
     Used to start (and wait to actually be running) processes that can accept
-    stream Unix socket connections.
+    TCP connections.
     """
 
     def __init__(
         self,
         command: Union[str, List[str], Tuple[str, ...]],
-        socket_name: str,
+        host: str,
+        port: int,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize UnixSocketExecutor executor.
+        """Initialize TCPExecutor executor.
 
         :param (str, list) command: command to be run by the subprocess
-        :param str socket_name: unix socket path
+        :param str host: host under which process is accessible
+        :param int port: port under which process is accessible
         :param bool shell: same as the `subprocess.Popen` shell definition
         :param int timeout: number of seconds to wait for the process to start
             or stop. If None or False, wait indefinitely.
@@ -52,37 +50,38 @@ class UnixSocketExecutor(Executor):
             default is `signal.SIGTERM`
         :param int sig_kill: signal used to kill process run by the executor.
             default is `signal.SIGKILL` (`signal.SIGTERM` on Windows)
+
         """
         super().__init__(command, **kwargs)
-        self.socket = socket_name
+        self.host = host
+        """Host name, process is listening on."""
+        self.port = port
+        """Port number, process is listening on."""
 
     def pre_start_check(self) -> bool:
-        """
-        Check if process accepts connections.
+        """Check if process accepts connections.
 
         .. note::
 
             Process will be considered started, when it'll be able to accept
-            Unix Socket connections as defined in initializer.
+            TCP connections as defined in initializer.
         """
-        exec_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         try:
-            exec_sock.connect(self.socket)
+            sock = socket.socket()
+            sock.connect((self.host, self.port))
             return True
-        except socket.error as msg:
-            LOG.debug("Can not connect to socket: %s", msg)
+        except (socket.error, socket.timeout):
             return False
         finally:
             # close socket manually for sake of PyPy
-            exec_sock.close()
+            sock.close()
 
     def after_start_check(self) -> bool:
-        """
-        Check if process accepts connections.
+        """Check if process accepts connections.
 
         .. note::
 
             Process will be considered started, when it'll be able to accept
-            Unix Socket connections as defined in initializer.
+            TCP connections as defined in initializer.
         """
         return self.pre_start_check()  # we can reuse logic from `pre_start()`

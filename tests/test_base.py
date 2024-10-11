@@ -1,9 +1,9 @@
 """General mirakuru library tests."""
-# pylint: disable=wildcard-import,unused-wildcard-import
-from mirakuru import *
+
+from mirakuru import *  # noqa: F403
 
 
-def test_importing_mirakuru():
+def test_importing_mirakuru() -> None:
     """Test if all most commonly used classes are imported by default."""
     assert "Executor" in globals()
     assert "SimpleExecutor" in globals()

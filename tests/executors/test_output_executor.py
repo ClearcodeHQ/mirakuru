@@ -12,7 +12,7 @@ from mirakuru.exceptions import TimeoutExpired
     "platform.system() == 'Windows'",
     reason="select has no attribute poll",
 )
-def test_executor_waits_for_process_output():
+def test_executor_waits_for_process_output() -> None:
     """Check if executor waits for specified output."""
     command = 'bash -c "sleep 2 && echo foo && echo bar && sleep 100"'
     executor = OutputExecutor(command, "foo", timeout=10).start()
@@ -31,7 +31,7 @@ def test_executor_waits_for_process_output():
     "platform.system() == 'Windows'",
     reason="select has no attribute poll",
 )
-def test_executor_waits_for_process_err_output():
+def test_executor_waits_for_process_err_output() -> None:
     """Check if executor waits for specified error output."""
     command = 'bash -c "sleep 2 && >&2 echo foo && >&2 echo bar && sleep 100"'
     executor = OutputExecutor(
@@ -52,7 +52,7 @@ def test_executor_waits_for_process_err_output():
     "platform.system() == 'Windows'",
     reason="select has no attribute poll",
 )
-def test_executor_dont_start():
+def test_executor_dont_start() -> None:
     """Executor should not start."""
     command = 'bash -c "sleep 2 && echo foo && echo bar && sleep 100"'
     executor = OutputExecutor(command, "foobar", timeout=3)

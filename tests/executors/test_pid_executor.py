@@ -1,20 +1,19 @@
 """PidExecutor tests."""
+
 import os
+from typing import Iterator, Optional
 
 import pytest
 
-from mirakuru import PidExecutor
-from mirakuru import TimeoutExpired, AlreadyRunning
-
+from mirakuru import AlreadyRunning, PidExecutor, TimeoutExpired
 
 FILENAME = f"pid-test-tmp{os.getpid()}"
 SLEEP = f'bash -c "sleep 1 && touch {FILENAME} && sleep 1"'
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests():
-    """
-    Make sure the **FILENAME** file is not present.
+def run_around_tests() -> Iterator[None]:
+    """Make sure the **FILENAME** file is not present.
 
     This executor actually removes FILENAME as process used to test
     PidExecutor only creates it.
@@ -36,7 +35,7 @@ def run_around_tests():
     "platform.system() == 'Windows'",
     reason="select has no attribute poll",
 )
-def test_start_and_wait():
+def test_start_and_wait() -> None:
     """Test if the executor will await for the process to create a file."""
     process = f'bash -c "sleep 2 && touch {FILENAME} && sleep 10"'
     with PidExecutor(process, FILENAME, timeout=5) as executor:
@@ -48,17 +47,17 @@ def test_start_and_wait():
 
 
 @pytest.mark.parametrize("pid_file", (None, ""))
-def test_empty_filename(pid_file):
+def test_empty_filename(pid_file: Optional[str]) -> None:
     """Check whether an exception is raised if an empty FILENAME is given."""
     with pytest.raises(ValueError):
-        PidExecutor(SLEEP, pid_file)
+        PidExecutor(SLEEP, pid_file)  # type: ignore[arg-type]
 
 
 @pytest.mark.skipif(
     "platform.system() == 'Windows'",
     reason="select has no attribute poll",
 )
-def test_if_file_created():
+def test_if_file_created() -> None:
     """Check whether the process really created the given file."""
     assert os.path.isfile(FILENAME) is False
     executor = PidExecutor(SLEEP, FILENAME)
@@ -70,7 +69,7 @@ def test_if_file_created():
     "platform.system() == 'Windows'",
     reason="select has no attribute poll",
 )
-def test_timeout_error():
+def test_timeout_error() -> None:
     """Check if timeout properly expires."""
     executor = PidExecutor(SLEEP, FILENAME, timeout=1)
 
@@ -84,14 +83,13 @@ def test_timeout_error():
     "platform.system() == 'Windows'",
     reason="select has no attribute poll",
 )
-def test_fail_if_other_executor_running():
+def test_fail_if_other_executor_running() -> None:
     """Test raising AlreadyRunning exception when port is blocked."""
     process = f'bash -c "sleep 2 && touch {FILENAME} && sleep 10"'
     executor = PidExecutor(process, FILENAME)
     executor2 = PidExecutor(process, FILENAME)
 
     with executor:
-
         assert executor.running() is True
 
         with pytest.raises(AlreadyRunning):

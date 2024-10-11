@@ -2,98 +2,16 @@ name: Run linters
 
 on:
   push:
-    branches: [ master ]
-    paths:
-      - '**.py'
-      - .github/workflows/linters.yml
-      - requirements-lint.txt
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
-    paths:
-      - '**.py'
-      - .github/workflows/linters.yml
-      - requirements-lint.txt
+    branches: [ main ]
 
 jobs:
-  pydocstyle:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
+  lint:
+    uses: fizyk/actions-reuse/.github/workflows/linters-python.yml@v2.4.8
+    with:
+      mypy: true
+      rst: true
+      black: true
+      ruff: true
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-lint.txt
-    - name: Run pydocstyle
-      run: |
-        pydocstyle src/ tests/
-
-  pycodestyle:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-lint.txt
-    - name: Run pydocstyle
-      run: |
-        pycodestyle src/ tests/
-
-  mypy:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-lint.txt
-    - name: Run mypy check
-      run: |
-        mypy src tests
-
-  rst:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements-lint.txt
-    - name: Run rst checks
-      run: |
-        rst-lint *.rst
-
-  black:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - uses: psf/black@main

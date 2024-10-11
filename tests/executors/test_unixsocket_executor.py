@@ -1,9 +1,9 @@
-"""
-TCPExecutor tests.
+"""TCPExecutor tests.
 
 Some of these tests run ``nc``: when running Debian, make sure the
 ``netcat-openbsd`` package is used, not ``netcat-traditional``.
 """
+
 import sys
 
 import pytest
@@ -21,11 +21,9 @@ SOCKET_SERVER_CMD = f"{sys.executable} {TEST_SOCKET_SERVER_PATH} {SOCKET_PATH}"
     "platform.system() == 'Windows'",
     reason="Python does not support socket.AF_UNIX on windows",
 )
-def test_start_and_wait():
+def test_start_and_wait() -> None:
     """Test if executor await for process to accept connections."""
-    executor = UnixSocketExecutor(
-        SOCKET_SERVER_CMD + " 2", socket_name=SOCKET_PATH, timeout=5
-    )
+    executor = UnixSocketExecutor(SOCKET_SERVER_CMD + " 2", socket_name=SOCKET_PATH, timeout=5)
     with executor:
         assert executor.running() is True
 
@@ -34,11 +32,9 @@ def test_start_and_wait():
     "platform.system() == 'Windows'",
     reason="Python does not support socket.AF_UNIX on windows",
 )
-def test_start_and_timeout():
+def test_start_and_timeout() -> None:
     """Test if executor will properly times out."""
-    executor = UnixSocketExecutor(
-        SOCKET_SERVER_CMD + " 10", socket_name=SOCKET_PATH, timeout=5
-    )
+    executor = UnixSocketExecutor(SOCKET_SERVER_CMD + " 10", socket_name=SOCKET_PATH, timeout=5)
 
     with pytest.raises(TimeoutExpired):
         executor.start()

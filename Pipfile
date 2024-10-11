@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+psutil = "==6.0.0"
+
+[dev-packages]
+towncrier = "==24.8.0"
+pytest = "==8.3.3"
+pytest-cov = "==5.0.0"
+coverage = "==7.6.1"
+python-daemon = "==3.0.1"
+restructuredtext-lint = "==1.4.0"
+mypy = "==1.11.2"
+black = {version = "==24.10.0", markers="python_version >= '3.8'"}
+pygments = "==2.18.0"
+tbump = "==6.11.0"
+ruff = "==0.6.9"

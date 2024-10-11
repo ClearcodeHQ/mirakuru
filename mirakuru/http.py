@@ -19,10 +19,10 @@
 
 import re
 import socket
-from logging import getLogger
-from urllib.parse import urlparse, urlencode
 from http.client import HTTPConnection, HTTPException
-from typing import Union, List, Tuple, Optional, Dict, Any
+from logging import getLogger
+from typing import Any, Dict, List, Optional, Tuple, Union
+from urllib.parse import urlencode, urlparse
 
 from mirakuru.tcp import TCPExecutor
 
@@ -39,14 +39,13 @@ class HTTPExecutor(TCPExecutor):
         self,
         command: Union[str, List[str], Tuple[str, ...]],
         url: str,
-        status: str = r"^2\d\d$",
+        status: Union[str, int] = r"^2\d\d$",
         method: str = "HEAD",
         payload: Optional[Dict[str, str]] = None,
         headers: Optional[Dict[str, str]] = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize HTTPExecutor executor.
+        """Initialize HTTPExecutor executor.
 
         :param (str, list) command: command to be run by the subprocess
         :param str url: URL that executor checks to verify
@@ -114,7 +113,5 @@ class HTTPExecutor(TCPExecutor):
             return False
 
         except (HTTPException, socket.timeout, socket.error) as ex:
-            LOG.debug(
-                "Encounter %s while trying to check if service has started.", ex
-            )
+            LOG.debug("Encounter %s while trying to check if service has started.", ex)
             return False

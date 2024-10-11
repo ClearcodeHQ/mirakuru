@@ -19,10 +19,9 @@
 import platform
 import re
 import select
-from typing import Union, List, Any, TypeVar, Tuple, IO, Optional
+from typing import IO, Any, List, Optional, Tuple, TypeVar, Union
 
 from mirakuru.base import SimpleExecutor
-
 
 IS_DARWIN = platform.system() == "Darwin"
 
@@ -39,8 +38,7 @@ class OutputExecutor(SimpleExecutor):
         banner: str,
         **kwargs: Any,
     ) -> None:
-        """
-        Initialize OutputExecutor executor.
+        """Initialize OutputExecutor executor.
 
         :param (str, list) command: command to be run by the subprocess
         :param str banner: string that has to appear in process output -
@@ -58,13 +56,10 @@ class OutputExecutor(SimpleExecutor):
         super().__init__(command, **kwargs)
         self._banner = re.compile(banner)
         if not any((self._stdout, self._stderr)):
-            raise TypeError(
-                "At least one of stdout or stderr has to be initialized"
-            )
+            raise TypeError("At least one of stdout or stderr has to be initialized")
 
     def start(self: OutputExecutorType) -> OutputExecutorType:
-        """
-        Start process.
+        """Start process.
 
         :returns: itself
         :rtype: OutputExecutor
@@ -88,10 +83,7 @@ class OutputExecutor(SimpleExecutor):
 
                     output_file = output_method()
                     if output_file is None:
-                        raise ValueError(
-                            "The process is started but "
-                            "the output file is None"
-                        )
+                        raise ValueError("The process is started but the output file is None")
                     # register a file descriptor
                     # POLLIN because we will wait for data to read
                     std_poll.register(output_file, select.POLLIN)
@@ -128,7 +120,7 @@ class OutputExecutor(SimpleExecutor):
         return self
 
     def _wait_for_darwin_output(self, *fds: Optional[IO[Any]]) -> bool:
-        """Select implementation to be used on MacOSX"""
+        """Select implementation to be used on MacOSX."""
         rlist, _, _ = select.select(fds, [], [], 0)
         for output in rlist:
             line = output.readline()
@@ -137,8 +129,7 @@ class OutputExecutor(SimpleExecutor):
         return False
 
     def _wait_for_output(self, *polls: Tuple["select.poll", IO[Any]]) -> bool:
-        """
-        Check if output matches banner.
+        """Check if output matches banner.
 
         .. warning::
             Waiting for I/O completion. It does not work on Windows. Sorry.
