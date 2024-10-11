@@ -3,6 +3,30 @@ CHANGELOG
 
 .. towncrier release notes start
 
+2.5.3 (2024-10-11)
+==================
+
+Breaking changes
+----------------
+
+- Dropped support for Python 3.8 (As it reached EOL)
+
+
+Features
+--------
+
+- Added support for Python 3.13
+
+
+Miscellaneus
+------------
+
+- `#724 <https://github.com/ClearcodeHQ/mirakuru/issues/724>`_, `#726 <https://github.com/ClearcodeHQ/mirakuru/issues/726>`_, `#742 <https://github.com/ClearcodeHQ/mirakuru/issues/742>`_
+- * Extended line-lenght to 100 characters
+  * updated test_forgotten_stop as on CI on
+    Python 3.13 it lost one character out of the marker
+
+
 2.5.2 (2023-10-17)
 ==================
 

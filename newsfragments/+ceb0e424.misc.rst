@@ -1,3 +1,0 @@
-* Extended line-lenght to 100 characters
-* updated test_forgotten_stop as on CI on
-  Python 3.13 it lost one character out of the marker
