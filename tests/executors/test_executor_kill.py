@@ -112,8 +112,9 @@ def test_stopping_children_of_stopped_process() -> None:
     def processes_with_env_mock(*_: str, **__: str) -> Set[int]:
         return {1}
 
-    with patch(
-        "mirakuru.base.processes_with_env", new=processes_with_env_mock
-    ), patch("os.kill", new=raise_os_error):
+    with (
+        patch("mirakuru.base.processes_with_env", new=processes_with_env_mock),
+        patch("os.kill", new=raise_os_error),
+    ):
         executor = SimpleExecutor(SLEEP_300)
         executor._kill_all_kids(executor._stop_signal)

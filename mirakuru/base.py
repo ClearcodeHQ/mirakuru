@@ -418,9 +418,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
             return self.process.stderr
         return None  # pragma: no cover
 
-    def wait_for(
-        self: SimpleExecutorType, wait_for: Callable[[], bool]
-    ) -> SimpleExecutorType:
+    def wait_for(self: SimpleExecutorType, wait_for: Callable[[], bool]) -> SimpleExecutorType:
         """Wait for callback to return True.
 
         Simply returns if wait_for condition has been met,
@@ -459,10 +457,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
                 self.kill()
         except Exception:  # pragma: no cover
             print("*" * 80)
-            print(
-                "Exception while deleting Executor. '"
-                "It is strongly suggested that you use"
-            )
+            print("Exception while deleting Executor. It is strongly suggested that you use")
             print("it as a context manager instead.")
             print("*" * 80)
             raise

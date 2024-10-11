@@ -25,7 +25,5 @@ def retry(
             return res
         except possible_exception as e:
             if time + timeout_diff < datetime.now(timezone.utc):
-                raise TimeoutError(
-                    "Failed after {i} attempts".format(i=i)
-                ) from e
+                raise TimeoutError("Failed after {i} attempts".format(i=i)) from e
             sleep(1)
