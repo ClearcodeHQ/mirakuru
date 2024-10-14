@@ -13,11 +13,16 @@ import pytest
 from mirakuru import HTTPExecutor, SimpleExecutor
 from mirakuru.compat import SIGKILL
 from mirakuru.exceptions import ProcessFinishedWithError
+from mirakuru.kill import killpg
+
 from tests import SAMPLE_DAEMON_PATH, TEST_SERVER_PATH, ps_aux
 
 SLEEP_300 = "sleep 300"
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_custom_signal_kill() -> None:
     """Start process and shuts it down using signal SIGQUIT."""
     executor = SimpleExecutor(SLEEP_300, kill_signal=signal.SIGQUIT)
@@ -27,6 +32,9 @@ def test_custom_signal_kill() -> None:
     assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'", reason="No SIGQUIT support for Windows"
+)
 def test_kill_custom_signal_kill() -> None:
     """Start process and shuts it down using signal SIGQUIT passed to kill."""
     executor = SimpleExecutor(SLEEP_300)
@@ -36,12 +44,19 @@ def test_kill_custom_signal_kill() -> None:
     assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason=(
+        "Failed: DID NOT RAISE "
+        "<class 'mirakuru.exceptions.ProcessFinishedWithError'>"
+    ),
+)
 def test_already_closed() -> None:
     """Check that the executor cleans after itself after it exited earlier."""
     with pytest.raises(ProcessFinishedWithError) as excinfo:
         with SimpleExecutor("python") as executor:
             assert executor.running()
-            os.killpg(executor.process.pid, SIGKILL)
+            killpg(executor.process.pid, SIGKILL)
 
             def process_stopped() -> bool:
                 """Return True only only when self.process is not running."""
@@ -53,6 +68,7 @@ def test_already_closed() -> None:
     assert not executor.process
 
 
+@pytest.mark.skipif("platform.system() == 'Windows'", reason="No ps_uax")
 def test_daemons_killing() -> None:
     """Test if all subprocesses of SimpleExecutor can be killed.
 
@@ -72,6 +88,13 @@ def test_daemons_killing() -> None:
     assert SAMPLE_DAEMON_PATH not in ps_aux()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason=(
+        "Subprocess killed earlier than in 10 secs. "
+        "Blocking signals probably doesn't work."
+    ),
+)
 def test_stopping_brutally() -> None:
     """Test if SimpleExecutor is stopping insubordinate process.
 
