@@ -31,6 +31,10 @@ def run_around_tests() -> Iterator[None]:
         pass
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="select has no attribute poll",
+)
 def test_start_and_wait() -> None:
     """Test if the executor will await for the process to create a file."""
     process = f'bash -c "sleep 2 && touch {FILENAME} && sleep 10"'
@@ -49,6 +53,10 @@ def test_empty_filename(pid_file: Optional[str]) -> None:
         PidExecutor(SLEEP, pid_file)  # type: ignore[arg-type]
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="select has no attribute poll",
+)
 def test_if_file_created() -> None:
     """Check whether the process really created the given file."""
     assert os.path.isfile(FILENAME) is False
@@ -57,6 +65,10 @@ def test_if_file_created() -> None:
         assert os.path.isfile(FILENAME) is True
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="select has no attribute poll",
+)
 def test_timeout_error() -> None:
     """Check if timeout properly expires."""
     executor = PidExecutor(SLEEP, FILENAME, timeout=1)
@@ -67,6 +79,10 @@ def test_timeout_error() -> None:
     assert executor.running() is False
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="select has no attribute poll",
+)
 def test_fail_if_other_executor_running() -> None:
     """Test raising AlreadyRunning exception when port is blocked."""
     process = f'bash -c "sleep 2 && touch {FILENAME} && sleep 10"'

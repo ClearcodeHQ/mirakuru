@@ -34,6 +34,10 @@ def connect_to_server() -> None:
     conn.close()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="Can't start http.server on python3",
+)
 def test_executor_starts_and_waits() -> None:
     """Test if process awaits for HEAD request to be completed."""
     command = f'bash -c "sleep 3 && {HTTP_NORMAL_CMD}"'
@@ -104,6 +108,10 @@ def test_slow_post_payload_server_starting() -> None:
         connect_to_server()
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason=("ProcessLookupError: [Errno 3] process no longer exists."),
+)
 @pytest.mark.parametrize("method", ("HEAD", "GET", "POST"))
 def test_slow_method_server_timed_out(method: str) -> None:
     """Check if timeout properly expires."""
@@ -164,9 +172,27 @@ def test_default_port() -> None:
     "accepted_status, expected_timeout",
     (
         # default behaviour - only 2XX HTTP status codes are accepted
-        (None, True),
+        pytest.param(
+            None,
+            True,
+            marks=pytest.mark.skipif(
+                "platform.system() == 'Windows'",
+                reason=(
+                    "ProcessLookupError: [Errno 3] process no longer exists."
+                ),
+            ),
+        ),
         # one explicit integer status code
-        (200, True),
+        pytest.param(
+            200,
+            True,
+            marks=pytest.mark.skipif(
+                "platform.system() == 'Windows'",
+                reason=(
+                    "ProcessLookupError: [Errno 3] process no longer exists."
+                ),
+            ),
+        ),
         # one explicit status code as a string
         ("404", False),
         # status codes as a regular expression

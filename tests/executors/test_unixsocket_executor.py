@@ -18,6 +18,10 @@ SOCKET_PATH = os.path.join(os.getenv("TMPDIR", "/tmp"), "mirakuru.sock")
 SOCKET_SERVER_CMD = f"{sys.executable} {TEST_SOCKET_SERVER_PATH} {SOCKET_PATH}"
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="Python does not support socket.AF_UNIX on windows",
+)
 def test_start_and_wait() -> None:
     """Test if executor await for process to accept connections."""
     executor = UnixSocketExecutor(SOCKET_SERVER_CMD + " 2", socket_name=SOCKET_PATH, timeout=5)
@@ -25,6 +29,10 @@ def test_start_and_wait() -> None:
         assert executor.running() is True
 
 
+@pytest.mark.skipif(
+    "platform.system() == 'Windows'",
+    reason="Python does not support socket.AF_UNIX on windows",
+)
 def test_start_and_timeout() -> None:
     """Test if executor will properly times out."""
     executor = UnixSocketExecutor(SOCKET_SERVER_CMD + " 10", socket_name=SOCKET_PATH, timeout=5)
