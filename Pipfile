@@ -15,6 +15,6 @@ python-daemon = "==3.1.2"
 restructuredtext-lint = "==1.4.0"
 mypy = "==1.14.1"
 black = {version = "==24.10.0", markers="python_version >= '3.8'"}
-pygments = "==2.18.0"
+pygments = "==2.19.1"
 tbump = "==6.11.0"
 ruff = "==0.8.6"
