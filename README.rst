@@ -1,6 +1,6 @@
 .. image:: https://raw.githubusercontent.com/ClearcodeHQ/mirakuru/master/logo.png
     :height: 100px
-    
+
 mirakuru
 ========
 
