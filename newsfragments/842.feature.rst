@@ -1,0 +1,3 @@
+SimpleExecutor now have an envvars property, that returns defined envvars with added os.envvars and mirakuru_uuid envvar.
+
+This will allow to re-use same envvars for starting process and any additional process runs in inheriting executors.

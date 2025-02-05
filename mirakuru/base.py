@@ -200,6 +200,24 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         return self.process.poll() is None
 
     @property
+    def envvars(self) -> Dict[str, str]:
+        """Combines required environment variables with os.environ and mirakuru_uuid."""
+        envs = os.environ.copy()
+        envs.update(self._envvars)
+        # Trick with marking subprocesses with an environment variable.
+        #
+        # There is no easy way to recognize all subprocesses that were
+        # spawned during lifetime of a certain subprocess so mirakuru does
+        # this hack in order to mark who was the original parent. Even if
+        # some subprocess got daemonized or changed original process group
+        # mirakuru will be able to find it by this environment variable.
+        #
+        # There may be a situation when some subprocess will abandon
+        # original envs from parents and then it won't be later found.
+        envs[ENV_UUID] = self._uuid
+        return envs
+
+    @property
     def _popen_kwargs(self) -> Dict[str, Any]:
         """Get kwargs for the process instance.
 
@@ -221,22 +239,7 @@ class SimpleExecutor:  # pylint:disable=too-many-instance-attributes
         kwargs["universal_newlines"] = True
 
         kwargs["shell"] = self._shell
-
-        env = os.environ.copy()
-        env.update(self._envvars)
-        # Trick with marking subprocesses with an environment variable.
-        #
-        # There is no easy way to recognize all subprocesses that were
-        # spawned during lifetime of a certain subprocess so mirakuru does
-        # this hack in order to mark who was the original parent. Even if
-        # some subprocess got daemonized or changed original process group
-        # mirakuru will be able to find it by this environment variable.
-        #
-        # There may be a situation when some subprocess will abandon
-        # original envs from parents and then it won't be later found.
-        env[ENV_UUID] = self._uuid
-        kwargs["env"] = env
-
+        kwargs["env"] = self.envvars
         kwargs["cwd"] = self._cwd
         if platform.system() != "Windows":
             kwargs["preexec_fn"] = os.setsid
