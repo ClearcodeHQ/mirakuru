@@ -10,8 +10,4 @@ jobs:
   lint:
     uses: fizyk/actions-reuse/.github/workflows/linters-python.yml@v2.6.0
     with:
-      mypy: true
-      rst: true
-      black: true
-      ruff: true
-
+      pre-commit: true
