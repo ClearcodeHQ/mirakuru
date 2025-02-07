@@ -4,7 +4,6 @@ Some of these tests run ``nc``: when running Debian, make sure the
 ``netcat-openbsd`` package is used, not ``netcat-traditional``.
 """
 
-import os
 import sys
 
 import pytest
@@ -13,21 +12,27 @@ from mirakuru import TimeoutExpired
 from mirakuru.unixsocket import UnixSocketExecutor
 from tests import TEST_SOCKET_SERVER_PATH
 
-SOCKET_PATH = os.path.join(os.getenv("TMPDIR", "/tmp"), "mirakuru.sock")
 
-SOCKET_SERVER_CMD = f"{sys.executable} {TEST_SOCKET_SERVER_PATH} {SOCKET_PATH}"
-
-
-def test_start_and_wait() -> None:
+def test_start_and_wait(
+    tmp_path_factory: pytest.TempPathFactory,
+) -> None:
     """Test if executor await for process to accept connections."""
-    executor = UnixSocketExecutor(SOCKET_SERVER_CMD + " 2", socket_name=SOCKET_PATH, timeout=5)
+    socker_path = tmp_path_factory.getbasetemp() / "mirakuru.sock"
+    socket_server_cmd = f"{sys.executable} {TEST_SOCKET_SERVER_PATH} {socker_path}"
+    executor = UnixSocketExecutor(socket_server_cmd + " 2", socket_name=str(socker_path), timeout=5)
     with executor:
         assert executor.running() is True
 
 
-def test_start_and_timeout() -> None:
-    """Test if executor will properly times out."""
-    executor = UnixSocketExecutor(SOCKET_SERVER_CMD + " 10", socket_name=SOCKET_PATH, timeout=5)
+def test_start_and_timeout(
+    tmp_path_factory: pytest.TempPathFactory,
+) -> None:
+    """Test if executor will properly time out."""
+    socker_path = tmp_path_factory.getbasetemp() / "mirakuru.sock"
+    socket_server_cmd = f"{sys.executable} {TEST_SOCKET_SERVER_PATH} {socker_path}"
+    executor = UnixSocketExecutor(
+        socket_server_cmd + " 10", socket_name=str(socker_path), timeout=5
+    )
 
     with pytest.raises(TimeoutExpired):
         executor.start()
