@@ -1,1 +1,0 @@
-Defer to pytest's tmp_path_factory instead of manual tmpdir setting/detection

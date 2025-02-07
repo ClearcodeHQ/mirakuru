@@ -3,6 +3,25 @@ CHANGELOG
 
 .. towncrier release notes start
 
+2.6.0 (2025-02-07)
+==================
+
+Features
+--------
+
+- SimpleExecutor now have an envvars property, that returns defined envvars with added os.envvars and mirakuru_uuid envvar.
+
+  This will allow to re-use same envvars for starting process and any additional process runs in inheriting executors. (`#842 <https://github.com/ClearcodeHQ/mirakuru/issues/842>`_)
+
+
+Miscellaneus
+------------
+
+- `#810 <https://github.com/ClearcodeHQ/mirakuru/issues/810>`_, `#841 <https://github.com/ClearcodeHQ/mirakuru/issues/841>`_
+- Add pytest-rerunfailures for flaky tests.
+- Defer to pytest's tmp_path_factory instead of manual tmpdir setting/detection
+
+
 2.5.3 (2024-10-11)
 ==================
 
