@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-psutil = "==6.1.1"
+psutil = "==7.0.0"
 
 [dev-packages]
 towncrier = "==24.8.0"
