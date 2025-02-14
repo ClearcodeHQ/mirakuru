@@ -1,0 +1,11 @@
+name: Run pre-commit
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  pre-commit:
+    uses: fizyk/actions-reuse/.github/workflows/shared-pre-commit.yml@v3.0.1
